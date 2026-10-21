@@ -230,13 +230,10 @@ input[type=text]:focus,input[type=date]:focus,input[type=number]:focus,select:fo
 .addrow{display:flex; flex-wrap:wrap; gap:10px}
 .err{background:var(--flag); color:var(--flag-ink); border-radius:12px; padding:12px 16px; font-weight:500; font-size:15px}
 .confirm{background:var(--post-bg); color:var(--post); border-radius:12px; padding:12px 16px; width:100%; display:flex; flex-wrap:wrap; gap:10px 14px; align-items:center; font-weight:500}
-details.more{border:1px solid var(--line); border-radius:16px}
-details.more>summary{cursor:pointer; font-weight:500; padding:14px 16px; list-style:none; display:flex; justify-content:space-between; gap:10px; align-items:center; font-size:15px}
-details.more>summary::-webkit-details-marker{display:none}
-details.more>summary::after{content:"Show"; color:var(--primary); font-size:14px}
-details.more[open]>summary::after{content:"Hide"}
-details.more .inner{padding:4px 16px 18px; display:grid; grid-template-columns:repeat(2,minmax(0,1fr)); gap:16px}
-details.more .full{grid-column:1 / -1}
+.more{border:1px solid var(--line); border-radius:16px}
+.more>h3{margin:0; font-weight:500; padding:14px 16px; font-size:15px}
+.more .inner{padding:4px 16px 18px; display:grid; grid-template-columns:repeat(2,minmax(0,1fr)); gap:16px}
+.more .full{grid-column:1 / -1}
 
 .toast{position:fixed; left:50%; transform:translateX(-50%); bottom:calc(20px + env(safe-area-inset-bottom,0px)); max-width:calc(100% - 32px); background:#303134; color:#fff; padding:14px 20px; border-radius:8px; font-size:15px; z-index:50; box-shadow:0 4px 12px rgba(0,0,0,.3)}
 .toast[hidden]{display:none}
@@ -458,7 +455,7 @@ details.more .full{grid-column:1 / -1}
   .team-grid{padding-left:16px; padding-right:16px}
   .note{padding-left:16px; padding-right:16px}
   .empty{margin-left:16px; margin-right:16px}
-  details.more .inner{grid-template-columns:minmax(0,1fr)}
+  .more .inner{grid-template-columns:minmax(0,1fr)}
   .sb-name b{font-size:17px}
   .dtx b{font-size:19px}
 }
@@ -1001,7 +998,7 @@ function matchBody(){
       h+='<div><button type="button" class="btn" data-act="addgame">'+(games.length?'Add another score':'Add the score')+'</button></div></section>';
     }
   }
-  h+='<details class="more"'+(SH.isNew||SH.openDetails?' open':'')+'><summary>Match details (date, venue, umpires, teams)</summary><div class="inner">'+
+  h+='<section class="more" aria-labelledby="mdTitle"><h3 id="mdTitle">Match details</h3><div class="inner">'+
     '<label class="field"><span>Date</span><input type="date" data-fx="date" value="'+esc(fx.date)+'"></label>'+
     '<label class="field"><span>Time</span><input type="text" data-fx="time" value="'+esc(fx.time)+'" placeholder="2:00 PM"></label>'+
     '<label class="field"><span>Junior or senior</span><select data-fx="div">'+
@@ -1014,7 +1011,7 @@ function matchBody(){
     '<div class="field combo"><label for="cb-u1">Umpire 1</label><input id="cb-u1" type="text" role="combobox" aria-expanded="false" aria-controls="cbl-u1" aria-autocomplete="list" autocomplete="off" data-fx="u1" data-combo="ump" value="'+esc(fx.u1)+'" placeholder="Type or pick an umpire"><ul class="cb-list" id="cbl-u1" role="listbox" hidden></ul></div>'+
     '<div class="field combo"><label for="cb-u2">Umpire 2</label><input id="cb-u2" type="text" role="combobox" aria-expanded="false" aria-controls="cbl-u2" aria-autocomplete="list" autocomplete="off" data-fx="u2" data-combo="ump" value="'+esc(fx.u2)+'" placeholder="Type or pick an umpire"><ul class="cb-list" id="cbl-u2" role="listbox" hidden></ul></div>'+
     '<label class="field full"><span>Notes</span><textarea data-fx="note">'+esc(fx.note)+'</textarea></label>'+
-  '</div></details>';
+  '</div></section>';
   return h;
 }
 function teamBody(){
@@ -1073,12 +1070,12 @@ function openNote(k){
   if(k){const n=S.notes.find(x=>x.k===k); if(!n)return; openSheet({type:'note',isNew:false,err:'',confirm:false,draft:clone(n)});}
   else openSheet({type:'note',isNew:true,err:'',confirm:false,draft:{k:'n'+(S.counter++),topic:'',detail:''}});
 }
-function fail(msg,details){SH.err=msg; if(details)SH.openDetails=true; renderSheet(false); const b=$('.sheet-b'); if(b)b.scrollTop=0;}
+function fail(msg){SH.err=msg; renderSheet(false); const b=$('.sheet-b'); if(b)b.scrollTop=0;}
 function saveSheet(){
   if(SH.type==='match'){
     const fx=SH.draft.fx; fx.t1=String(fx.t1).trim(); fx.t2=String(fx.t2).trim();
-    if(!fx.t1||!fx.t2)return fail('Please type both team names in Match details.',true);
-    if(norm(fx.t1)===norm(fx.t2))return fail('The two teams must be different.',true);
+    if(!fx.t1||!fx.t2)return fail('Please type both team names in Match details.');
+    if(norm(fx.t1)===norm(fx.t2))return fail('The two teams must be different.');
     if(fx.u1!==undefined){syncUmp(fx); delete fx.u1; delete fx.u2;}
     fx.venue=String(fx.venue||'').replace(/\s+/g,' ').trim();
     const kept=[];
