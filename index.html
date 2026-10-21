@@ -1,0 +1,1404 @@
+<!doctype html>
+<html lang="en">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width,initial-scale=1,viewport-fit=cover">
+<meta name="description" content="Fixtures, scores, standings and umpires for the 2026 D Sports Shop Inter-Secondary Schools Netball Tournament.">
+<style>:root{color-scheme:light;padding-top:env(safe-area-inset-top,0px);padding-bottom:env(safe-area-inset-bottom,0px)}body{margin:0;font:14px system-ui,sans-serif}img{max-width:100%}[hidden]{display:none!important}</style>
+<title>Netball Scorebook 2026</title>
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+<link rel="stylesheet" href="https://fonts.googleapis.com/css2?family=Roboto:wght@400;500;700&display=swap">
+<style>
+/* Layout: app bar on top, navigation panel left, match list centre, docked detail panel right (wide screens). */
+:root{
+  --bg:#F6F8FC; --surface:#FFFFFF; --surface-2:#F1F3F4; --ink:#202124; --muted:#5F6368; --line:#DADCE0; --line-strong:#80868B;
+  --primary:#1A73E8; --primary-ink:#FFFFFF; --primary-soft:#D3E3FD; --on-soft:#041E49; --sel:#E8F0FE; --tonal:#C2E7FF; --on-tonal:#001D35;
+  --played:#137333; --played-bg:#E6F4EA; --post:#8A5300; --post-bg:#FEF7E0; --todo:#3C4043; --todo-bg:#F1F3F4;
+  --east:#1A73E8; --east-bg:#E8F0FE; --west:#188038; --west-bg:#E6F4EA; --jnr:#00737A; --jnr-bg:#D5F1EE; --snr:#8430CE; --snr-bg:#F3E8FD; --bar:#1A73E8; --neg:#E8710A; --track:#EEF1F4; --flag:#FEEFC3; --flag-ink:#594300; --danger:#C5221F; --scrim:rgba(32,33,36,.5);
+  --f:'Google Sans','Google Sans Text','Product Sans',Roboto,'Segoe UI',Arial,sans-serif;
+}
+@media (prefers-color-scheme: dark){
+  :root:not([data-theme="light"]){
+    --bg:#131314; --surface:#1E1F20; --surface-2:#2A2C2F; --ink:#E3E3E3; --muted:#B4B8BC; --line:#444746; --line-strong:#8E918F;
+    --primary:#A8C7FA; --primary-ink:#062E6F; --primary-soft:#0B3B7A; --on-soft:#D3E3FD; --sel:#1F3A5F; --tonal:#004A77; --on-tonal:#C2E7FF;
+    --played:#81C995; --played-bg:#133A24; --post:#FDD663; --post-bg:#3C3000; --todo:#C4C7C5; --todo-bg:#303134;
+    --east:#8AB4F8; --east-bg:#1C2F4D; --west:#81C995; --west-bg:#173A26; --jnr:#5DD6CE; --jnr-bg:#0F3A38; --snr:#D7AEFB; --snr-bg:#3A2350; --bar:#8AB4F8; --neg:#FCAD70; --track:#2A2C2F; --flag:#4B3F00; --flag-ink:#FDE293; --danger:#F28B82; --scrim:rgba(0,0,0,.65); color-scheme:dark;
+  }
+}
+:root[data-theme="dark"]{
+  --bg:#131314; --surface:#1E1F20; --surface-2:#2A2C2F; --ink:#E3E3E3; --muted:#B4B8BC; --line:#444746; --line-strong:#8E918F;
+  --primary:#A8C7FA; --primary-ink:#062E6F; --primary-soft:#0B3B7A; --on-soft:#D3E3FD; --sel:#1F3A5F; --tonal:#004A77; --on-tonal:#C2E7FF;
+  --played:#81C995; --played-bg:#133A24; --post:#FDD663; --post-bg:#3C3000; --todo:#C4C7C5; --todo-bg:#303134;
+  --east:#8AB4F8; --east-bg:#1C2F4D; --west:#81C995; --west-bg:#173A26; --jnr:#5DD6CE; --jnr-bg:#0F3A38; --snr:#D7AEFB; --snr-bg:#3A2350; --bar:#8AB4F8; --neg:#FCAD70; --track:#2A2C2F; --flag:#4B3F00; --flag-ink:#FDE293; --danger:#F28B82; --scrim:rgba(0,0,0,.65); color-scheme:dark;
+}
+*{box-sizing:border-box}
+body{background:var(--bg); color:var(--ink); font-family:var(--f); font-size:16px; line-height:1.5; margin:0}
+body::before{content:""; position:fixed; inset:0 0 auto; height:env(safe-area-inset-top,0px); background:var(--bg); z-index:10}
+body.lock{overflow:hidden}
+h1,h2,h3{margin:0; font-weight:400}
+button{font:inherit; color:inherit}
+button:focus-visible,input:focus-visible,select:focus-visible,textarea:focus-visible,summary:focus-visible,a:focus-visible{outline:3px solid var(--primary); outline-offset:2px}
+.ic{width:24px; height:24px; fill:currentColor; flex:none}
+.sr{position:absolute; width:1px; height:1px; overflow:hidden; clip:rect(0 0 0 0); white-space:nowrap}
+
+/* app bar */
+.topbar{position:sticky; top:env(safe-area-inset-top,0px); z-index:20; background:var(--bg)}
+.bar-in{display:grid; grid-template-columns:auto minmax(0,1fr) auto; grid-template-areas:"brand search save"; gap:12px 20px; align-items:center; padding:10px max(16px,env(safe-area-inset-right,0px)) 10px max(16px,env(safe-area-inset-left,0px));}
+.brand{grid-area:brand; display:flex; align-items:center; gap:10px; min-width:230px}
+.brand .ic{width:34px; height:34px; color:var(--primary)}
+.brand span{font-size:22px; color:var(--ink); white-space:nowrap}
+.icon-btn.menu{display:none}
+.icon-btn{width:48px; height:48px; border-radius:50%; border:0; background:none; cursor:pointer; display:grid; place-items:center; color:var(--muted)}
+.icon-btn:hover{background:var(--surface-2)}
+.search{grid-area:search; display:flex; align-items:center; gap:12px; background:var(--surface-2); border-radius:28px; padding:0 18px; height:52px; max-width:760px; width:100%; justify-self:center; color:var(--muted); border:1px solid transparent}
+.search:focus-within{background:var(--surface); border-color:var(--line); box-shadow:0 1px 6px rgba(32,33,36,.28)}
+.search input{flex:1; min-width:0; border:0; background:none; outline:0; font:inherit; font-size:16px; color:var(--ink); height:100%}
+.search input::placeholder{color:var(--muted)}
+.save{grid-area:save; display:flex; align-items:center; gap:8px}
+.save-l{color:var(--muted); font-size:14px; margin-right:4px}
+
+.btn{min-height:44px; padding:0 20px; border-radius:22px; border:1px solid var(--line-strong); background:none; color:var(--primary); font-weight:500; font-size:15px; cursor:pointer; display:inline-flex; align-items:center; justify-content:center; gap:8px}
+.btn:hover{background:var(--sel)}
+.btn .ic{width:20px; height:20px}
+.btn.primary{background:var(--primary); color:var(--primary-ink); border-color:var(--primary)}
+.btn.primary:hover{filter:brightness(1.08); background:var(--primary)}
+.btn.tonal{background:var(--primary-soft); color:var(--on-soft); border-color:transparent}
+.btn.tonal:hover{filter:brightness(.97); background:var(--primary-soft)}
+.btn.small{min-height:40px; padding:0 16px}
+.btn:disabled{opacity:.5; cursor:not-allowed}
+.link{background:none; border:0; padding:6px 2px; color:var(--primary); font-weight:500; cursor:pointer; font-size:inherit; text-decoration:underline; text-underline-offset:3px}
+.link.danger{color:var(--danger)}
+
+/* layout */
+.layout{display:grid; grid-template-columns:268px minmax(0,1fr); gap:20px;; padding:4px max(16px,env(safe-area-inset-right,0px)) 40px max(16px,env(safe-area-inset-left,0px)); align-items:start}
+@media (min-width:1180px){ .layout{grid-template-columns:268px minmax(0,1fr) clamp(480px,34vw,620px)} }
+
+/* nav panel */
+.nav{display:flex; flex-direction:column; gap:6px; position:sticky; top:calc(76px + env(safe-area-inset-top,0px)); max-height:calc(100vh - 92px); overflow:auto; padding-bottom:12px}
+.fab{height:56px; padding:0 24px 0 18px; border-radius:16px; border:0; background:var(--tonal); color:var(--on-tonal); font-weight:500; font-size:16px; display:inline-flex; align-items:center; gap:12px; cursor:pointer; align-self:flex-start; box-shadow:0 1px 3px rgba(60,64,67,.3); margin-bottom:10px}
+.fab:hover{filter:brightness(.96)}
+.nav-h{font-size:13px; font-weight:500; color:var(--muted); letter-spacing:.04em; padding:14px 16px 4px}
+.nav-item{display:flex; align-items:center; gap:14px; height:44px; padding:0 18px 0 16px; border:0; border-radius:22px; background:none; cursor:pointer; text-align:left; width:100%; font-size:15px; color:var(--ink)}
+.nav-item:hover{background:var(--surface-2)}
+.nav-item .ic{color:var(--muted)}
+.nav-item .nl{flex:1}
+.nav-item .nc{color:var(--muted); font-size:14px; font-variant-numeric:tabular-nums}
+.nav-item.active{background:var(--primary-soft); color:var(--on-soft); font-weight:700}
+.nav-item.active .ic,.nav-item.active .nc{color:var(--on-soft)}
+.nav hr{border:0; border-top:1px solid var(--line); margin:10px 0; width:100%}
+.nav-f{display:flex; flex-direction:column; gap:12px; padding:0 8px}
+.card{background:var(--surface); border:1px solid var(--line); border-radius:16px; padding:14px 16px; margin:0 4px}
+.card h3{font-size:14px; font-weight:500; color:var(--muted); margin-bottom:8px}
+.card dl{margin:0; display:grid; grid-template-columns:auto 1fr; gap:4px 12px; font-size:14px}
+.card dt{color:var(--muted)} .card dd{margin:0; font-weight:500}
+.card p{margin:8px 0 0; font-size:13px; color:var(--muted)}
+.changes{font-size:14px; color:var(--muted); display:flex; flex-direction:column; gap:2px; align-items:flex-start; padding:0 16px}
+
+/* centre */
+.content{background:var(--surface); border-radius:20px; min-width:0; overflow:hidden}
+.phead{padding:22px 24px 8px; display:flex; flex-wrap:wrap; gap:8px 16px; justify-content:space-between; align-items:flex-end}
+.phead h2{font-size:28px; line-height:1.2}
+.phead p{margin:2px 0 0; color:var(--muted); font-size:15px}
+.chips{display:none; gap:8px; overflow-x:auto; padding:6px 24px 10px}
+.chip{flex:none; height:40px; padding:0 16px; border-radius:10px; border:1px solid var(--line); background:var(--surface); font-size:14px; font-weight:500; cursor:pointer; display:inline-flex; align-items:center; gap:8px; color:var(--ink)}
+.chip b{font-weight:400; color:var(--muted)}
+.chip[aria-pressed="true"]{background:var(--primary-soft); border-color:transparent; color:var(--on-soft)}
+.tip{margin:8px 24px 6px; background:var(--sel); border-radius:12px; padding:12px 16px; display:flex; flex-wrap:wrap; gap:6px 16px; align-items:center; justify-content:space-between; font-size:15px}
+.tip[hidden]{display:none}
+.days{display:flex; flex-direction:column; gap:32px; padding:10px 24px 30px}
+.day{display:flex; flex-direction:column; gap:14px}
+.day-h{display:flex; align-items:center; gap:14px; padding-bottom:12px; border-bottom:2px solid var(--line)}
+.cal{flex:none; width:58px; border-radius:10px; overflow:hidden; border:1px solid var(--line); text-align:center; background:var(--surface)}
+.cal .mo{display:block; background:var(--primary); color:var(--primary-ink); font-size:11px; font-weight:700; letter-spacing:.1em; padding:3px 0}
+.cal .dn{display:block; font-size:26px; font-weight:500; line-height:1.35; font-variant-numeric:tabular-nums}
+.dtx{display:flex; flex-direction:column; min-width:0; flex:1}
+.dtx b{font-size:21px; font-weight:500; line-height:1.25}
+.dtx span{font-size:14px; color:var(--muted)}
+.tag{background:var(--primary); color:var(--primary-ink); border-radius:6px; padding:3px 9px; font-size:12px; font-weight:700; letter-spacing:.06em}
+.cards{display:flex; flex-direction:column; gap:14px}
+.match{display:flex; flex-direction:column; width:100%; text-align:left; background:var(--surface); border:1px solid var(--line); border-radius:16px; padding:0; cursor:pointer; overflow:hidden}
+.match:hover{border-color:var(--line-strong); box-shadow:0 1px 4px rgba(60,64,67,.22)}
+.match.sel{border-color:var(--primary); box-shadow:0 0 0 1px var(--primary)}
+.m-top{display:flex; flex-wrap:wrap; gap:6px 12px; align-items:center; padding:11px 16px; border-bottom:1px solid var(--line)}
+.m-time{font-weight:500; font-size:15px; white-space:nowrap}
+.m-meta{color:var(--muted); font-size:14px; flex:1 1 200px; min-width:0}
+.sb{--w:84px; display:grid; grid-template-columns:minmax(0,1fr) repeat(var(--n),var(--w))}
+.sb-c{display:flex; align-items:center; min-width:0}
+.sb-head{padding:7px 4px 5px; justify-content:center; font-size:12px; font-weight:700; letter-spacing:.07em; text-transform:uppercase; color:var(--muted); background:var(--surface-2); border-left:1px solid var(--line)}
+.sb-corner{padding:7px 16px 5px; font-size:12px; font-weight:700; letter-spacing:.07em; text-transform:uppercase; color:var(--muted)}
+.sb-team{gap:12px; padding:11px 16px}
+.sb-team .av{width:38px; height:38px; font-size:13px}
+.sb-name{display:flex; flex-direction:column; min-width:0}
+.sb-name b{font-size:18px; font-weight:500; line-height:1.2}
+.sb-name b.win{color:var(--primary); font-weight:700}
+.sb-name small{font-size:13px; color:var(--muted); line-height:1.3; white-space:nowrap; overflow:hidden; text-overflow:ellipsis}
+.sb-sc{justify-content:center; background:var(--surface-2); border-left:1px solid var(--line); font-size:26px; font-weight:400; font-variant-numeric:tabular-nums; color:var(--muted)}
+.sb-sc.win{color:var(--ink); font-weight:700}
+.sb-sc.none{font-size:20px}
+.r1{border-top:1px solid var(--line)}
+.r2{border-top:1px solid var(--line)}
+.m-foot{display:flex; flex-wrap:wrap; gap:8px 12px; align-items:center; padding:10px 16px; border-top:1px solid var(--line); font-size:14px; color:var(--muted)}
+.m-foot .ump{flex:1 1 200px; min-width:0}
+.status{font-size:13px; font-weight:500; padding:4px 12px; border-radius:8px; white-space:nowrap}
+.st-todo{background:var(--todo-bg); color:var(--todo)}
+.st-post{background:var(--post-bg); color:var(--post)}
+.st-played{background:var(--played-bg); color:var(--played)}
+.act{font-size:14px; font-weight:500; color:var(--primary); white-space:nowrap}
+.empty{margin:20px 24px 30px; border:1px dashed var(--line-strong); border-radius:16px; padding:34px 20px; text-align:center; display:flex; flex-direction:column; gap:12px; align-items:center}
+.empty p{margin:0}
+
+.zone-h{font-size:13px; font-weight:500; letter-spacing:.08em; text-transform:uppercase; color:var(--muted); padding:18px 24px 8px}
+.team-grid{display:grid; grid-template-columns:repeat(auto-fill,minmax(250px,1fr)); gap:12px; padding:0 24px 12px}
+.team{border:1px solid var(--line); background:var(--surface); border-radius:16px; padding:14px 16px; cursor:pointer; display:flex; gap:14px; align-items:center; text-align:left; min-width:0}
+.team:hover{background:var(--surface-2)}
+.team .tx{display:flex; flex-direction:column; min-width:0}
+.team .tx b{font-weight:500; font-size:17px}
+.team .tx .nm{font-size:14px; line-height:1.3; color:var(--ink)}
+.team .tx small{color:var(--muted); font-size:13px}
+.av{flex:none; width:44px; height:44px; border-radius:50%; display:grid; place-items:center; color:#fff; font-weight:500; font-size:15px; letter-spacing:.02em}
+.notes{display:flex; flex-direction:column; padding:6px 0 14px}
+.note{border:0; border-top:1px solid var(--line); background:none; padding:14px 24px; text-align:left; cursor:pointer; display:flex; flex-direction:column; gap:2px}
+.note:hover{background:var(--surface-2)}
+.note b{font-weight:500; font-size:17px}
+.note span{color:var(--muted); font-size:15px}
+
+/* detail panel */
+.detail{min-width:0}
+#sheet{background:var(--surface); display:flex; flex-direction:column; min-height:0}
+@media (min-width:1180px){
+  .detail{position:sticky; top:calc(76px + env(safe-area-inset-top,0px)); height:calc(100vh - 92px)}
+  #sheet{height:100%; border-radius:20px; overflow:hidden}
+}
+@media (max-width:1179px){
+  .detail{position:fixed; inset:0; z-index:30; display:none; background:var(--scrim); align-items:flex-end; justify-content:center; padding-left:env(safe-area-inset-left,0px); padding-right:env(safe-area-inset-right,0px)}
+  .detail.open{display:flex}
+  #sheet{width:100%; max-width:660px; max-height:94vh; max-height:94dvh; border-radius:28px 28px 0 0; overflow:hidden}
+}
+@media (min-width:720px) and (max-width:1179px){ .detail{align-items:center; padding:24px} #sheet{border-radius:28px} }
+.ph{flex:1; display:flex; flex-direction:column; align-items:center; justify-content:center; text-align:center; gap:10px; padding:30px; color:var(--muted)}
+.ph .ic{width:64px; height:64px; color:var(--line-strong)}
+.ph h2{font-size:22px; color:var(--ink)}
+.ph p{margin:0; max-width:30ch}
+.sheet-h{padding:20px 24px 14px; display:flex; justify-content:space-between; gap:12px; align-items:flex-start}
+.sheet-h h2{font-size:26px; line-height:1.2; outline:0}
+.sheet-h p{margin:4px 0 0; color:var(--muted); font-size:14px}
+.sheet-b{padding:8px 24px 18px; overflow:auto; flex:1; display:flex; flex-direction:column; gap:22px; min-height:0}
+.sheet-f{padding:14px 24px calc(16px + env(safe-area-inset-bottom,0px)); border-top:1px solid var(--line); display:flex; flex-wrap:wrap; gap:10px; align-items:center}
+.sheet-f .spacer{flex:1}
+.sec{display:flex; flex-direction:column; gap:10px}
+.sec>h3{font-size:14px; font-weight:500; color:var(--muted); letter-spacing:.03em}
+.field{display:flex; flex-direction:column; gap:6px; min-width:0}
+.field>span{font-size:14px; font-weight:500}
+.field small{color:var(--muted); font-weight:400}
+input[type=text],input[type=date],input[type=number],select,textarea{font:inherit; font-size:16px; color:var(--ink); background:var(--surface); border:1px solid var(--line-strong); border-radius:8px; padding:0 14px; min-height:52px; width:100%; min-width:0}
+textarea{padding:12px 14px; resize:vertical; min-height:96px}
+input[type=text]:focus,input[type=date]:focus,input[type=number]:focus,select:focus,textarea:focus{outline:0; border-color:var(--primary); box-shadow:0 0 0 1px var(--primary)}
+.seg{display:flex; border:1px solid var(--line-strong); border-radius:24px; overflow:hidden}
+.seg label{position:relative; flex:1 1 0; display:block; min-width:0}
+.seg label+label span{border-left:1px solid var(--line-strong)}
+.seg input{position:absolute; inset:0; width:100%; height:100%; opacity:0; margin:0; cursor:pointer}
+.seg span{display:flex; align-items:center; justify-content:center; text-align:center; min-height:48px; padding:6px 10px; font-weight:500; font-size:15px; background:var(--surface); gap:6px}
+.seg input:checked+span{background:var(--primary-soft); color:var(--on-soft)}
+.seg input:checked+span::before{content:"\2713"; font-weight:700}
+.seg input:focus-visible+span{outline:3px solid var(--primary); outline-offset:-3px}
+.game{border:1px solid var(--line); border-radius:16px; padding:16px; display:flex; flex-direction:column; gap:14px}
+.game-h{display:flex; justify-content:space-between; align-items:center}
+.game-h b{font-weight:500; font-size:15px}
+.pair{display:grid; grid-template-columns:minmax(0,1fr) auto minmax(0,1fr); gap:10px; align-items:end}
+.pair .dash{font-size:26px; line-height:52px; color:var(--muted)}
+.pair input{font-size:26px; font-weight:500; text-align:center}
+.verdict{margin:0; font-weight:500; color:var(--primary); min-height:1.5em}
+.checkrow{display:flex; gap:12px; align-items:center; cursor:pointer; font-size:15px}
+.checkrow input{width:22px; height:22px; flex:none; accent-color:var(--primary)}
+
+.combo{position:relative}
+.combo>label{font-size:14px; font-weight:500}
+.cb-list{position:absolute; left:0; right:0; top:100%; margin:4px 0 0; z-index:5; background:var(--surface); border:1px solid var(--line); border-radius:12px; box-shadow:0 6px 20px rgba(0,0,0,.2); max-height:290px; overflow:auto; list-style:none; padding:6px 0}
+.cb-list[hidden]{display:none}
+.cb-o{display:grid; grid-template-columns:62px minmax(0,1fr) auto; gap:10px; align-items:center; padding:10px 14px; cursor:pointer}
+.cb-o.v{grid-template-columns:minmax(0,1fr) auto}
+.cb-o.act,.cb-o:hover{background:var(--sel)}
+.cb-o b{font-weight:500}
+.cb-o .nm{font-size:14px; color:var(--muted); overflow:hidden; text-overflow:ellipsis; white-space:nowrap}
+.cb-o .ct{font-size:12px; color:var(--muted); white-space:nowrap}
+.cb-o.add b{color:var(--primary)}
+.cb-none{padding:10px 14px; color:var(--muted); font-size:14px}
+.cb-h{padding:8px 14px 4px; font-size:12px; font-weight:700; letter-spacing:.06em; text-transform:uppercase; color:var(--muted)}
+.lbl2{font-size:14px; font-weight:500}
+.hint2{color:var(--post); font-size:13px}
+.addrow{display:flex; flex-wrap:wrap; gap:10px}
+.err{background:var(--flag); color:var(--flag-ink); border-radius:12px; padding:12px 16px; font-weight:500; font-size:15px}
+.confirm{background:var(--post-bg); color:var(--post); border-radius:12px; padding:12px 16px; width:100%; display:flex; flex-wrap:wrap; gap:10px 14px; align-items:center; font-weight:500}
+details.more{border:1px solid var(--line); border-radius:16px}
+details.more>summary{cursor:pointer; font-weight:500; padding:14px 16px; list-style:none; display:flex; justify-content:space-between; gap:10px; align-items:center; font-size:15px}
+details.more>summary::-webkit-details-marker{display:none}
+details.more>summary::after{content:"Show"; color:var(--primary); font-size:14px}
+details.more[open]>summary::after{content:"Hide"}
+details.more .inner{padding:4px 16px 18px; display:grid; grid-template-columns:repeat(2,minmax(0,1fr)); gap:16px}
+details.more .full{grid-column:1 / -1}
+
+.toast{position:fixed; left:50%; transform:translateX(-50%); bottom:calc(20px + env(safe-area-inset-bottom,0px)); max-width:calc(100% - 32px); background:#303134; color:#fff; padding:14px 20px; border-radius:8px; font-size:15px; z-index:50; box-shadow:0 4px 12px rgba(0,0,0,.3)}
+.toast[hidden]{display:none}
+.navscrim{position:fixed; inset:0; background:var(--scrim); z-index:35}
+.navscrim[hidden]{display:none}
+
+
+/* standings */
+.leaders{display:grid; grid-template-columns:repeat(auto-fit,minmax(200px,1fr)); gap:12px; padding:6px 24px 4px}
+.lead{border:1px solid var(--line); background:var(--surface); border-radius:16px; padding:14px 16px; text-align:left; cursor:pointer; display:flex; flex-direction:column; gap:8px; min-width:0}
+.lead:hover{background:var(--surface-2)}
+.lead[aria-pressed="true"]{border-color:var(--line-strong); background:var(--sel)}
+.lead .lg{font-size:13px; font-weight:500; color:var(--muted); letter-spacing:.03em}
+.lead .lw{display:flex; gap:12px; align-items:center; min-width:0}
+.lead .lw .av{width:40px; height:40px}
+.lead .ln{display:flex; flex-direction:column; min-width:0}
+.lead .ln b{font-size:19px; font-weight:500; line-height:1.2}
+.lead .ln span{font-size:13px; color:var(--muted)}
+.lead .crown{font-size:12px; font-weight:700; letter-spacing:.07em; color:var(--played); background:var(--played-bg); border-radius:6px; padding:2px 8px; align-self:flex-start}
+.lead .none{color:var(--muted); font-size:15px}
+.grp{padding:18px 24px 8px; display:flex; flex-direction:column; gap:18px}
+.grp-h{font-size:22px; line-height:1.25}
+.charts{display:grid; grid-template-columns:repeat(2,minmax(0,1fr)); gap:16px}
+.chart{border:1px solid var(--line); border-radius:16px; padding:16px; min-width:0}
+.chart h3{font-size:16px; font-weight:500; margin-bottom:2px}
+.chart p{margin:0 0 12px; font-size:13px; color:var(--muted)}
+.bars{display:flex; flex-direction:column; gap:6px}
+.brow{display:grid; grid-template-columns:64px minmax(0,1fr) 44px; gap:10px; align-items:center; border-radius:6px; padding:2px 4px; outline-offset:1px}
+.brow:hover,.brow:focus-visible{background:var(--surface-2)}
+.brow .bl{font-size:14px; font-weight:500; white-space:nowrap; overflow:hidden; text-overflow:ellipsis}
+.brow .bv{font-size:14px; font-variant-numeric:tabular-nums; text-align:right; color:var(--ink)}
+.track{position:relative; height:22px; background:var(--track); border-radius:4px}
+.fill{position:absolute; top:3px; bottom:3px; background:var(--bar); border-radius:0 4px 4px 0; left:0}
+.fill.neg{background:var(--neg); border-radius:4px 0 0 4px; left:auto}
+.mid{position:absolute; top:0; bottom:0; left:50%; width:1px; background:var(--line-strong)}
+.scale{display:flex; justify-content:space-between; font-size:12px; color:var(--muted); margin:6px 54px 0 74px; font-variant-numeric:tabular-nums}
+.tbl-wrap{overflow-x:auto; border:1px solid var(--line); border-radius:16px}
+.tbl{border-collapse:collapse; width:100%; min-width:560px; font-size:15px}
+.tbl th{font-size:12px; font-weight:700; letter-spacing:.06em; text-transform:uppercase; color:var(--muted); text-align:right; padding:10px 12px; background:var(--surface-2); white-space:nowrap}
+.tbl th:nth-child(-n+2){text-align:left}
+.tbl td{padding:10px 12px; border-top:1px solid var(--line); text-align:right; font-variant-numeric:tabular-nums}
+.tbl td:nth-child(-n+2){text-align:left}
+.tbl td.pos{width:44px; color:var(--muted); font-weight:500}
+.tbl tr.top td{background:var(--played-bg)}
+.tbl tr.top td.pos{color:var(--played)}
+.tbl .tn{display:flex; align-items:center; gap:10px; min-width:0}
+.tbl .tn .av{width:30px; height:30px; font-size:11px}
+.tbl .tn span{display:flex; flex-direction:column; min-width:0}
+.tbl .tn small{font-size:12px; color:var(--muted); white-space:nowrap; overflow:hidden; text-overflow:ellipsis; max-width:260px}
+.tbl td.gd{font-weight:500}
+.res{display:flex; flex-direction:column; border:1px solid var(--line); border-radius:16px; overflow:hidden}
+.res h3{font-size:16px; font-weight:500; padding:12px 16px; background:var(--surface-2)}
+.rline{display:grid; grid-template-columns:110px minmax(0,1fr) auto minmax(0,1fr); gap:12px; align-items:center; padding:10px 16px; border:0; border-top:1px solid var(--line); background:none; text-align:left; cursor:pointer; width:100%; font-size:15px}
+.rline:hover{background:var(--surface-2)}
+.rline .rd{color:var(--muted); font-size:14px}
+.rline .rt{min-width:0; overflow:hidden; text-overflow:ellipsis; white-space:nowrap}
+.rline .rt.tr{text-align:right}
+.rline .rt.tl{text-align:left}
+.rline b{font-weight:700}
+.rline .rs{font-variant-numeric:tabular-nums; font-weight:500; background:var(--surface-2); border-radius:8px; padding:3px 10px; white-space:nowrap}
+.fine{margin:0; font-size:13px; color:var(--muted); padding:4px 24px 22px; max-width:90ch}
+.ctip{position:fixed; z-index:60; pointer-events:none; background:#303134; color:#fff; font-size:13px; line-height:1.4; padding:8px 12px; border-radius:8px; max-width:240px; box-shadow:0 4px 12px rgba(0,0,0,.3)}
+.ctip[hidden]{display:none}
+@media (max-width:899px){
+  .leaders,.grp{padding-left:16px; padding-right:16px}
+  .fine{padding-left:16px; padding-right:16px}
+  .charts{grid-template-columns:minmax(0,1fr)}
+  .rline{grid-template-columns:minmax(0,1fr) auto minmax(0,1fr); padding:10px 12px}
+  .rline .rd{grid-column:1 / -1}
+}
+
+/* matches: compact day boxes */
+.dboxes{display:flex; flex-direction:column; gap:22px; padding:10px 24px 30px}
+.dbox{border:1px solid var(--line); border-radius:16px; overflow:hidden; background:var(--surface)}
+.dbox-h{display:flex; flex-wrap:wrap; align-items:center; gap:6px 12px; padding:14px 20px; background:var(--surface-2)}
+.dbox-h b{font-size:17px; font-weight:500}
+.dbox-h span{font-size:14px; color:var(--muted)}
+.dbox-h .tag{color:var(--primary-ink)}
+.mline{display:grid; grid-template-columns:92px minmax(0,1fr) auto minmax(0,1fr) 18px; gap:8px 14px; align-items:center; width:100%; padding:13px 20px; border:0; border-top:1px solid var(--line); background:none; text-align:left; cursor:pointer; font-size:16px}
+.mline:hover{background:var(--surface-2)}
+.mline.sel{background:var(--sel)}
+.ml-time{font-size:14px; color:var(--muted); line-height:1.3}
+.ml-t{min-width:0; overflow:hidden; text-overflow:ellipsis; white-space:nowrap}
+.ml-t.tr{text-align:right}
+.ml-t b{font-weight:700}
+.ml-sc{display:flex; flex-direction:column; gap:4px; align-items:center}
+.pill{display:inline-flex; align-items:center; gap:8px; font-variant-numeric:tabular-nums; font-weight:500; background:var(--surface-2); border-radius:8px; padding:4px 12px; white-space:nowrap; min-width:76px; justify-content:center}
+.mline:hover .pill{background:var(--bg)}
+.pill i{font-style:normal; font-size:11px; font-weight:700; letter-spacing:.06em; color:var(--muted)}
+.pill.vs{color:var(--muted); font-weight:400}
+.ml-meta{grid-column:2 / 5; display:flex; flex-wrap:wrap; gap:4px 10px; align-items:center; justify-content:center; min-width:0; font-size:13px; color:var(--muted); text-align:center}
+.ml-time,.ml-go{grid-row:1}
+.ml-go{grid-column:5}
+.ml-meta .mt{min-width:0; overflow:hidden; text-overflow:ellipsis; white-space:nowrap; max-width:100%}
+.ml-go{color:var(--muted); font-size:20px; line-height:1}
+@media (max-width:899px){
+  .dboxes{padding-left:12px; padding-right:12px; gap:18px}
+  .dbox-h{padding:12px 14px}
+  .mline{grid-template-columns:minmax(0,1fr) auto minmax(0,1fr); gap:8px 10px; padding:12px 14px}
+  .ml-time{grid-column:1 / -1}
+  .ml-meta{grid-column:1 / -1; justify-content:flex-start; text-align:left}
+  .ml-go{display:none}
+}
+
+/* colour accents */
+.dbox-h{background:var(--primary-soft); border-bottom:1px solid var(--line)}
+.dbox-h b{color:var(--on-soft)}
+.dbox-h span{color:var(--on-soft); opacity:.8}
+.dbox .mline:first-of-type{border-top:0}
+.ml-t{display:flex; align-items:center; gap:10px}
+.ml-t.tr{justify-content:flex-end}
+.ml-t .av{width:28px; height:28px; font-size:11px}
+.ml-t .nm{min-width:0; overflow:hidden; text-overflow:ellipsis; white-space:nowrap}
+.pill.played{background:var(--primary-soft); color:var(--on-soft)}
+.mline:hover .pill.played{background:var(--primary-soft)}
+.pill i{border-radius:5px; padding:1px 6px; font-size:10.5px}
+.pill i.l-JNR{background:var(--jnr-bg); color:var(--jnr)}
+.pill i.l-SNR{background:var(--snr-bg); color:var(--snr)}
+.zc{font-size:12px; font-weight:500; border-radius:6px; padding:2px 8px; white-space:nowrap}
+.zc.EAST{background:var(--east-bg); color:var(--east)}
+.zc.WEST{background:var(--west-bg); color:var(--west)}
+.lv{font-size:12px; font-weight:500; border-radius:6px; padding:2px 8px; white-space:nowrap}
+.lv.JNR{background:var(--jnr-bg); color:var(--jnr)}
+.lv.SNR{background:var(--snr-bg); color:var(--snr)}
+.lv.BOTH{background:linear-gradient(90deg,var(--jnr-bg) 50%,var(--snr-bg) 50%); color:var(--ink)}
+.legend{display:flex; flex-wrap:wrap; gap:8px 14px; align-items:center; padding:0 24px 4px; font-size:13px; color:var(--muted)}
+.lead .lg{display:flex; gap:6px; flex-wrap:wrap; align-items:center}
+.grp-h{display:flex; flex-wrap:wrap; gap:8px; align-items:center}
+@media (max-width:899px){ .legend{padding-left:16px; padding-right:16px} }
+
+.ml-meta .mu{display:flex; justify-content:center; align-items:center; gap:6px; color:var(--ink); font-size:13px; min-width:0}
+.ml-meta .mu .ic{width:16px; height:16px; color:var(--muted); flex:none}
+.ml-meta .mu span{min-width:0; overflow:hidden; text-overflow:ellipsis; white-space:nowrap}
+.ump-grid{display:grid; grid-template-columns:repeat(auto-fill,minmax(240px,1fr)); gap:12px; padding:6px 24px 24px}
+.ucard{border:1px solid var(--line); background:var(--surface); border-radius:16px; padding:14px 16px; text-align:left; cursor:pointer; display:flex; gap:14px; align-items:center; min-width:0}
+.ucard:hover{background:var(--surface-2)}
+.ucard .tx{display:flex; flex-direction:column; min-width:0}
+.ucard .tx b{font-weight:500; font-size:17px}
+.ucard .tx small{color:var(--muted); font-size:13px}
+.ucard .cnt{margin-left:auto; flex:none; font-size:20px; font-weight:500; font-variant-numeric:tabular-nums; color:var(--primary)}
+@media (max-width:899px){ .ml-meta .mu{justify-content:flex-start} .ump-grid{padding-left:16px; padding-right:16px} }
+
+
+/* full school names on wide screens, codes on phones */
+.abbr{display:none}
+.ml-t .nm,.rline .rt{white-space:normal; overflow:visible; line-height:1.3}
+@media (max-width:899px){
+  .full{display:none}
+  .abbr{display:inline}
+  .ml-t .nm,.rline .rt{white-space:nowrap; overflow:hidden; text-overflow:ellipsis}
+}
+/* phones: bottom navigation and floating add button */
+.bnav{display:none}
+.mfab{display:none}
+@media (max-width:899px){
+  .bnav{display:flex; position:fixed; left:0; right:0; bottom:0; z-index:25; background:var(--surface); border-top:1px solid var(--line); padding:6px max(4px,env(safe-area-inset-right,0px)) calc(8px + env(safe-area-inset-bottom,0px)) max(4px,env(safe-area-inset-left,0px)); justify-content:space-around}
+  .bnav button{flex:1 1 0; display:flex; flex-direction:column; align-items:center; gap:3px; background:none; border:0; padding:4px 2px; font-size:12px; font-weight:500; color:var(--muted); cursor:pointer; min-width:0}
+  .bnav button span{max-width:100%; overflow:hidden; text-overflow:ellipsis; white-space:nowrap}
+  .bnav .ic{width:24px; height:24px; padding:4px 16px; box-sizing:content-box; border-radius:16px}
+  .bnav button[aria-current="page"]{color:var(--ink)}
+  .bnav button[aria-current="page"] .ic{background:var(--primary-soft); color:var(--on-soft)}
+  .mfab{display:inline-flex; position:fixed; margin:0; right:calc(16px + env(safe-area-inset-right,0px)); bottom:calc(86px + env(safe-area-inset-bottom,0px)); z-index:24; box-shadow:0 3px 10px rgba(0,0,0,.25)}
+  .layout{padding-bottom:calc(150px + env(safe-area-inset-bottom,0px))}
+  .toast{bottom:calc(92px + env(safe-area-inset-bottom,0px))}
+  .nav .fab{display:none}
+}
+@media (max-width:600px){
+  .legend{font-size:12px; gap:6px 8px}
+  .phead h2{font-size:24px}
+  .dbox-h{padding:10px 12px}
+  .mline{padding:12px}
+  .ml-t{gap:6px}
+  .pill{min-width:68px; padding:4px 10px}
+  .leaders{grid-template-columns:repeat(2,minmax(0,1fr))}
+  .lead{padding:12px}
+  .lead .ln b{font-size:17px}
+  .chart{padding:12px}
+  .brow{grid-template-columns:52px minmax(0,1fr) 38px; gap:8px}
+  .scale{margin:6px 42px 0 60px}
+  .sheet-h{padding:16px 16px 10px}
+  .sheet-b{padding:6px 16px 16px}
+  .sheet-f{padding-left:16px; padding-right:16px}
+  .sheet-f .btn{flex:1 1 auto}
+  .seg span{font-size:14px; padding:6px 6px}
+}
+@media (max-width:420px){
+  .brand>.ic{display:none}
+  .brand span{font-size:17px; white-space:nowrap; overflow:hidden; text-overflow:ellipsis}
+  .brand{overflow:hidden}
+  .leaders{grid-template-columns:minmax(0,1fr)}
+  .bnav .ic{padding:4px 10px}
+}
+/* medium and small screens: nav becomes a drawer, detail becomes a dialog */
+@media (max-width:899px){
+  .layout{grid-template-columns:minmax(0,1fr)}
+  .icon-btn.menu{display:grid}
+  .bar-in{grid-template-columns:auto minmax(0,1fr) auto; grid-template-areas:"brand brand save" "search search search"; gap:6px 8px}
+  .brand{min-width:0; gap:6px}
+  .brand span{font-size:19px}
+  .brand .ic{width:30px; height:30px}
+  .save-l{display:none}
+  .btn.tonal .ic{display:none}
+  .btn.tonal{padding:0 14px; min-height:40px}
+  .search{max-width:none}
+  .nav{position:fixed; left:0; top:0; bottom:0; width:min(300px,86vw); max-height:none; background:var(--bg); z-index:40; padding:calc(16px + env(safe-area-inset-top,0px)) 12px 20px max(12px,env(safe-area-inset-left,0px)); transform:translateX(-105%); transition:transform .2s ease; box-shadow:0 0 24px rgba(0,0,0,.3)}
+  .nav.open{transform:none}
+  .chips{display:flex}
+  .content{border-radius:16px}
+  .days{padding-left:12px; padding-right:12px; gap:26px}
+  .sb{--w:64px}
+  .sb-team{padding:10px 12px; gap:10px}
+  .sb-team .av{width:32px; height:32px; font-size:12px}
+  .sb-sc{font-size:22px}
+  .m-top,.m-foot{padding-left:12px; padding-right:12px}
+  .phead,.zone-h{padding-left:16px; padding-right:16px}
+  .chips{padding-left:16px; padding-right:16px}
+  .tip{margin-left:16px; margin-right:16px}
+  .team-grid{padding-left:16px; padding-right:16px}
+  .note{padding-left:16px; padding-right:16px}
+  .empty{margin-left:16px; margin-right:16px}
+  details.more .inner{grid-template-columns:minmax(0,1fr)}
+  .sb-name b{font-size:17px}
+  .dtx b{font-size:19px}
+}
+@media (max-width:899px) and (min-width:560px){ .bar-in{grid-template-columns:auto minmax(0,1fr) auto; grid-template-areas:"brand search save"} .brand span{display:none} }
+@media (prefers-reduced-motion:reduce){ .nav{transition:none} }
+</style>
+
+</head>
+<body>
+<div id="app">
+  <header class="topbar"><div class="bar-in">
+    <div class="brand">
+      <button class="icon-btn menu" id="btnMenu" type="button" aria-label="Open the menu"><svg class="ic" viewBox="0 0 24 24" aria-hidden="true"><path d="M3 18h18v-2H3v2zm0-5h18v-2H3v2zm0-7v2h18V6H3z"/></svg></button>
+      <svg class="ic" viewBox="0 0 32 32" aria-hidden="true"><circle cx="16" cy="16" r="13" fill="none" stroke="currentColor" stroke-width="2.5"/><path d="M16 3v26M3 16h26" stroke="currentColor" stroke-width="2" fill="none"/><path d="M6.5 6.5c5 4.5 5 14.5 0 19M25.5 6.5c-5 4.5-5 14.5 0 19" stroke="currentColor" stroke-width="2" fill="none"/></svg><span>Netball Scorebook 2026</span>
+    </div>
+    <label class="search"><span class="sr">Search matches</span><svg class="ic" viewBox="0 0 24 24" aria-hidden="true"><path d="M15.5 14h-.79l-.28-.27A6.471 6.471 0 0 0 16 9.5 6.5 6.5 0 1 0 9.5 16c1.61 0 3.09-.59 4.23-1.57l.27.28v.79l5 4.99L20.49 19l-4.99-5zm-6 0C7.01 14 5 11.99 5 9.5S7.01 5 9.5 5 14 7.01 14 9.5 11.99 14 9.5 14z"/></svg><input id="q" type="search" placeholder="Search a team, school, venue or umpire" autocomplete="off"></label>
+    <div class="save">
+      <span class="save-l">Save a copy</span>
+      <button class="btn tonal" id="btnXlsx" type="button" aria-label="Save as Excel"><svg class="ic" viewBox="0 0 24 24" aria-hidden="true"><path d="M19 9h-4V3H9v6H5l7 7 7-7zM5 18v2h14v-2H5z"/></svg><span class="lbl">Excel</span></button>
+      <button class="btn tonal" id="btnPdf" type="button" aria-label="Save as PDF"><svg class="ic" viewBox="0 0 24 24" aria-hidden="true"><path d="M19 9h-4V3H9v6H5l7 7 7-7zM5 18v2h14v-2H5z"/></svg><span class="lbl">PDF</span></button>
+    </div>
+  </div></header>
+
+  <div class="layout">
+    <nav class="nav" id="nav" aria-label="Menu">
+      <button class="fab" id="addMatch" type="button"><svg class="ic" viewBox="0 0 24 24" aria-hidden="true"><path d="M19 13h-6v6h-2v-6H5v-2h6V5h2v6h6v2z"/></svg>New match</button>
+      <div id="navShow" role="group" aria-label="Which matches to show"></div>
+      <hr>
+      <div id="navPages" role="group" aria-label="Other pages"></div>
+      <hr>
+      <div class="nav-f">
+        <label class="field"><span>Zone</span><select id="fZone"><option value="">Both zones</option><option value="EAST">Eastern</option><option value="WEST">Western</option></select></label>
+        <label class="field"><span>Junior or senior</span><select id="fLevel"><option value="">All</option><option value="JNR">Junior</option><option value="SNR">Senior</option></select></label>
+      </div>
+      <hr>
+      <div class="card">
+        <h3>Key dates</h3>
+        <dl>
+          <dt>Zone matches</dt><dd>12 Oct to 16 Nov</dd>
+          <dt>Postponed</dt><dd>17 to 20 Nov</dd>
+          <dt>Semifinals</dt><dd>Tue 24 Nov</dd>
+          <dt>Finals</dt><dd>Thu 26 Nov</dd>
+        </dl>
+        <p>Semifinals and finals are at Tanteen Hard Court.</p>
+      </div>
+      <div class="changes" id="changes"></div>
+    </nav>
+
+    <main class="content">
+      <section id="panel-matches" aria-labelledby="mTitle">
+        <div class="phead"><div><h2 id="mTitle"></h2><p id="mSub" aria-live="polite"></p></div></div>
+        <div class="chips" id="chips" role="group" aria-label="Which matches to show"></div>
+        <div class="legend" aria-hidden="true"><span class="zc EAST">Eastern zone</span><span class="zc WEST">Western zone</span><span class="lv JNR">Junior</span><span class="lv SNR">Senior</span></div>
+        <div class="tip" id="tips"><span>Tap a match to add its score or change it. When you are finished, use Save a copy at the top.</span><button class="link" id="hideTips" type="button">Got it</button></div>
+        <div id="list"></div>
+      </section>
+      <section id="panel-standings" hidden aria-labelledby="sTitle">
+        <div class="phead"><div><h2 id="sTitle">Standings</h2><p>Who is leading each group, and how every team is doing. Tap a group to see its charts.</p></div></div>
+        <div class="leaders" id="leaders" role="group" aria-label="Groups"></div>
+        <div id="grpView"></div>
+        <p class="fine" id="fine"></p>
+      </section>
+      <section id="panel-umpires" hidden aria-labelledby="uTitle">
+        <div class="phead"><div><h2 id="uTitle">Umpires</h2><p>Every umpire on the fixture list and how many matches they have. Tap a name to see their matches.</p></div></div>
+        <div id="umpList"></div>
+      </section>
+      <section id="panel-teams" hidden aria-labelledby="tTitle">
+        <div class="phead"><div><h2 id="tTitle">Teams</h2><p>Tap a school to change its details or to see its matches.</p></div><button class="btn" type="button" id="addTeam"><svg class="ic" viewBox="0 0 24 24" aria-hidden="true"><path d="M19 13h-6v6h-2v-6H5v-2h6V5h2v6h6v2z"/></svg>Add a team</button></div>
+        <div class="tip" id="tipsTeams"><span>A means a senior team and B means a junior team. A school marked A and B enters both.</span></div>
+        <div id="teamList"></div>
+      </section>
+      <section id="panel-notes" hidden aria-labelledby="nTitle">
+        <div class="phead"><div><h2 id="nTitle">Notes</h2><p>Key dates, rules that are not on the printed sheets, and things still to check.</p></div><button class="btn" type="button" id="addNote"><svg class="ic" viewBox="0 0 24 24" aria-hidden="true"><path d="M19 13h-6v6h-2v-6H5v-2h6V5h2v6h6v2z"/></svg>Add a note</button></div>
+        <div class="notes" id="noteList"></div>
+      </section>
+    </main>
+
+    <nav class="bnav" id="bnav" aria-label="Screens"></nav>
+    <button class="fab mfab" id="mAdd" type="button"><svg class="ic" viewBox="0 0 24 24" aria-hidden="true"><path d="M19 13h-6v6h-2v-6H5v-2h6V5h2v6h6v2z"/></svg>New match</button>
+    <aside class="detail" id="detail" aria-label="Match details"><div id="sheet" role="dialog" aria-labelledby="sheetTitle"></div></aside>
+  </div>
+</div>
+<div class="navscrim" id="navScrim" hidden></div>
+<div class="ctip" id="tip" hidden></div>
+<div class="toast" id="toast" role="status" aria-live="polite" hidden></div>
+
+<script src="https://cdnjs.cloudflare.com/ajax/libs/xlsx/0.18.5/xlsx.full.min.js"></script>
+<script src="https://cdnjs.cloudflare.com/ajax/libs/jspdf/2.5.1/jspdf.umd.min.js"></script>
+<script src="https://cdnjs.cloudflare.com/ajax/libs/jspdf-autotable/3.5.31/jspdf.plugin.autotable.min.js"></script>
+<script>
+(function(){
+'use strict';
+const DATA={"version": 2, "fixtures": [{"k": "f1", "id": 1, "date": "2026-10-12", "time": "2:00 & 3:00", "div": "JNR/SNR", "zone": "EAST", "t1": "GCA", "t2": "WC", "venue": "Victoria Park", "ump": "R. John; S. Collymore", "status": "Result recorded", "note": ""}, {"k": "f2", "id": 2, "date": "2026-10-12", "time": "2:00 PM", "div": "JNR", "zone": "EAST", "t1": "SJCSA", "t2": "WHSS", "venue": "La Sagesse", "ump": "K. Gabriel; K. Murray", "status": "Postponed", "note": ""}, {"k": "f3", "id": 3, "date": "2026-10-12", "time": "2:00 & 3:00", "div": "JNR/SNR", "zone": "EAST", "t1": "AHS", "t2": "SDCSS", "venue": "Tanteen Court 1", "ump": "A. Williams; D. Cameron", "status": "Result recorded", "note": ""}, {"k": "f4", "id": 4, "date": "2026-10-12", "time": "3:00 PM", "div": "SNR", "zone": "EAST", "t1": "JWF", "t2": "SAASS", "venue": "Tanteen Court 2", "ump": "S. Lewis; K. Radix", "status": "Result recorded", "note": ""}, {"k": "f5", "id": 5, "date": "2026-10-12", "time": "2:00 PM", "div": "JNR", "zone": "EAST", "t1": "BC", "t2": "SGI", "venue": "Carriacou BC Hard Court", "ump": "M. Joseph; C. Alexander", "status": "Result recorded", "note": ""}, {"k": "f6", "id": 6, "date": "2026-10-13", "time": "3:00 PM", "div": "SNR", "zone": "WEST", "t1": "HHSS", "t2": "SMSS", "venue": "HHSS Hard Court", "ump": "S. Lewis; K. Jeremiah", "status": "Result recorded", "note": ""}, {"k": "f7", "id": 7, "date": "2026-10-13", "time": "2:00 PM", "div": "JNR", "zone": "WEST", "t1": "SJCSS", "t2": "SRMSS", "venue": "Cuthbert Peter's Park", "ump": "L. McEwen; J. John", "status": "Result recorded", "note": ""}, {"k": "f8", "id": 8, "date": "2026-10-13", "time": "2:00 & 3:00", "div": "JNR/SNR", "zone": "WEST", "t1": "MDC", "t2": "HSS", "venue": "Carriacou", "ump": "R. John; M. Joseph", "status": "Postponed", "note": ""}, {"k": "f9", "id": 9, "date": "2026-10-13", "time": "2:00 PM", "div": "JNR", "zone": "WEST", "t1": "SJCSG", "t2": "WMSS", "venue": "Tanteen Court 1", "ump": "K. Gabriel; J. Calliste", "status": "Result recorded", "note": ""}, {"k": "f10", "id": 10, "date": "2026-10-13", "time": "2:00 & 3:00", "div": "JNR/SNR", "zone": "WEST", "t1": "GSDAC", "t2": "BSS", "venue": "River Sallee", "ump": "L. Cato; M. Cato", "status": "Result recorded", "note": ""}, {"k": "f11", "id": 11, "date": "2026-10-15", "time": "2:00 & 3:00", "div": "JNR/SNR", "zone": "EAST", "t1": "GCA", "t2": "GSS", "venue": "Victoria Park", "ump": "R. John; S. Collymore", "status": "Postponed", "note": ""}, {"k": "f12", "id": 12, "date": "2026-10-15", "time": "2:00 & 3:00", "div": "JNR/SNR", "zone": "EAST", "t1": "AHS", "t2": "WC", "venue": "Wesley College Hard Court", "ump": "A. Williams; J. Calliste", "status": "Postponed", "note": ""}, {"k": "f13", "id": 13, "date": "2026-10-15", "time": "2:00 PM", "div": "JNR", "zone": "EAST", "t1": "BC", "t2": "WHSS", "venue": "Carriacou BC Hard Court", "ump": "M. Joseph; S. Lewis", "status": "Result recorded", "note": ""}, {"k": "f14", "id": 14, "date": "2026-10-15", "time": "3:00 PM", "div": "SNR", "zone": "EAST", "t1": "JWF", "t2": "SDCSS", "venue": "Tanteen Court 1", "ump": "D. Cameron; K. Radix", "status": "Result recorded", "note": ""}, {"k": "f15", "id": 15, "date": "2026-10-15", "time": "2:00 & 3:00", "div": "JNR/SNR", "zone": "EAST", "t1": "SAASS", "t2": "SGI", "venue": "Tanteen Court 2", "ump": "K. Jeremiah; A. Nixon", "status": "Postponed", "note": ""}, {"k": "f16", "id": 16, "date": "2026-10-16", "time": "2:00 & 3:00", "div": "JNR/SNR", "zone": "WEST", "t1": "HHSS", "t2": "SRMSS", "venue": "HHSS Hard Court", "ump": "J. John; S. Lewis", "status": "Result recorded", "note": ""}, {"k": "f17", "id": 17, "date": "2026-10-16", "time": "2:00 PM", "div": "JNR", "zone": "WEST", "t1": "HSS", "t2": "SJCSS", "venue": "Cuthbert Peter's Park", "ump": "L. McEwen; K. Jeremiah", "status": "Postponed", "note": ""}, {"k": "f18", "id": 18, "date": "2026-10-16", "time": "2:00 PM", "div": "JNR", "zone": "WEST", "t1": "MDC", "t2": "WMSS", "venue": "MDC School Ground", "ump": "L. Cato; A. Williams", "status": "Result recorded", "note": ""}, {"k": "f19", "id": 19, "date": "2026-10-16", "time": "2:00 & 3:00", "div": "JNR/SNR", "zone": "WEST", "t1": "SJCSG", "t2": "BSS", "venue": "Tanteen Court 1", "ump": "J. Calliste; D. Cameron", "status": "Result recorded", "note": ""}, {"k": "f20", "id": 20, "date": "2026-10-16", "time": "3:00 PM", "div": "SNR", "zone": "WEST", "t1": "SMSS", "t2": "GSDAC", "venue": "River Sallee", "ump": "M. Cato; C. Alexander", "status": "Postponed", "note": ""}, {"k": "f21", "id": 21, "date": "2026-10-20", "time": "2:00 & 3:00", "div": "JNR/SNR", "zone": "EAST", "t1": "GSS", "t2": "SJCSA", "venue": "Convent Hard Court", "ump": "R. John; S. Collymore", "status": "Scheduled", "note": ""}, {"k": "f22", "id": 22, "date": "2026-10-20", "time": "2:00 & 3:00", "div": "JNR/SNR", "zone": "EAST", "t1": "GCA", "t2": "AHS", "venue": "Victoria Park", "ump": "L. McEwen; K. Jeremiah", "status": "Scheduled", "note": ""}, {"k": "f23", "id": 23, "date": "2026-10-20", "time": "3:00 PM", "div": "SNR", "zone": "EAST", "t1": "JWF", "t2": "WC", "venue": "Wesley College Hard Court", "ump": "S. Lewis; K. Radix", "status": "Scheduled", "note": "Second team reads like 'WS' in the photo; read as WC because the venue is Wesley College."}, {"k": "f24", "id": 24, "date": "2026-10-20", "time": "2:00 PM", "div": "JNR", "zone": "EAST", "t1": "SAASS", "t2": "WHSS", "venue": "SAASS Hard Court", "ump": "M. Cato; C. Alexander", "status": "Scheduled", "note": ""}, {"k": "f25", "id": 25, "date": "2026-10-20", "time": "2:00 & 3:00", "div": "JNR/SNR", "zone": "EAST", "t1": "SGI", "t2": "SDCSS", "venue": "La Sagesse", "ump": "A. Williams; A. Nixon", "status": "Scheduled", "note": ""}, {"k": "f26", "id": 26, "date": "2026-10-27", "time": "2:00 & 3:00", "div": "JNR/SNR", "zone": "WEST", "t1": "HHSS", "t2": "HSS", "venue": "Carriacou", "ump": "M. Joseph; K. Jeremiah", "status": "Scheduled", "note": ""}, {"k": "f27", "id": 27, "date": "2026-10-27", "time": "2:00 PM", "div": "JNR", "zone": "WEST", "t1": "SJCSS", "t2": "WMSS", "venue": "Cuthbert Peter's Park", "ump": "A. Williams; S. Lewis", "status": "Scheduled", "note": ""}, {"k": "f28", "id": 28, "date": "2026-10-27", "time": "2:00 & 3:00", "div": "JNR/SNR", "zone": "WEST", "t1": "MDC", "t2": "BSS", "venue": "MDC Hard Court", "ump": "C. Alexander; M. Cato", "status": "Scheduled", "note": ""}, {"k": "f29", "id": 29, "date": "2026-10-27", "time": "2:00 & 3:00", "div": "JNR/SNR", "zone": "WEST", "t1": "SJCSG", "t2": "GSDAC", "venue": "River Sallee", "ump": "A. Nixon; K. Phillip", "status": "Scheduled", "note": ""}, {"k": "f30", "id": 30, "date": "2026-10-27", "time": "3:00 PM", "div": "SNR", "zone": "WEST", "t1": "SRMSS", "t2": "SMSS", "venue": "Waltham School Ground", "ump": "L. McEwen; Y. George", "status": "Scheduled", "note": ""}, {"k": "f31", "id": 31, "date": "2026-10-28", "time": "2:00 & 3:00", "div": "JNR/SNR", "zone": "EAST", "t1": "GSS", "t2": "AHS", "venue": "Victoria Park", "ump": "A. Nixon; S. Collymore", "status": "Scheduled", "note": ""}, {"k": "f32", "id": 32, "date": "2026-10-28", "time": "2:00 PM", "div": "JNR", "zone": "EAST", "t1": "SJCSA", "t2": "BC", "venue": "BC Hard Court", "ump": "L. McEwen; M. Joseph", "status": "Scheduled", "note": ""}, {"k": "f33", "id": 33, "date": "2026-10-28", "time": "3:00 PM", "div": "SNR", "zone": "EAST", "t1": "GCA", "t2": "JWF", "venue": "Convent Hard Court", "ump": "R. John; A. Williams", "status": "Scheduled", "note": ""}, {"k": "f34", "id": 34, "date": "2026-10-28", "time": "2:00 & 3:00", "div": "JNR/SNR", "zone": "EAST", "t1": "SGI", "t2": "WC", "venue": "Wesley College Hard Court", "ump": "S. Lewis; J. Calliste", "status": "Scheduled", "note": ""}, {"k": "f35", "id": 35, "date": "2026-10-28", "time": "2:00 PM", "div": "JNR", "zone": "EAST", "t1": "SDCSS", "t2": "WHSS", "venue": "La Sagesse", "ump": "K. Gabriel; K. Murray", "status": "Scheduled", "note": ""}, {"k": "f36", "id": 36, "date": "2026-10-29", "time": "2:00 PM", "div": "JNR", "zone": "WEST", "t1": "WMSS", "t2": "HHSS", "venue": "HHSS Hard Court", "ump": "K. Gabriel; J. Calliste", "status": "Scheduled", "note": ""}, {"k": "f37", "id": 37, "date": "2026-10-29", "time": "2:00 PM", "div": "JNR", "zone": "WEST", "t1": "SJCSS", "t2": "BSS", "venue": "Cuthbert Peter's Park", "ump": "M. McEwen; J. John", "status": "Scheduled", "note": "Umpire printed 'M. McEwen' (other pages show 'L. McEwen')."}, {"k": "f38", "id": 38, "date": "2026-10-29", "time": "2:00 & 3:00", "div": "JNR/SNR", "zone": "WEST", "t1": "MDC", "t2": "GSDAC", "venue": "MDC Hard Court", "ump": "L. Cato; M. Cato", "status": "Scheduled", "note": ""}, {"k": "f39", "id": 39, "date": "2026-10-29", "time": "3:00 PM", "div": "SNR", "zone": "WEST", "t1": "SJCSG", "t2": "SMSS", "venue": "Tanteen Court 1", "ump": "A. Williams; K. Radix", "status": "Scheduled", "note": ""}, {"k": "f40", "id": 40, "date": "2026-10-29", "time": "2:00 & 3:00", "div": "JNR/SNR", "zone": "WEST", "t1": "HSS", "t2": "SRMSS", "venue": "Carriacou", "ump": "K. Murray; M. Joseph", "status": "Scheduled", "note": ""}, {"k": "f41", "id": 41, "date": "2026-10-30", "time": "2:00 PM", "div": "JNR", "zone": "EAST", "t1": "GSS", "t2": "BC", "venue": "Carriacou BC Hard Court", "ump": "L. Cato; M. Joseph", "status": "Scheduled", "note": ""}, {"k": "f42", "id": 42, "date": "2026-10-30", "time": "3:00 PM", "div": "SNR", "zone": "EAST", "t1": "AHS", "t2": "JWF", "venue": "Tanteen Court 1", "ump": "K. Radix; D. Cameron", "status": "Scheduled", "note": ""}, {"k": "f43", "id": 43, "date": "2026-10-30", "time": "2:00 & 3:00", "div": "JNR/SNR", "zone": "EAST", "t1": "SJCSA", "t2": "SAASS", "venue": "SAASS Hard Court", "ump": "R. John; S. Collymore", "status": "Scheduled", "note": ""}, {"k": "f44", "id": 44, "date": "2026-10-30", "time": "2:00 & 3:00", "div": "JNR/SNR", "zone": "EAST", "t1": "GCA", "t2": "SGI", "venue": "Victoria Park", "ump": "K. Jeremiah; A. Williams", "status": "Scheduled", "note": ""}, {"k": "f45", "id": 45, "date": "2026-10-30", "time": "2:00 PM", "div": "JNR", "zone": "EAST", "t1": "WHSS", "t2": "WC", "venue": "La Sagesse", "ump": "K. Gabriel; K. Murray", "status": "Scheduled", "note": ""}, {"k": "f46", "id": 46, "date": "2026-11-02", "time": "2:00 & 3:00", "div": "JNR/SNR", "zone": "WEST", "t1": "HHSS", "t2": "BSS", "venue": "Wesley College Hard Court", "ump": "J. John; J. Calliste", "status": "Scheduled", "note": ""}, {"k": "f47", "id": 47, "date": "2026-11-02", "time": "2:00 PM", "div": "JNR", "zone": "WEST", "t1": "SJCSS", "t2": "GSDAC", "venue": "Cuthbert Peter's Park", "ump": "C. Alexander; M. Cato", "status": "Scheduled", "note": ""}, {"k": "f48", "id": 48, "date": "2026-11-02", "time": "2:00 & 3:00", "div": "JNR/SNR", "zone": "WEST", "t1": "MDC", "t2": "SJCSG", "venue": "MDC Hard Court", "ump": "L. Cato; A. Nixon", "status": "Scheduled", "note": ""}, {"k": "f49", "id": 49, "date": "2026-11-02", "time": "2:00 PM", "div": "JNR", "zone": "WEST", "t1": "WMSS", "t2": "SRMSS", "venue": "Tanteen Court 1", "ump": "A. Williams; S. Lewis", "status": "Scheduled", "note": ""}, {"k": "f50", "id": 50, "date": "2026-11-02", "time": "3:00 PM", "div": "SNR", "zone": "WEST", "t1": "HSS", "t2": "SMSS", "venue": "Waltham School Ground", "ump": "Y. George; L. McEwen", "status": "Scheduled", "note": ""}, {"k": "f51", "id": 51, "date": "2026-11-03", "time": "3:00 PM", "div": "SNR", "zone": "EAST", "t1": "GSS", "t2": "JWF", "venue": "Victoria Park", "ump": "S. Lewis; K. Jeremiah", "status": "Scheduled", "note": ""}, {"k": "f52", "id": 52, "date": "2026-11-03", "time": "2:00 PM", "div": "JNR", "zone": "EAST", "t1": "BC", "t2": "SAASS", "venue": "SAASS Hard Court", "ump": "R. John; S. Collymore", "status": "Scheduled", "note": ""}, {"k": "f53", "id": 53, "date": "2026-11-03", "time": "2:00 & 3:00", "div": "JNR/SNR", "zone": "EAST", "t1": "AHS", "t2": "SGI", "venue": "Wesley College Hard Court", "ump": "J. Calliste; A. Williams", "status": "Scheduled", "note": ""}, {"k": "f54", "id": 54, "date": "2026-11-03", "time": "2:00 & 3:00", "div": "JNR/SNR", "zone": "EAST", "t1": "SJCSA", "t2": "SDCSS", "venue": "La Sagesse", "ump": "K. Gabriel; K. Murray", "status": "Scheduled", "note": ""}, {"k": "f55", "id": 55, "date": "2026-11-03", "time": "2:00 PM", "div": "JNR", "zone": "EAST", "t1": "GCA", "t2": "WHSS", "venue": "Tanteen Court 1", "ump": "K. Radix; D. Cameron", "status": "Scheduled", "note": ""}, {"k": "f56", "id": 56, "date": "2026-11-04", "time": "2:00 & 3:00", "div": "JNR/SNR", "zone": "WEST", "t1": "HHSS", "t2": "GSDAC", "venue": "Happy Hill Hard Court", "ump": "L. Cato; J. Calliste", "status": "Scheduled", "note": ""}, {"k": "f57", "id": 57, "date": "2026-11-04", "time": "2:00 PM", "div": "JNR", "zone": "WEST", "t1": "SJCSS", "t2": "SJCSG", "venue": "Tanteen Court 1", "ump": "A. Nixon; K. Radix", "status": "Scheduled", "note": ""}, {"k": "f58", "id": 58, "date": "2026-11-04", "time": "3:00 PM", "div": "SNR", "zone": "WEST", "t1": "MDC", "t2": "SMSS", "venue": "MDC Hard Court", "ump": "M. Cato; C. Alexander", "status": "Scheduled", "note": ""}, {"k": "f59", "id": 59, "date": "2026-11-04", "time": "2:00 & 3:00", "div": "JNR/SNR", "zone": "WEST", "t1": "BSS", "t2": "SRMSS", "venue": "Cuthbert Peter's Park", "ump": "L. McEwen; J. John", "status": "Scheduled", "note": ""}, {"k": "f60", "id": 60, "date": "2026-11-04", "time": "2:00 PM", "div": "JNR", "zone": "WEST", "t1": "WMSS", "t2": "HSS", "venue": "Tanteen Court 2", "ump": "A. Williams; D. Cameron", "status": "Scheduled", "note": ""}, {"k": "f61", "id": 61, "date": "2026-11-05", "time": "2:00 & 3:00", "div": "JNR/SNR", "zone": "EAST", "t1": "GSS", "t2": "SAASS", "venue": "SAASS Hard Court", "ump": "R. John; S. Collymore", "status": "Scheduled", "note": ""}, {"k": "f62", "id": 62, "date": "2026-11-05", "time": "3:00 PM", "div": "SNR", "zone": "EAST", "t1": "JWF", "t2": "SGI", "venue": "Tanteen Court 1", "ump": "K. Radix; D. Cameron", "status": "Scheduled", "note": ""}, {"k": "f63", "id": 63, "date": "2026-11-05", "time": "2:00 PM", "div": "JNR", "zone": "EAST", "t1": "BC", "t2": "SDCSS", "venue": "La Sagesse", "ump": "K. Gabriel; K. Murray", "status": "Scheduled", "note": ""}, {"k": "f64", "id": 64, "date": "2026-11-05", "time": "2:00 PM", "div": "JNR", "zone": "EAST", "t1": "AHS", "t2": "WHSS", "venue": "Tanteen Court 2", "ump": "S. Lewis; K. Jeremiah", "status": "Scheduled", "note": ""}, {"k": "f65", "id": 65, "date": "2026-11-05", "time": "2:00 & 3:00", "div": "JNR/SNR", "zone": "EAST", "t1": "SJCSA", "t2": "WC", "venue": "Wesley College Hard Court", "ump": "A. Williams; J. Calliste", "status": "Scheduled", "note": ""}, {"k": "f66", "id": 66, "date": "2026-11-06", "time": "2:00 & 3:00", "div": "JNR/SNR", "zone": "WEST", "t1": "HHSS", "t2": "SJCSG", "venue": "Happy Hill Hard Court", "ump": "K. Gabriel; K. Phillip", "status": "Scheduled", "note": ""}, {"k": "f67", "id": 67, "date": "2026-11-06", "time": "2:00 PM", "div": "JNR", "zone": "WEST", "t1": "MDC", "t2": "SJCSS", "venue": "Cuthbert Peter's Park", "ump": "L. McEwen; J. John", "status": "Scheduled", "note": ""}, {"k": "f68", "id": 68, "date": "2026-11-06", "time": "2:00 & 3:00", "div": "JNR/SNR", "zone": "WEST", "t1": "GSDAC", "t2": "SRMSS", "venue": "St. John's RC Hard Court", "ump": "M. Cato; L. Cato", "status": "Scheduled", "note": ""}, {"k": "f69", "id": 69, "date": "2026-11-06", "time": "2:00 & 3:00", "div": "JNR/SNR", "zone": "WEST", "t1": "BSS", "t2": "HSS", "venue": "Wesley College Hard Court", "ump": "S. Lewis; J. Calliste", "status": "Scheduled", "note": ""}, {"k": "f70", "id": 70, "date": "2026-11-09", "time": "2:00 & 3:00", "div": "JNR/SNR", "zone": "EAST", "t1": "GSS", "t2": "SGI", "venue": "Victoria Park", "ump": "R. John; S. Collymore", "status": "Scheduled", "note": ""}, {"k": "f71", "id": 71, "date": "2026-11-09", "time": "2:00 & 3:00", "div": "JNR/SNR", "zone": "EAST", "t1": "SAASS", "t2": "SDCSS", "venue": "SAASS Hard Court", "ump": "K. Gabriel; K. Murray", "status": "Scheduled", "note": ""}, {"k": "f72", "id": 72, "date": "2026-11-09", "time": "2:00 PM", "div": "JNR", "zone": "EAST", "t1": "BC", "t2": "WC", "venue": "Wesley College Hard Court", "ump": "K. Jeremiah; K. Williams", "status": "Scheduled", "note": ""}, {"k": "f73", "id": 73, "date": "2026-11-09", "time": "2:00 & 3:00", "div": "JNR/SNR", "zone": "EAST", "t1": "GCA", "t2": "SJCSA", "venue": "Convent Hard Court", "ump": "L. Cato; C. Alexander", "status": "Scheduled", "note": ""}, {"k": "f74", "id": 74, "date": "2026-11-10", "time": "2:00 & 3:00", "div": "JNR/SNR", "zone": "WEST", "t1": "MDC", "t2": "HHSS", "venue": "MDC Hard Court", "ump": "L. Cato; K. Phillip", "status": "Scheduled", "note": ""}, {"k": "f75", "id": 75, "date": "2026-11-10", "time": "2:00 & 3:00", "div": "JNR/SNR", "zone": "WEST", "t1": "SJCSG", "t2": "SRMSS", "venue": "Cuthbert Peter's Park", "ump": "L. McEwen; J. John", "status": "Scheduled", "note": ""}, {"k": "f76", "id": 76, "date": "2026-11-10", "time": "2:00 & 3:00", "div": "JNR/SNR", "zone": "WEST", "t1": "GSDAC", "t2": "HSS", "venue": "Carriacou", "ump": "M. Joseph; M. Cato", "status": "Scheduled", "note": ""}, {"k": "f77", "id": 77, "date": "2026-11-10", "time": "2:00 PM", "div": "JNR", "zone": "WEST", "t1": "BSS", "t2": "WMSS", "venue": "Tanteen Court 1", "ump": "A. Williams; K. Jeremiah", "status": "Scheduled", "note": ""}, {"k": "f78", "id": 78, "date": "2026-11-11", "time": "2:00 & 3:00", "div": "JNR/SNR", "zone": "EAST", "t1": "SAASS", "t2": "WC", "venue": "SAASS Hard Court", "ump": "A. Williams; K. Jeremiah", "status": "Scheduled", "note": ""}, {"k": "f79", "id": 79, "date": "2026-11-11", "time": "2:00 PM", "div": "JNR", "zone": "EAST", "t1": "GCA", "t2": "BC", "venue": "Convent Hard Court", "ump": "R. John; S. Collymore", "status": "Scheduled", "note": ""}, {"k": "f80", "id": 80, "date": "2026-11-11", "time": "2:00 & 3:00", "div": "JNR/SNR", "zone": "EAST", "t1": "SJCSA", "t2": "AHS", "venue": "Tanteen Court 1", "ump": "A. Nixon; D. Cameron", "status": "Scheduled", "note": ""}, {"k": "f81", "id": 81, "date": "2026-11-11", "time": "2:00 & 3:00", "div": "JNR/SNR", "zone": "EAST", "t1": "GSS", "t2": "SDCSS", "venue": "Victoria Park", "ump": "K. Gabriel; K. Murray", "status": "Scheduled", "note": ""}, {"k": "f82", "id": 82, "date": "2026-11-11", "time": "2:00 PM", "div": "JNR", "zone": "EAST", "t1": "SGI", "t2": "WHSS", "venue": "Wesley College Hard Court", "ump": "K. Radix; S. Lewis", "status": "Scheduled", "note": ""}, {"k": "f83", "id": 83, "date": "2026-11-12", "time": "2:00 PM", "div": "JNR", "zone": "WEST", "t1": "HHSS", "t2": "SJCSS", "venue": "Cuthbert Peter's Park", "ump": "K. Phillip; J. John", "status": "Scheduled", "note": ""}, {"k": "f84", "id": 84, "date": "2026-11-12", "time": "2:00 & 3:00", "div": "JNR/SNR", "zone": "WEST", "t1": "MDC", "t2": "SRMSS", "venue": "St. John's RC Hard Court", "ump": "L. McEwen; L. Cato", "status": "Scheduled", "note": ""}, {"k": "f85", "id": 85, "date": "2026-11-12", "time": "2:00 & 3:00", "div": "JNR/SNR", "zone": "WEST", "t1": "SJCSG", "t2": "HSS", "venue": "Tanteen Court 1", "ump": "A. Nixon; S. Lewis", "status": "Scheduled", "note": ""}, {"k": "f86", "id": 86, "date": "2026-11-12", "time": "2:00 PM", "div": "JNR", "zone": "WEST", "t1": "GSDAC", "t2": "WMSS", "venue": "River Sallee", "ump": "A. Williams; C. Alexander", "status": "Scheduled", "note": ""}, {"k": "f87", "id": 87, "date": "2026-11-12", "time": "3:00 PM", "div": "SNR", "zone": "WEST", "t1": "BSS", "t2": "SMSS", "venue": "Waltham School Ground", "ump": "Y. George; K. Jeremiah", "status": "Scheduled", "note": ""}, {"k": "f88", "id": 88, "date": "2026-11-13", "time": "2:00 & 3:00", "div": "JNR/SNR", "zone": "EAST", "t1": "GCA", "t2": "SAASS", "venue": "SAASS Hard Court", "ump": "R. John; S. Collymore", "status": "Scheduled", "note": ""}, {"k": "f89", "id": 89, "date": "2026-11-13", "time": "3:00 PM", "div": "SNR", "zone": "EAST", "t1": "SJCSA", "t2": "JWF", "venue": "Convent Hard Court", "ump": "A. Williams; K. Jeremiah", "status": "Scheduled", "note": ""}, {"k": "f90", "id": 90, "date": "2026-11-13", "time": "2:00 PM", "div": "JNR", "zone": "EAST", "t1": "AHS", "t2": "BC", "venue": "Carriacou BC Hard Court", "ump": "J. John; M. Joseph", "status": "Scheduled", "note": ""}, {"k": "f91", "id": 91, "date": "2026-11-13", "time": "2:00 PM", "div": "JNR", "zone": "EAST", "t1": "GSS", "t2": "WHSS", "venue": "Tanteen Court 1", "ump": "K. Radix; S. Lewis", "status": "Scheduled", "note": ""}, {"k": "f92", "id": 92, "date": "2026-11-13", "time": "2:00 & 3:00", "div": "JNR/SNR", "zone": "EAST", "t1": "SDCSS", "t2": "WC", "venue": "La Sagesse", "ump": "K. Gabriel; K. Murray", "status": "Scheduled", "note": ""}, {"k": "f93", "id": 93, "date": "2026-11-16", "time": "2:00 & 3:00", "div": "JNR/SNR", "zone": "EAST", "t1": "GSS", "t2": "WC", "venue": "Victoria Park", "ump": "A. Nixon; A. Williams", "status": "Scheduled", "note": ""}, {"k": "f94", "id": 94, "date": "2026-11-16", "time": "2:00 & 3:00", "div": "JNR/SNR", "zone": "EAST", "t1": "GCA", "t2": "SDCSS", "venue": "SAASS Hard Court", "ump": "K. Murray; K. Gabriel", "status": "Scheduled", "note": ""}, {"k": "f95", "id": 95, "date": "2026-11-16", "time": "2:00 & 3:00", "div": "JNR/SNR", "zone": "EAST", "t1": "SJCSA", "t2": "SGI", "venue": "Convent Hard Court", "ump": "R. John; S. Collymore", "status": "Scheduled", "note": ""}, {"k": "f96", "id": 96, "date": "2026-11-16", "time": "2:00 & 3:00", "div": "JNR/SNR", "zone": "EAST", "t1": "AHS", "t2": "SAASS", "venue": "Tanteen Court 1", "ump": "K. Radix; J. Calliste", "status": "Scheduled", "note": ""}, {"k": "f97", "id": 97, "date": "2026-11-16", "time": "3:00", "div": "", "zone": "", "t1": "BC", "t2": "JWF", "venue": "Tanteen Court 2", "ump": "L. McQueen; J. John", "status": "Scheduled", "note": "Division and zone are blank in the photo, and BC is a B (junior) team while JWF is an A (senior) team. Confirm this fixture."}], "results": [{"k": "r1", "fid": 1, "div": "JNR/SNR (not marked)", "s1": 10, "s2": 34, "rd": "Clear", "note": "Only one score is written for a two-game match, so it is not marked as junior or senior."}, {"k": "r2", "fid": 3, "div": "JNR", "s1": 45, "s2": 0, "rd": "Clear", "note": "Top score of the two, so junior."}, {"k": "r3", "fid": 3, "div": "SNR", "s1": 87, "s2": 2, "rd": "Clear", "note": "Lower score of the two, so senior."}, {"k": "r4", "fid": 4, "div": "SNR", "s1": 5, "s2": 66, "rd": "Clear", "note": ""}, {"k": "r5", "fid": 5, "div": "JNR", "s1": 47, "s2": 1, "rd": "Clear", "note": "Two scores are written on this junior-only match. Both are kept."}, {"k": "r6", "fid": 5, "div": "JNR", "s1": 36, "s2": 9, "rd": "Clear", "note": "See the other score for this match."}, {"k": "r7", "fid": 6, "div": "SNR", "s1": 79, "s2": 2, "rd": "Clear", "note": ""}, {"k": "r8", "fid": 7, "div": "JNR", "s1": 21, "s2": 2, "rd": "Clear", "note": ""}, {"k": "r9", "fid": 9, "div": "JNR", "s1": 13, "s2": 17, "rd": "Clear", "note": ""}, {"k": "r10", "fid": 10, "div": "JNR", "s1": 3, "s2": 13, "rd": "Clear", "note": "Top score of the two, so junior."}, {"k": "r11", "fid": 10, "div": "SNR", "s1": 8, "s2": 54, "rd": "Clear", "note": "Lower score of the two, so senior."}, {"k": "r12", "fid": 13, "div": "JNR", "s1": 13, "s2": 9, "rd": "Clear", "note": ""}, {"k": "r13", "fid": 14, "div": "SNR", "s1": 9, "s2": 27, "rd": "Clear", "note": ""}, {"k": "r14", "fid": 16, "div": "JNR", "s1": 129, "s2": 0, "rd": "Clear", "note": "SRMSS is written as 'nil'. Top score of the two, so junior."}, {"k": "r15", "fid": 16, "div": "SNR", "s1": 32, "s2": 0, "rd": "Clear", "note": "SRMSS is written as 'nil'. Lower score of the two, so senior."}, {"k": "r16", "fid": 18, "div": "JNR", "s1": 13, "s2": 21, "rd": "Clear", "note": ""}, {"k": "r17", "fid": 19, "div": "JNR", "s1": 30, "s2": 2, "rd": "Clear", "note": "Top score of the two, so junior."}, {"k": "r18", "fid": 19, "div": "SNR", "s1": 21, "s2": 14, "rd": "Clear", "note": "Lower score of the two, so senior."}], "teams": [{"k": "t1", "team": "AHS", "name": "Anglican High School", "zone": "EAST", "dv": "A and B"}, {"k": "t2", "team": "BC", "name": "Bishop’s College", "zone": "EAST", "dv": "B"}, {"k": "t3", "team": "GCA", "name": "Grenada Christian Academy", "zone": "EAST", "dv": "A and B"}, {"k": "t4", "team": "GSS", "name": "Grenville Secondary School", "zone": "EAST", "dv": "A and B"}, {"k": "t5", "team": "JWF", "name": "J. W. Fletcher Catholic Secondary School", "zone": "EAST", "dv": "A"}, {"k": "t6", "team": "WHSS", "name": "Westerhall Secondary School", "zone": "EAST", "dv": "B"}, {"k": "t7", "team": "WC", "name": "Wesley College", "zone": "EAST", "dv": "A and B"}, {"k": "t8", "team": "SDCSS", "name": "St. David’s Catholic Secondary School", "zone": "EAST", "dv": "A and B"}, {"k": "t9", "team": "SJCSA", "name": "St. Joseph’s Convent, St. Andrew", "zone": "EAST", "dv": "A and B"}, {"k": "t10", "team": "SAASS", "name": "St. Andrew’s Anglican Secondary School", "zone": "EAST", "dv": "A and B"}, {"k": "t11", "team": "SGI", "name": "St. George’s Institute", "zone": "EAST", "dv": "A and B"}, {"k": "t12", "team": "SJCSG", "name": "St. Joseph’s Convent, St. George", "zone": "WEST", "dv": "A and B"}, {"k": "t13", "team": "HHSS", "name": "Happy Hill Secondary School", "zone": "WEST", "dv": "A and B"}, {"k": "t14", "team": "HSS", "name": "Hillsborough Secondary School", "zone": "WEST", "dv": "A and B"}, {"k": "t15", "team": "BSS", "name": "Boca Secondary School", "zone": "WEST", "dv": "A and B"}, {"k": "t16", "team": "SRMSS", "name": "St. Rose Modern Secondary School", "zone": "WEST", "dv": "A and B"}, {"k": "t17", "team": "MDC", "name": "Mac Donald College", "zone": "WEST", "dv": "A and B"}, {"k": "t18", "team": "GSDAC", "name": "Grenada Seventh-day Adventist Comprehensive School", "zone": "WEST", "dv": "A and B"}, {"k": "t19", "team": "WMSS", "name": "Westmorland Secondary School", "zone": "WEST", "dv": "B"}, {"k": "t20", "team": "SMSS", "name": "St. Mark’s Secondary School", "zone": "WEST", "dv": "A"}, {"k": "t21", "team": "SJCSS", "name": "St. John’s Christian Secondary School", "zone": "WEST", "dv": "B"}], "notes": [{"k": "n1", "topic": "Tournament", "detail": "2026 D Sports Shop Inter-Secondary Schools Netball Tournament"}, {"k": "n2", "topic": "Zone fixtures", "detail": "Monday 12 October to Monday 16 November 2026 (Eastern and Western zones, junior and senior)"}, {"k": "n3", "topic": "Postponed matches", "detail": "To be played if necessary Tuesday 17 to Friday 20 November"}, {"k": "n4", "topic": "Semifinals", "detail": "Tuesday 24 November, Tanteen Hard Court"}, {"k": "n5", "topic": "Finals", "detail": "Thursday 26 November, Tanteen Hard Court"}, {"k": "n6", "topic": "Not stated", "detail": "Points system, tiebreak rules, how many teams qualify and semifinal pairings are not on the sheets, so no standings are calculated here."}, {"k": "n7", "topic": "Handwritten digits", "detail": "Small handwritten digits (0, 1, 2) appear under some team names on the first two pages. Their meaning is not explained and they are not recorded in this workbook."}, {"k": "n8", "topic": "Confirmed: A and B", "detail": "A means senior and B means junior. A school marked A and B enters both teams."}, {"k": "n9", "topic": "Confirmed: two scores", "detail": "Where a match is junior and senior, the top score is the junior game and the lower score is the senior game."}, {"k": "n10", "topic": "Confirmed: scores", "detail": "All the scores on the printed sheets have been checked and are correct."}, {"k": "n11", "topic": "To confirm: GCA v WC", "detail": "Only one score is written for this two-game match (10 to 34). Confirm whether it is junior or senior, and whether the other game was played."}, {"k": "n12", "topic": "To confirm: fixture 97", "detail": "Monday 16 November, BC v JWF, has no division or zone. BC enters a junior team only and JWF a senior team only, so please confirm this match."}, {"k": "n13", "topic": "To confirm: fixture 23", "detail": "The second team reads like 'WS' in the photo and is entered as WC, because the match is at Wesley College."}, {"k": "n14", "topic": "To confirm: BC v SGI", "detail": "Two scores are written on this junior-only match (47 to 1 and 36 to 9). Both are kept. Confirm which one counts."}]};
+const TABS=['fixtures','results','teams','notes'];
+const STORE='netball-scorebook-2026', TIPS='netball-scorebook-tips-hidden';
+const $=(s,r)=>(r||document).querySelector(s);
+const $$=(s,r)=>Array.from((r||document).querySelectorAll(s));
+const clone=o=>JSON.parse(JSON.stringify(o));
+const esc=s=>String(s==null?'':s).replace(/[&<>"]/g,c=>({'&':'&amp;','<':'&lt;','>':'&gt;','"':'&quot;'}[c]));
+const ICON={
+  today:'<svg class="ic" viewBox="0 0 24 24" aria-hidden="true"><path d="M20 3h-1V1h-2v2H7V1H5v2H4c-1.1 0-2 .9-2 2v16c0 1.1.9 2 2 2h16c1.1 0 2-.9 2-2V5c0-1.1-.9-2-2-2zm0 18H4V8h16v13z"/></svg>',
+  upcoming:'<svg class="ic" viewBox="0 0 24 24" aria-hidden="true"><path d="M17 12h-5v5h5v-5zM16 1v2H8V1H6v2H5c-1.11 0-1.99.9-1.99 2L3 19c0 1.1.89 2 2 2h14c1.1 0 2-.9 2-2V5c0-1.1-.9-2-2-2h-1V1h-2zm3 18H5V8h14v11z"/></svg>',
+  played:'<svg class="ic" viewBox="0 0 24 24" aria-hidden="true"><path d="M12 2C6.48 2 2 6.48 2 12s4.48 10 10 10 10-4.48 10-10S17.52 2 12 2zm-2 15l-5-5 1.41-1.41L10 14.17l7.59-7.59L19 8l-9 9z"/></svg>',
+  postponed:'<svg class="ic" viewBox="0 0 24 24" aria-hidden="true"><path d="M11.99 2C6.47 2 2 6.48 2 12s4.47 10 9.99 10C17.52 22 22 17.52 22 12S17.52 2 11.99 2zM12 20c-4.42 0-8-3.58-8-8s3.58-8 8-8 8 3.58 8 8-3.58 8-8 8zm.5-13H11v6l5.25 3.15.75-1.23-4.5-2.67z"/></svg>',
+  check:'<svg class="ic" viewBox="0 0 24 24" aria-hidden="true"><path d="M14.4 6L14 4H5v17h2v-7h5.6l.4 2h7V6z"/></svg>',
+  all:'<svg class="ic" viewBox="0 0 24 24" aria-hidden="true"><path d="M3 13h2v-2H3v2zm0 4h2v-2H3v2zm0-8h2V7H3v2zm4 4h14v-2H7v2zm0 4h14v-2H7v2zM7 7v2h14V7H7z"/></svg>',
+  teams:'<svg class="ic" viewBox="0 0 24 24" aria-hidden="true"><path d="M12 12.75c1.63 0 3.07.39 4.24.9 1.08.48 1.76 1.56 1.76 2.73V18H6v-1.61c0-1.18.68-2.26 1.76-2.73 1.17-.52 2.61-.91 4.24-.91zM4 13c1.1 0 2-.9 2-2s-.9-2-2-2-2 .9-2 2 .9 2 2 2zm1.13 1.1c-.37-.06-.74-.1-1.13-.1-.99 0-1.93.21-2.78.58C.48 14.9 0 15.62 0 16.43V18h4.5v-1.61c0-.83.23-1.61.63-2.29zM20 13c1.1 0 2-.9 2-2s-.9-2-2-2-2 .9-2 2 .9 2 2 2zm4 3.43c0-.81-.48-1.53-1.22-1.85-.85-.37-1.79-.58-2.78-.58-.39 0-.76.04-1.13.1.4.68.63 1.46.63 2.29V18H24v-1.57zM12 6c1.66 0 3 1.34 3 3s-1.34 3-3 3-3-1.34-3-3 1.34-3 3-3z"/></svg>',
+  standings:'<svg class="ic" viewBox="0 0 24 24" aria-hidden="true"><path d="M5 9.2h3V19H5zM10.6 5h2.8v14h-2.8zm5.6 8H19v6h-2.8z"/></svg>',
+  ump:'<svg class="ic" viewBox="0 0 24 24" aria-hidden="true"><path d="M12 12c2.21 0 4-1.79 4-4s-1.79-4-4-4-4 1.79-4 4 1.79 4 4 4zm0 2c-2.67 0-8 1.34-8 4v2h16v-2c0-2.66-5.33-4-8-4z"/></svg>',
+  notes:'<svg class="ic" viewBox="0 0 24 24" aria-hidden="true"><path d="M14 2H6c-1.1 0-1.99.9-1.99 2L4 20c0 1.1.89 2 1.99 2H18c1.1 0 2-.9 2-2V8l-6-6zm2 16H8v-2h8v2zm0-4H8v-2h8v2zm-3-5V3.5L18.5 9H13z"/></svg>',
+  pick:'<svg class="ic" viewBox="0 0 24 24" aria-hidden="true"><path d="M20 3h-1V1h-2v2H7V1H5v2H4c-1.1 0-2 .9-2 2v16c0 1.1.9 2 2 2h16c1.1 0 2-.9 2-2V5c0-1.1-.9-2-2-2zm0 18H4V8h16v13zM9 17l-3-3 1.4-1.4L9 14.2l5.6-5.6L16 10l-7 7z"/></svg>'
+};
+const IC_CLOSE='<svg class="ic" viewBox="0 0 24 24" aria-hidden="true"><path d="M19 6.41L17.59 5 12 10.59 6.41 5 5 6.41 10.59 12 5 17.59 6.41 19 12 13.41 17.59 19 19 17.59 13.41 12z"/></svg>';
+
+let S=null, restored=false;
+try{
+  const raw=localStorage.getItem(STORE);
+  if(raw){const p=JSON.parse(raw); if(p&&TABS.every(t=>Array.isArray(p[t]))){S=p; restored=true;}}
+}catch(e){}
+if(!S){S=clone(DATA);}
+if(!S.counter)S.counter=1000;
+let migrated=false;
+if((S.version||1)<(DATA.version||1)){
+  DATA.results.forEach(d=>{const r=S.results.find(x=>x.k===d.k); if(r){r.div=d.div; r.rd=d.rd; r.note=d.note;}});
+  DATA.notes.forEach(d=>{const n=S.notes.find(x=>x.k===d.k); if(n){n.topic=d.topic; n.detail=d.detail;} else S.notes.push(clone(d));});
+  S.version=DATA.version; migrated=true;
+}
+const origMap={};
+TABS.forEach(t=>{origMap[t]=new Map(DATA[t].map(r=>[r.k,r]));});
+S.teams.forEach(t=>{if(t.name===undefined){const o=origMap.teams.get(t.k); t.name=o?o.name:'';}});
+const FIELDS={
+  fixtures:['date','time','div','zone','t1','t2','venue','ump','status','note'],
+  results:['fid','div','s1','s2','rd','note'],
+  teams:['team','name','zone','dv'],
+  notes:['topic','detail']
+};
+
+/* ---------- words and helpers ---------- */
+const STATUS_LBL={'Scheduled':'To be played','Postponed':'Postponed','Result recorded':'Played'};
+const STATUS_CLS={'Scheduled':'st-todo','Postponed':'st-post','Result recorded':'st-played'};
+const LEVEL_LBL={'JNR':'Junior','SNR':'Senior','JNR/SNR':'Junior and senior (2 games)','':'Not marked'};
+const ZONE_LBL={'EAST':'Eastern zone','WEST':'Western zone','':'Zone not marked'};
+const GAME_LBL={'JNR':'Junior game','SNR':'Senior game','JNR/SNR (not marked)':'Not marked on the sheet','':'Not marked on the sheet'};
+const TEAMLEVEL={'A':'Senior team only','B':'Junior team only','A and B':'Junior and senior teams'};
+const LEVEL={'A':'Senior only','B':'Junior only','A and B':'Junior and senior'};
+const AV=['#1A73E8','#188038','#B06000','#8430CE','#C5221F','#0B7A8A'];
+function avatar(){return '';}
+function parseISO(iso){ if(!iso)return null; const p=String(iso).split('-').map(Number); if(p.length!==3||p.some(isNaN))return null; return new Date(p[0],p[1]-1,p[2]); }
+function dayName(iso){const d=parseISO(iso); return d?d.toLocaleDateString('en-GB',{weekday:'long'}):'-';}
+function shortDate(iso){const d=parseISO(iso); return d?d.toLocaleDateString('en-GB',{day:'numeric',month:'short'}):'-';}
+function dateLabel(iso){const d=parseISO(iso); return d?d.toLocaleDateString('en-GB',{weekday:'long',day:'numeric',month:'long'}):'No date yet';}
+function todayISO(){const d=new Date(); return d.getFullYear()+'-'+String(d.getMonth()+1).padStart(2,'0')+'-'+String(d.getDate()).padStart(2,'0');}
+function timeLabel(t){t=String(t||'').trim(); if(!t)return 'Time not set'; return /pm|am/i.test(t)?t:t+' PM';}
+const num=v=>(v===''||v==null||isNaN(Number(v)))?null:Number(v);
+const norm=s=>String(s==null?'':s).trim().toUpperCase();
+function schoolName(code){const n=norm(code); const t=S.teams.find(x=>norm(x.team)===n); return t&&t.name?t.name:'';}
+function fxMap(){return new Map(S.fixtures.map(f=>[String(f.id),f]));}
+function gamesOf(f){return S.results.filter(r=>String(r.fid)===String(f.id));}
+function resultInfo(r,fx){
+  const f=fx.get(String(r.fid)); const a=num(r.s1), b=num(r.s2);
+  let winner='-', margin='-';
+  if(a!==null&&b!==null){margin=Math.abs(a-b); winner=a>b?(f?f.t1:'Team 1'):(b>a?(f?f.t2:'Team 2'):'Draw');}
+  return {date:f?f.date:'', zone:f?f.zone:'', t1:f?f.t1:'', t2:f?f.t2:'', winner:winner, margin:margin};
+}
+function teamInfo(t,fx){
+  const n=norm(t.team); let fc=0,pc=0,sc=0;
+  S.fixtures.forEach(f=>{const hit=(norm(f.t1)===n?1:0)+(norm(f.t2)===n?1:0); if(n&&hit){fc+=hit; if(f.status==='Postponed')pc+=hit;}});
+  S.results.forEach(r=>{const f=fx.get(String(r.fid)); if(n&&f){sc+=(norm(f.t1)===n?1:0)+(norm(f.t2)===n?1:0);}});
+  return {level:LEVEL[t.dv]||'-', fc:fc, pc:pc, sc:sc};
+}
+function resultsSorted(){return S.results.slice().sort((a,b)=>(Number(a.fid)||0)-(Number(b.fid)||0));}
+const mqWide=window.matchMedia('(min-width:1180px)');
+const isWide=()=>mqWide.matches;
+
+/* ---------- saving, counting changes ---------- */
+function editCount(){
+  let n=0;
+  TABS.forEach(tab=>{
+    const om=origMap[tab]; const seen=new Set();
+    S[tab].forEach(row=>{
+      seen.add(row.k); const o=om.get(row.k);
+      if(!o){n++;return;}
+      FIELDS[tab].forEach(f=>{if(String(o[f]==null?'':o[f])!==String(row[f]==null?'':row[f]))n++;});
+    });
+    om.forEach((_,k)=>{if(!seen.has(k))n++;});
+  });
+  return n;
+}
+let saveTimer=null;
+function scheduleSave(){
+  clearTimeout(saveTimer);
+  saveTimer=setTimeout(()=>{try{localStorage.setItem(STORE,JSON.stringify(S));}catch(e){}},200);
+}
+let toastTimer=null;
+function toast(msg){
+  const t=$('#toast'); t.textContent=msg; t.hidden=false;
+  clearTimeout(toastTimer); toastTimer=setTimeout(()=>{t.hidden=true;},4500);
+}
+let armTimer=null;
+function updateChanges(){
+  const n=editCount(); const el=$('#changes');
+  if(!n){el.innerHTML='<span>No changes yet.</span>';return;}
+  el.innerHTML='<span>You have made '+n+' change'+(n===1?'':'s')+', kept in this browser.</span><button class="link danger" type="button" id="btnReset">Undo all my changes</button>';
+}
+function refreshAll(){renderMatches();renderStandings();renderTeams();renderUmpires();renderNotes();updateChanges();scheduleSave();}
+
+/* ---------- matches list ---------- */
+const V={tab:'matches',show:null,q:'',zone:'',level:''};
+let COUNTS={};
+function baseOk(f){
+  if(V.zone&&f.zone!==V.zone)return false;
+  if(V.level&&String(f.div).indexOf(V.level)<0)return false;
+  const q=V.q.trim().toLowerCase();
+  if(q){const hay=[f.t1,f.t2,schoolName(f.t1),schoolName(f.t2),f.venue,f.ump,f.note,dateLabel(f.date)].join(' ').toLowerCase(); if(hay.indexOf(q)<0)return false;}
+  return true;
+}
+const SHOW=[
+  {id:'all',label:'Everything'},
+  {id:'today',label:'Today'},
+  {id:'upcoming',label:'Coming up'},
+  {id:'played',label:'Played'},
+  {id:'postponed',label:'Postponed'}
+];
+function showOk(id,f,today){
+  switch(id){
+    case 'today': return f.date===today;
+    case 'upcoming': return f.status==='Scheduled'&&f.date&&f.date>=today;
+    case 'played': return f.status==='Result recorded';
+    case 'postponed': return f.status==='Postponed';
+    default: return true;
+  }
+}
+function sortedFixtures(list){
+  return list.slice().sort((a,b)=>{const da=a.date||'9999-99-99', db=b.date||'9999-99-99'; return da<db?-1:da>db?1:(Number(a.id)-Number(b.id));});
+}
+const selKey=()=>(SH&&SH.type==='match')?SH.draft.fx.k:null;
+const MONTHS=['JAN','FEB','MAR','APR','MAY','JUN','JUL','AUG','SEP','OCT','NOV','DEC'];
+function gameLabel(f,g){
+  if(f.div==='JNR')return 'Junior';
+  if(f.div==='SNR')return 'Senior';
+  if(g&&g.div==='JNR')return 'Junior';
+  if(g&&g.div==='SNR')return 'Senior';
+  return 'Score';
+}
+function matchCols(f){
+  const order={'Junior':0,'Senior':1,'Score':2};
+  const scored=gamesOf(f).filter(x=>num(x.s1)!==null&&num(x.s2)!==null)
+    .map(g=>({g:g,label:gameLabel(f,g)})).sort((a,b)=>order[a.label]-order[b.label]);
+  let cols;
+  if(scored.length){
+    const seen={}; scored.forEach(c=>{seen[c.label]=(seen[c.label]||0)+1;});
+    const idx={}; cols=scored.map(c=>{let l=c.label; if(seen[l]>1){idx[l]=(idx[l]||0)+1; l=l+' '+idx[l];} return {label:l,a:num(c.g.s1),b:num(c.g.s2)};});
+    if(f.div==='JNR/SNR'&&!cols.some(c=>c.label.indexOf('Score')===0)){
+      ['Junior','Senior'].forEach(l=>{if(!cols.some(c=>c.label.indexOf(l)===0))cols.push({label:l,a:null,b:null});});
+      cols.sort((x,y)=>(order[x.label.split(' ')[0]]||0)-(order[y.label.split(' ')[0]]||0));
+    }
+  } else {
+    cols=(f.div==='JNR/SNR')?[{label:'Junior',a:null,b:null},{label:'Senior',a:null,b:null}]:[{label:gameLabel(f,null),a:null,b:null}];
+  }
+  return cols;
+}
+function nameCell(code,won,rowCls){
+  const nm=schoolName(code);
+  return '<span class="sb-c sb-team '+rowCls+'">'+avatar(code||'?')+'<span class="sb-name"><b'+(won?' class="win"':'')+'>'+esc(code||'Team')+'</b>'+(nm?'<small>'+esc(nm)+'</small>':'')+'</span></span>';
+}
+function scoreCells(cols,which,rowCls){
+  return cols.map(c=>{
+    const v=which===1?c.a:c.b, o=which===1?c.b:c.a;
+    if(v===null)return '<span class="sb-c sb-sc none '+rowCls+'" aria-label="no score">–</span>';
+    return '<span class="sb-c sb-sc '+rowCls+(v>o?' win':'')+'">'+esc(v)+'</span>';
+  }).join('');
+}
+function teamLab(code,shown,win){
+  const nm=schoolName(code)||shown;
+  const inner='<span class="full">'+esc(nm)+'</span><span class="abbr">'+esc(shown)+'</span>';
+  return win?'<b>'+inner+'</b>':inner;
+}
+function matchRow(f){
+  const cols=matchCols(f);
+  const played=cols.filter(c=>c.a!==null);
+  const w1=played.length>0&&played.every(c=>c.a>c.b), w2=played.length>0&&played.every(c=>c.b>c.a);
+  const tagged=cols.length>1||f.div==='JNR/SNR';
+  const short=l=>l.indexOf('Junior')===0?l.replace('Junior','JNR'):l.indexOf('Senior')===0?l.replace('Senior','SNR'):l.toUpperCase();
+  const pills=played.length
+    ? played.map(c=>'<span class="pill played">'+(tagged?'<i class="l-'+(c.label.indexOf('Junior')===0?'JNR':c.label.indexOf('Senior')===0?'SNR':'X')+'">'+esc(short(c.label))+'</i>':'')+esc(c.a)+' – '+esc(c.b)+'</span>').join('')
+    : '<span class="pill vs">vs</span>';
+  const t1=f.t1||'Team 1', t2=f.t2||'Team 2';
+  const n1=schoolName(f.t1), n2=schoolName(f.t2);
+  const meta=f.venue||'';
+  const lvTag=f.div==='JNR'?'<span class="lv JNR">Junior</span>':f.div==='SNR'?'<span class="lv SNR">Senior</span>':f.div==='JNR/SNR'?'<span class="lv BOTH">Junior + Senior</span>':'';
+  const zTag=f.zone?'<span class="zc '+esc(f.zone)+'">'+(f.zone==='EAST'?'Eastern':'Western')+'</span>':'';
+  const chip=f.status==='Result recorded'?'':'<span class="status '+(STATUS_CLS[f.status]||'st-todo')+'">'+esc(STATUS_LBL[f.status]||f.status)+'</span>';
+  const scoreTxt=played.map(c=>c.label+' '+c.a+' to '+c.b).join(', ');
+  return '<button type="button" class="mline z-'+esc(f.zone||'none')+(selKey()===f.k?' sel':'')+'" data-match="'+esc(f.k)+'" aria-label="'+esc(t1+' versus '+t2+(scoreTxt?', '+scoreTxt:'')+', '+STATUS_LBL[f.status]+'. Open')+'">'+
+    '<span class="ml-time">'+esc(timeLabel(f.time))+'</span>'+
+    '<span class="ml-t tr"'+(n1?' title="'+esc(n1)+'"':'')+'><span class="nm">'+teamLab(f.t1,t1,w1)+'</span>'+avatar(t1)+'</span>'+
+    '<span class="ml-sc">'+pills+'</span>'+
+    '<span class="ml-t"'+(n2?' title="'+esc(n2)+'"':'')+'>'+avatar(t2)+'<span class="nm">'+teamLab(f.t2,t2,w2)+'</span></span>'+
+    '<span class="ml-meta">'+chip+zTag+lvTag+'<span class="mt">'+esc(meta)+'</span>'+(f.ump?'<span class="mu">'+ICON.ump.replace('class="ic"','class="ic"')+'<span>'+esc(umpList(f.ump).join(', '))+'</span></span>':'')+'</span>'+
+    '<span class="ml-go" aria-hidden="true">›</span>'+
+  '</button>';
+}
+function renderMatches(){
+  const today=todayISO();
+  const base=S.fixtures.filter(baseOk);
+  COUNTS={}; SHOW.forEach(s=>{COUNTS[s.id]=base.filter(f=>showOk(s.id,f,today)).length;});
+  if(V.show===null){
+    const all=S.fixtures;
+    V.show='all';
+  }
+  $('#chips').innerHTML=SHOW.map(s=>'<button type="button" class="chip" data-show="'+s.id+'" aria-pressed="'+(V.show===s.id?'true':'false')+'">'+esc(s.label)+' <b>'+COUNTS[s.id]+'</b></button>').join('');
+  const shown=sortedFixtures(base.filter(f=>showOk(V.show,f,today)));
+  const cur=SHOW.find(s=>s.id===V.show);
+  $('#mTitle').textContent=cur.label;
+  const bits=[]; if(V.zone)bits.push(V.zone==='EAST'?'Eastern zone':'Western zone'); if(V.level)bits.push(V.level==='JNR'?'Junior':'Senior'); if(V.q.trim())bits.push('matching “'+V.q.trim()+'”');
+  $('#mSub').innerHTML=esc(shown.length+' match'+(shown.length===1?'':'es'))+(bits.length?' · '+esc(bits.join(', '))+' <button type="button" class="link" data-clear>Clear filters</button>':'');
+  if(!shown.length){
+    $('#list').innerHTML='<div class="empty"><p><b>No matches here.</b></p><p>Try another choice in the menu, or clear the search.</p><button type="button" class="btn" data-showall>Show everything</button></div>';
+  } else {
+    const groups=[]; let curG=null;
+    shown.forEach(f=>{const d=f.date||''; if(!curG||curG.d!==d){curG={d:d,items:[]}; groups.push(curG);} curG.items.push(f);});
+    $('#list').innerHTML='<div class="dboxes">'+groups.map(g=>{
+      const n=g.items.length;
+      return '<section class="dbox" aria-label="'+esc(dateLabel(g.d))+'"><div class="dbox-h"><b>'+esc(dateLabel(g.d))+'</b><span>'+n+' match'+(n===1?'':'es')+'</span>'+(g.d&&g.d===today?'<span class="tag">TODAY</span>':'')+'</div>'+
+        g.items.map(matchRow).join('')+'</section>';
+    }).join('')+'</div>';
+  }
+  renderNav();
+}
+function navItem(attr,icon,label,count,active){
+  return '<button type="button" class="nav-item'+(active?' active':'')+'" '+attr+(active?' aria-current="page"':'')+'>'+ICON[icon]+'<span class="nl">'+esc(label)+'</span>'+(count!=null?'<span class="nc">'+count+'</span>':'')+'</button>';
+}
+function renderBnav(){
+  const items=[['matches','all','Matches'],['standings','standings','Standings'],['teams','teams','Teams'],['umpires','ump','Umpires'],['notes','notes','Notes']];
+  $('#bnav').innerHTML=items.map(([tab,ic,l])=>'<button type="button" data-tab="'+tab+'"'+(V.tab===tab?' aria-current="page"':'')+'>'+ICON[ic]+'<span>'+l+'</span></button>').join('');
+  $('#mAdd').hidden=V.tab!=='matches';
+}
+function renderNav(){
+  renderBnav();
+  $('#navShow').innerHTML=SHOW.map(s=>navItem('data-show="'+s.id+'"',s.id,s.label,COUNTS[s.id],V.tab==='matches'&&V.show===s.id)).join('');
+  $('#navPages').innerHTML=navItem('data-tab="standings"','standings','Standings',null,V.tab==='standings')+navItem('data-tab="teams"','teams','Teams',S.teams.length,V.tab==='teams')+navItem('data-tab="umpires"','ump','Umpires',umpires().length,V.tab==='umpires')+navItem('data-tab="notes"','notes','Notes',S.notes.length,V.tab==='notes');
+}
+
+
+/* ---------- standings ---------- */
+const GROUPS=[['EAST','SNR'],['EAST','JNR'],['WEST','SNR'],['WEST','JNR']];
+const GNAME=(z,l)=>(z==='EAST'?'Eastern':'Western')+' '+(l==='SNR'?'Senior':'Junior');
+function teamZone(code){const t=S.teams.find(x=>norm(x.team)===norm(code)); return t?t.zone:'';}
+function standings(){
+  const fx=fxMap(), G={};
+  const blank=code=>({code:code,p:0,w:0,l:0,d:0,gf:0,ga:0,gd:0});
+  GROUPS.forEach(([z,l])=>{G[z+'|'+l]={zone:z,level:l,rows:new Map(),games:[]};});
+  S.teams.forEach(t=>{
+    if(!t.team)return;
+    const dv=String(t.dv||'');
+    [['SNR','A'],['JNR','B']].forEach(([l,ch])=>{const g=G[t.zone+'|'+l]; if(g&&dv.indexOf(ch)>=0)g.rows.set(norm(t.team),blank(t.team));});
+  });
+  let skipped=[];
+  S.results.forEach(r=>{
+    const f=fx.get(String(r.fid)); if(!f)return;
+    const a=num(r.s1), b=num(r.s2); if(a===null||b===null)return;
+    const lvl=(f.div==='JNR'||f.div==='SNR')?f.div:((r.div==='JNR'||r.div==='SNR')?r.div:null);
+    const z=f.zone||teamZone(f.t1);
+    const g=lvl?G[z+'|'+lvl]:null;
+    if(!g){skipped.push(f);return;}
+    g.games.push({f:f,a:a,b:b});
+    [[f.t1,a,b],[f.t2,b,a]].forEach(([code,gf,ga])=>{
+      const k=norm(code); if(!g.rows.has(k))g.rows.set(k,blank(code));
+      const row=g.rows.get(k); row.p++; row.gf+=gf; row.ga+=ga;
+      if(gf>ga)row.w++; else if(gf<ga)row.l++; else row.d++;
+    });
+  });
+  Object.values(G).forEach(g=>{
+    g.list=Array.from(g.rows.values()).map(r=>{r.gd=r.gf-r.ga; return r;})
+      .sort((x,y)=>y.w-x.w||y.gd-x.gd||y.gf-x.gf||x.code.localeCompare(y.code));
+    g.leader=(g.list[0]&&g.list[0].w>0)?g.list[0]:null;
+  });
+  return {G:G,skipped:skipped};
+}
+const plural=(n,w)=>n+' '+w+(n===1?'':'s');
+function record(r){return plural(r.w,'win')+', '+plural(r.l,'loss').replace('losss','losses')+(r.d?', '+plural(r.d,'draw'):'');}
+const sgn=n=>n>0?'+'+n:String(n);
+function renderStandings(){
+  const st=standings(), G=st.G;
+  if(!V.grp||!G[V.grp]){const first=GROUPS.find(([z,l])=>G[z+'|'+l].games.length); V.grp=first?first[0]+'|'+first[1]:'EAST|SNR';}
+  $('#leaders').innerHTML=GROUPS.map(([z,l])=>{
+    const g=G[z+'|'+l], k=z+'|'+l, ld=g.leader;
+    return '<button type="button" class="lead g-'+z+'" data-grp="'+k+'" aria-pressed="'+(V.grp===k?'true':'false')+'"><span class="lg"><span class="zc '+z+'">'+(z==='EAST'?'Eastern':'Western')+'</span><span class="lv '+l+'">'+(l==='SNR'?'Senior':'Junior')+'</span>'+plural(g.games.length,'game')+' played</span>'+
+      (ld?'<span class="crown">IN THE LEAD</span><span class="lw">'+avatar(ld.code)+'<span class="ln"><b>'+esc(ld.code)+'</b><span>'+esc(record(ld))+' · goal difference '+esc(sgn(ld.gd))+'</span></span></span>'
+         :'<span class="none">No results yet</span>')+'</button>';
+  }).join('');
+  const g=G[V.grp], list=g.list;
+  let h='<div class="grp"><h3 class="grp-h"><span class="zc '+g.zone+'">'+(g.zone==='EAST'?'Eastern zone':'Western zone')+'</span><span class="lv '+g.level+'">'+(g.level==='SNR'?'Senior':'Junior')+'</span></h3>';
+  if(!g.games.length){
+    h+='<div class="empty"><p><b>No results in this group yet.</b></p><p>Scores you add on the Matches screen show up here straight away.</p></div></div>';
+    $('#grpView').innerHTML=h;
+  } else {
+    const ranked=list.filter(r=>r.p>0).concat(list.filter(r=>r.p===0));
+    const maxW=Math.max(1,...ranked.map(r=>r.w));
+    const maxD=Math.max(1,...ranked.map(r=>Math.abs(r.gd)));
+    const tipFor=r=>r.code+(schoolName(r.code)?' ('+schoolName(r.code)+')':'')+': '+(r.p?plural(r.p,'game')+' played, '+record(r)+'. Goals '+r.gf+' for, '+r.ga+' against.':'no games played yet.');
+    const winBars=ranked.map(r=>'<div class="brow" tabindex="0" data-tip="'+esc(tipFor(r))+'" aria-label="'+esc(tipFor(r))+'"><span class="bl">'+esc(r.code)+'</span><span class="track"><span class="fill" style="width:'+(r.w/maxW*100)+'%"></span></span><span class="bv">'+(r.p?r.w:'–')+'</span></div>').join('');
+    const gdBars=ranked.map(r=>{
+      const w=Math.abs(r.gd)/maxD*50;
+      const bar=r.gd>0?'<span class="fill" style="left:50%; width:'+w+'%"></span>':(r.gd<0?'<span class="fill neg" style="right:50%; width:'+w+'%"></span>':'');
+      return '<div class="brow" tabindex="0" data-tip="'+esc(tipFor(r))+'" aria-label="'+esc(tipFor(r))+'"><span class="bl">'+esc(r.code)+'</span><span class="track">'+bar+'<span class="mid"></span></span><span class="bv">'+(r.p?sgn(r.gd):'–')+'</span></div>';
+    }).join('');
+    h+='<div class="charts">'+
+      '<div class="chart"><h3>Games won</h3><p>Longest bar has won the most games.</p><div class="bars">'+winBars+'</div><div class="scale"><span>0</span><span>'+maxW+'</span></div></div>'+
+      '<div class="chart"><h3>Goal difference</h3><p>Goals scored minus goals let in. Right of the line is good, left is behind.</p><div class="bars">'+gdBars+'</div><div class="scale"><span>'+(-maxD)+'</span><span>0</span><span>+'+maxD+'</span></div></div>'+
+    '</div>';
+    h+='<div class="tbl-wrap"><table class="tbl"><thead><tr><th>#</th><th>Team</th><th>Played</th><th>Won</th><th>Lost</th>'+(ranked.some(r=>r.d)?'<th>Drawn</th>':'')+'<th>Goals for</th><th>Goals against</th><th>Difference</th></tr></thead><tbody>'+
+      ranked.map((r,i)=>'<tr'+(i===0&&g.leader?' class="top"':'')+'><td class="pos">'+(r.p?i+1:'–')+'</td><td><span class="tn">'+avatar(r.code)+'<span><b>'+esc(r.code)+'</b>'+(schoolName(r.code)?'<small>'+esc(schoolName(r.code))+'</small>':'')+'</span></span></td><td>'+r.p+'</td><td>'+r.w+'</td><td>'+r.l+'</td>'+(ranked.some(x=>x.d)?'<td>'+r.d+'</td>':'')+'<td>'+r.gf+'</td><td>'+r.ga+'</td><td class="gd">'+(r.p?sgn(r.gd):'–')+'</td></tr>').join('')+
+      '</tbody></table></div>';
+    const games=g.games.slice().sort((x,y)=>(x.f.date||'')<(y.f.date||'')?-1:1);
+    h+='<div class="res"><h3>Results in this group</h3>'+games.map(x=>{
+      const w1=x.a>x.b, w2=x.b>x.a;
+      return '<button type="button" class="rline" data-match="'+esc(x.f.k)+'"><span class="rd">'+esc(x.f.date?shortDate(x.f.date)+', '+dayName(x.f.date).slice(0,3):'')+'</span><span class="rt tr">'+teamLab(x.f.t1,x.f.t1,w1)+'</span><span class="rs">'+x.a+' – '+x.b+'</span><span class="rt tl">'+teamLab(x.f.t2,x.f.t2,w2)+'</span></button>';
+    }).join('')+'</div></div>';
+    $('#grpView').innerHTML=h;
+  }
+  const skipNames=st.skipped.map(f=>f.t1+' v '+f.t2);
+  $('#fine').textContent='The official points system is not on the sheets, so teams are ranked by games won, then goal difference, then goals scored.'+
+    (skipNames.length?' Left out because the score is not marked junior or senior: '+Array.from(new Set(skipNames)).join(', ')+'. Open the match and choose Junior or Senior to include it.':'');
+}
+const tipEl=$('#tip');
+function hideTip(){tipEl.hidden=true;}
+function placeTip(x,y){const w=tipEl.offsetWidth,h=tipEl.offsetHeight; let L=x+14,T=y+14; if(L+w>window.innerWidth-8)L=x-w-14; if(T+h>window.innerHeight-8)T=y-h-14; tipEl.style.left=Math.max(8,L)+'px'; tipEl.style.top=Math.max(8,T)+'px';}
+const sp=$('#panel-standings');
+sp.addEventListener('mouseover',e=>{const r=e.target.closest('[data-tip]'); if(!r){hideTip();return;} tipEl.textContent=r.dataset.tip; tipEl.hidden=false; placeTip(e.clientX,e.clientY);});
+sp.addEventListener('mousemove',e=>{if(!tipEl.hidden)placeTip(e.clientX,e.clientY);});
+sp.addEventListener('mouseleave',hideTip);
+sp.addEventListener('focusin',e=>{const r=e.target.closest('[data-tip]'); if(!r)return; tipEl.textContent=r.dataset.tip; tipEl.hidden=false; const b=r.getBoundingClientRect(); placeTip(b.left+40,b.bottom-4);});
+sp.addEventListener('focusout',hideTip);
+
+
+/* ---------- umpires ---------- */
+function umpList(s){return String(s||'').split(/[;,]/).map(x=>x.replace(/\s+/g,' ').trim()).filter(Boolean);}
+function umpires(){
+  const m=new Map(), today=todayISO();
+  sortedFixtures(S.fixtures).forEach(f=>umpList(f.ump).forEach(n=>{
+    const k=n.toLowerCase(); if(!m.has(k))m.set(k,{name:n,total:0,done:0,next:null});
+    const u=m.get(k); u.total++; if(f.status==='Result recorded')u.done++;
+    if(!u.next&&f.status!=='Result recorded'&&f.date&&f.date>=today)u.next=f;
+  }));
+  return Array.from(m.values()).sort((a,b)=>b.total-a.total||a.name.localeCompare(b.name));
+}
+function renderUmpires(){
+  const list=umpires();
+  $('#umpList').innerHTML=list.length?'<div class="ump-grid">'+list.map(u=>
+    '<button type="button" class="ucard" data-ump="'+esc(u.name)+'">'+avatar(u.name.replace(/[^A-Za-z]/g,'').slice(0,1)+(u.name.split(' ').pop()||'').slice(0,1))+
+    '<span class="tx"><b>'+esc(u.name)+'</b><small>'+(u.next?'Next: '+esc(shortDate(u.next.date))+', '+esc(u.next.t1+' v '+u.next.t2):'No more matches coming up')+'</small></span><span class="cnt" title="Matches">'+u.total+'</span></button>').join('')+'</div>'
+    :'<div class="empty"><p>No umpires on the fixture list yet.</p></div>';
+  renderNav();
+}
+
+/* ---------- teams and notes ---------- */
+function renderTeams(){
+  const fx=fxMap(); const zones=[['EAST','Eastern zone'],['WEST','Western zone']];
+  const known=new Set(zones.map(z=>z[0])); let html='';
+  const groups=zones.map(z=>[z[0],z[1],S.teams.filter(t=>t.zone===z[0])]);
+  const other=S.teams.filter(t=>!known.has(t.zone)); if(other.length)groups.push(['','Zone not marked',other]);
+  groups.forEach(g=>{
+    if(!g[2].length)return;
+    html+='<div class="zone-h">'+esc(g[1])+'</div><div class="team-grid">'+g[2].map(t=>{
+      const i=teamInfo(t,fx);
+      return '<button type="button" class="team" data-team="'+esc(t.k)+'">'+avatar(t.team||'?')+'<span class="tx"><b>'+esc(t.team||'(no name)')+'</b>'+(t.name?'<span class="nm">'+esc(t.name)+'</span>':'')+'<small>'+esc(TEAMLEVEL[t.dv]||'')+' · '+i.fc+' match'+(i.fc===1?'':'es')+(i.pc?', '+i.pc+' postponed':'')+'</small></span></button>';
+    }).join('')+'</div>';
+  });
+  $('#teamList').innerHTML=html||'<div class="empty"><p>No teams yet.</p></div>';
+  renderNav();
+}
+function renderNotes(){
+  $('#noteList').innerHTML=S.notes.length?S.notes.map(n=>'<button type="button" class="note" data-note="'+esc(n.k)+'"><b>'+esc(n.topic||'(no title)')+'</b><span>'+esc(n.detail)+'</span></button>').join(''):'<div class="empty"><p>No notes yet.</p></div>';
+  renderNav();
+}
+
+/* ---------- detail panel / dialog ---------- */
+let SH=null, lastFocus=null;
+function gameDefaults(fx,want){
+  let d=fx.div;
+  if(want)d=want;
+  else if(fx.div==='JNR/SNR'||fx.div===''){const have=(SH&&SH.draft&&SH.draft.games)||[]; d=!have.some(g=>g.div==='JNR')?'JNR':(!have.some(g=>g.div==='SNR')?'SNR':'JNR/SNR (not marked)');}
+  return {k:'n'+(S.counter++),fid:fx.id,div:d,s1:'',s2:'',rd:'Clear',note:''};
+}
+function gameTitle(fx,g){const d=(fx.div==='JNR'||fx.div==='SNR')?fx.div:g.div; return d==='JNR'?'Junior game':d==='SNR'?'Senior game':'Score';}
+function syncLock(){document.body.classList.toggle('lock',!!SH&&!isWide());}
+mqWide.addEventListener?mqWide.addEventListener('change',syncLock):mqWide.addListener(syncLock);
+function openSheet(obj){
+  SH=obj; lastFocus=document.activeElement;
+  $('#detail').classList.add('open'); syncLock();
+  renderSheet(true); renderMatches();
+}
+function closeSheet(){
+  SH=null; $('#detail').classList.remove('open'); syncLock();
+  renderEmpty(); renderMatches();
+  if(!isWide()&&lastFocus&&lastFocus.focus&&document.contains(lastFocus))lastFocus.focus();
+}
+function renderEmpty(){
+  $('#sheet').innerHTML='<div class="ph">'+ICON.pick+'<h2>Pick a match</h2><p>Select any match to add its score, mark it postponed or change its details.</p></div>';
+}
+function seg(name,value,opts){
+  return '<div class="seg" role="radiogroup">'+opts.map(o=>'<label><input type="radio" name="'+name+'" value="'+esc(o[0])+'" data-fx="'+name+'"'+(String(value)===String(o[0])?' checked':'')+'><span>'+esc(o[1])+'</span></label>').join('')+'</div>';
+}
+function verdictText(g,fx){
+  const a=num(g.s1), b=num(g.s2); if(a===null||b===null)return '';
+  const t1=fx.t1||'Team 1', t2=fx.t2||'Team 2';
+  if(a===b)return 'A draw';
+  return (a>b?t1:t2)+' won by '+Math.abs(a-b);
+}
+function matchBody(){
+  const fx=SH.draft.fx, games=SH.draft.games;
+  if(fx.u1===undefined){const u=umpList(fx.ump); fx.u1=u[0]||''; fx.u2=u.slice(1).join('; ');}
+  const t1=fx.t1||'Team 1', t2=fx.t2||'Team 2';
+  let h='';
+  if(SH.err)h+='<div class="err" role="alert">'+esc(SH.err)+'</div>';
+  h+='<section class="sec"><h3>What happened</h3>'+
+     seg('status',fx.status,[['Scheduled','To be played'],['Postponed','Postponed'],['Result recorded','Played']])+'</section>';
+  if(fx.status==='Result recorded'||games.length){
+    h+='<section class="sec"><h3>Scores</h3>';
+    games.forEach((g,i)=>{
+      const both=(fx.div==='JNR/SNR'||fx.div==='');
+      h+='<div class="game"><div class="game-h"><b>'+esc(gameTitle(fx,g))+'</b><button type="button" class="link danger" data-act="rmgame" data-i="'+i+'">Remove</button></div>';
+      if(both){
+        h+='<div class="field"><span class="lbl2">Was this the junior or the senior game?</span><div class="seg" role="radiogroup" aria-label="Junior or senior game">'+
+          [['JNR','Junior'],['SNR','Senior']].map(o=>'<label><input type="radio" name="gdiv'+i+'" value="'+o[0]+'" data-g="'+i+'" data-gf="div"'+(g.div===o[0]?' checked':'')+'><span>'+o[1]+'</span></label>').join('')+'</div>'+
+          ((g.div!=='JNR'&&g.div!=='SNR')?'<small class="hint2">Not chosen yet. Pick one so this score counts in the standings.</small>':'')+'</div>';
+      }
+      h+='<div class="pair"><label class="field"><span class="js-t1">'+esc(t1)+'</span><input type="number" inputmode="numeric" min="0" step="1" data-g="'+i+'" data-gf="s1" value="'+esc(g.s1)+'"></label>'+
+         '<span class="dash" aria-hidden="true">–</span>'+
+         '<label class="field"><span class="js-t2">'+esc(t2)+'</span><input type="number" inputmode="numeric" min="0" step="1" data-g="'+i+'" data-gf="s2" value="'+esc(g.s2)+'"></label></div>'+
+         '<p class="verdict" data-verdict="'+i+'">'+esc(verdictText(g,fx))+'</p>';
+      if(g.note)h+='<label class="field"><span>Note about this score</span><input type="text" data-g="'+i+'" data-gf="note" value="'+esc(g.note)+'"></label>';
+      h+='</div>';
+    });
+    if(fx.div==='JNR/SNR'||fx.div===''){
+      const hasJ=games.some(g=>g.div==='JNR'), hasS=games.some(g=>g.div==='SNR');
+      h+='<div class="addrow">'+(hasJ?'':'<button type="button" class="btn" data-act="addgame" data-div="JNR">Add junior score</button>')+(hasS?'':'<button type="button" class="btn" data-act="addgame" data-div="SNR">Add senior score</button>')+(hasJ&&hasS?'<button type="button" class="btn" data-act="addgame">Add another score</button>':'')+'</div></section>';
+    } else {
+      h+='<div><button type="button" class="btn" data-act="addgame">'+(games.length?'Add another score':'Add the score')+'</button></div></section>';
+    }
+  }
+  h+='<details class="more"'+(SH.isNew||SH.openDetails?' open':'')+'><summary>Match details (date, venue, umpires, teams)</summary><div class="inner">'+
+    '<label class="field"><span>Date</span><input type="date" data-fx="date" value="'+esc(fx.date)+'"></label>'+
+    '<label class="field"><span>Time</span><input type="text" data-fx="time" value="'+esc(fx.time)+'" placeholder="2:00 PM"></label>'+
+    '<label class="field"><span>Junior or senior</span><select data-fx="div">'+
+      [['JNR','Junior'],['SNR','Senior'],['JNR/SNR','Junior and senior (2 games)'],['','Not marked']].map(o=>'<option value="'+esc(o[0])+'"'+(fx.div===o[0]?' selected':'')+'>'+o[1]+'</option>').join('')+'</select></label>'+
+    '<label class="field"><span>Zone</span><select data-fx="zone">'+
+      [['EAST','Eastern'],['WEST','Western'],['','Not marked']].map(o=>'<option value="'+esc(o[0])+'"'+(fx.zone===o[0]?' selected':'')+'>'+o[1]+'</option>').join('')+'</select></label>'+
+    '<div class="field combo"><label for="cb-t1">First team</label><input id="cb-t1" type="text" role="combobox" aria-expanded="false" aria-controls="cbl-t1" aria-autocomplete="list" autocomplete="off" data-fx="t1" data-combo="team" value="'+esc(fx.t1)+'" placeholder="Type or pick a team"><ul class="cb-list" id="cbl-t1" role="listbox" hidden></ul></div>'+
+    '<div class="field combo"><label for="cb-t2">Second team</label><input id="cb-t2" type="text" role="combobox" aria-expanded="false" aria-controls="cbl-t2" aria-autocomplete="list" autocomplete="off" data-fx="t2" data-combo="team" value="'+esc(fx.t2)+'" placeholder="Type or pick a team"><ul class="cb-list" id="cbl-t2" role="listbox" hidden></ul></div>'+
+    '<div class="field combo full"><label for="cb-venue">Venue</label><input id="cb-venue" type="text" role="combobox" aria-expanded="false" aria-controls="cbl-venue" aria-autocomplete="list" autocomplete="off" data-fx="venue" data-combo="venue" value="'+esc(fx.venue)+'" placeholder="Type or pick a venue"><ul class="cb-list" id="cbl-venue" role="listbox" hidden></ul></div>'+
+    '<div class="field combo"><label for="cb-u1">Umpire 1</label><input id="cb-u1" type="text" role="combobox" aria-expanded="false" aria-controls="cbl-u1" aria-autocomplete="list" autocomplete="off" data-fx="u1" data-combo="ump" value="'+esc(fx.u1)+'" placeholder="Type or pick an umpire"><ul class="cb-list" id="cbl-u1" role="listbox" hidden></ul></div>'+
+    '<div class="field combo"><label for="cb-u2">Umpire 2</label><input id="cb-u2" type="text" role="combobox" aria-expanded="false" aria-controls="cbl-u2" aria-autocomplete="list" autocomplete="off" data-fx="u2" data-combo="ump" value="'+esc(fx.u2)+'" placeholder="Type or pick an umpire"><ul class="cb-list" id="cbl-u2" role="listbox" hidden></ul></div>'+
+    '<label class="field full"><span>Notes</span><textarea data-fx="note">'+esc(fx.note)+'</textarea></label>'+
+  '</div></details>';
+  return h;
+}
+function teamBody(){
+  const t=SH.draft; let h='';
+  if(SH.err)h+='<div class="err" role="alert">'+esc(SH.err)+'</div>';
+  h+='<label class="field"><span>Short name or code</span><input type="text" data-tf="team" value="'+esc(t.team)+'" placeholder="For example: WMSS"></label>';
+  h+='<label class="field"><span>School name</span><input type="text" data-tf="name" value="'+esc(t.name||'')+'" placeholder="For example: Westmorland Secondary School"></label>';
+  h+='<section class="sec"><h3>Zone</h3><div class="seg" role="radiogroup">'+[['EAST','Eastern'],['WEST','Western']].map(o=>'<label><input type="radio" name="zone" value="'+o[0]+'" data-tf="zone"'+(t.zone===o[0]?' checked':'')+'><span>'+o[1]+'</span></label>').join('')+'</div></section>';
+  h+='<section class="sec"><h3>Which teams does the school enter?</h3><div class="seg" role="radiogroup">'+[['B','Junior only'],['A','Senior only'],['A and B','Both']].map(o=>'<label><input type="radio" name="dv" value="'+o[0]+'" data-tf="dv"'+(t.dv===o[0]?' checked':'')+'><span>'+o[1]+'</span></label>').join('')+'</div></section>';
+  return h;
+}
+function noteBody(){
+  const n=SH.draft; let h='';
+  if(SH.err)h+='<div class="err" role="alert">'+esc(SH.err)+'</div>';
+  h+='<label class="field"><span>Title</span><input type="text" data-nf="topic" value="'+esc(n.topic)+'"></label>';
+  h+='<label class="field"><span>Details</span><textarea data-nf="detail" style="min-height:160px">'+esc(n.detail)+'</textarea></label>';
+  return h;
+}
+function renderSheet(first){
+  CB.el=null; CB.items=[]; CB.act=-1;
+  const bodyEl=$('.sheet-b'); const st=bodyEl?bodyEl.scrollTop:0;
+  let title='', sub='', body='', noun='';
+  if(SH.type==='match'){
+    const fx=SH.draft.fx; title=(fx.t1||fx.t2)?((fx.t1||'Team 1')+' vs '+(fx.t2||'Team 2')):'New match';
+    const names=[schoolName(fx.t1),schoolName(fx.t2)].filter(Boolean).join(' vs ');
+    sub=[names,fx.date?dateLabel(fx.date)+' · '+timeLabel(fx.time):''].filter(Boolean).join(' · ')||'Fill in the match details below'; body=matchBody(); noun='match';
+  } else if(SH.type==='team'){ title=SH.isNew?'New team':(SH.draft.team||'Team'); sub=SH.draft.name||''; body=teamBody(); noun='team'; }
+  else { title=SH.isNew?'New note':(SH.draft.topic||'Note'); sub=''; body=noteBody(); noun='note'; }
+  const foot=SH.confirm
+    ? '<div class="confirm"><span>Remove this '+noun+(SH.type==='match'?' and its scores':'')+'?</span><button type="button" class="btn small" data-act="removeyes">Yes, remove it</button><button type="button" class="btn small" data-act="removeno">No, keep it</button></div>'
+    : '<button type="button" class="btn primary" data-act="save">Save</button><button type="button" class="btn" data-act="cancel">Cancel</button>'+
+      (SH.type==='team'&&!SH.isNew?'<button type="button" class="btn" data-act="seeteam">See its matches</button>':'')+
+      '<span class="spacer"></span>'+(SH.isNew?'':'<button type="button" class="link danger" data-act="remove">Remove this '+noun+'</button>');
+  $('#sheet').innerHTML='<div class="sheet-h"><div><h2 id="sheetTitle" tabindex="-1">'+esc(title)+'</h2>'+(sub?'<p>'+esc(sub)+'</p>':'')+'</div><button type="button" class="icon-btn" data-act="cancel" aria-label="Close without saving">'+IC_CLOSE+'</button></div>'+
+    '<div class="sheet-b">'+body+'</div><div class="sheet-f">'+foot+'</div>';
+  const nb=$('.sheet-b'); if(nb)nb.scrollTop=first?0:st;
+  if(first){
+    const f=$('.sheet-b input:not([type=radio]),.sheet-b select,.sheet-b textarea');
+    if(SH.isNew&&f)f.focus(); else {const h=$('#sheetTitle'); if(h)h.focus();}
+  }
+}
+function openMatch(k){
+  if(k){
+    const f=S.fixtures.find(x=>x.k===k); if(!f)return;
+    openSheet({type:'match',isNew:false,err:'',confirm:false,draft:{fx:clone(f),games:gamesOf(f).map(clone)}});
+  } else {
+    const mx=S.fixtures.reduce((a,f)=>Math.max(a,Number(f.id)||0),0);
+    openSheet({type:'match',isNew:true,err:'',confirm:false,draft:{fx:{k:'n'+(S.counter++),id:mx+1,date:'',time:'2:00 PM',div:'JNR',zone:'EAST',t1:'',t2:'',venue:'',ump:'',status:'Scheduled',note:''},games:[]}});
+  }
+}
+function openTeam(k){
+  if(k){const t=S.teams.find(x=>x.k===k); if(!t)return; openSheet({type:'team',isNew:false,err:'',confirm:false,origCode:t.team,draft:clone(t)});}
+  else openSheet({type:'team',isNew:true,err:'',confirm:false,draft:{k:'n'+(S.counter++),team:'',name:'',zone:'EAST',dv:'A and B'}});
+}
+function openNote(k){
+  if(k){const n=S.notes.find(x=>x.k===k); if(!n)return; openSheet({type:'note',isNew:false,err:'',confirm:false,draft:clone(n)});}
+  else openSheet({type:'note',isNew:true,err:'',confirm:false,draft:{k:'n'+(S.counter++),topic:'',detail:''}});
+}
+function fail(msg,details){SH.err=msg; if(details)SH.openDetails=true; renderSheet(false); const b=$('.sheet-b'); if(b)b.scrollTop=0;}
+function saveSheet(){
+  if(SH.type==='match'){
+    const fx=SH.draft.fx; fx.t1=String(fx.t1).trim(); fx.t2=String(fx.t2).trim();
+    if(!fx.t1||!fx.t2)return fail('Please type both team names in Match details.',true);
+    if(norm(fx.t1)===norm(fx.t2))return fail('The two teams must be different.',true);
+    if(fx.u1!==undefined){syncUmp(fx); delete fx.u1; delete fx.u2;}
+    fx.venue=String(fx.venue||'').replace(/\s+/g,' ').trim();
+    const kept=[];
+    for(const g of SH.draft.games){
+      const a=(g.s1===''||g.s1==null), b=(g.s2===''||g.s2==null);
+      if(a&&b)continue;
+      if(a||b)return fail('Please fill in both scores for each game, or remove the game.');
+      if(isNaN(Number(g.s1))||isNaN(Number(g.s2))||Number(g.s1)<0||Number(g.s2)<0)return fail('Scores must be whole numbers, 0 or more.');
+      kept.push({k:g.k,fid:fx.id,div:(fx.div==='JNR/SNR'||fx.div==='')?g.div:fx.div,s1:Number(g.s1),s2:Number(g.s2),rd:g.rd,note:g.note||''});
+    }
+    if(kept.length)fx.status='Result recorded';
+    const added=[];
+    [fx.t1,fx.t2].forEach(code=>{if(!S.teams.some(t=>norm(t.team)===norm(code))){S.teams.push({k:'n'+(S.counter++),team:code,name:'',zone:fx.zone||'',dv:fx.div==='JNR'?'B':fx.div==='SNR'?'A':'A and B'}); added.push(code);}});
+    const i=S.fixtures.findIndex(x=>x.k===fx.k);
+    if(i>=0)S.fixtures[i]=fx; else S.fixtures.push(fx);
+    S.results=S.results.filter(r=>String(r.fid)!==String(fx.id)).concat(kept);
+    toast(added.length?'Saved. '+added.join(' and ')+(added.length>1?' were':' was')+' added to Teams; add the school name there.':'Saved.');
+  } else if(SH.type==='team'){
+    const t=SH.draft; t.team=String(t.team).trim(); t.name=String(t.name||'').trim();
+    if(!t.team)return fail('Please type the short name or code.');
+    if(S.teams.some(x=>x.k!==t.k&&norm(x.team)===norm(t.team)))return fail('There is already a team with that name.');
+    if(!SH.isNew&&SH.origCode&&norm(SH.origCode)!==norm(t.team)){
+      S.fixtures.forEach(f=>{if(norm(f.t1)===norm(SH.origCode))f.t1=t.team; if(norm(f.t2)===norm(SH.origCode))f.t2=t.team;});
+    }
+    const i=S.teams.findIndex(x=>x.k===t.k); if(i>=0)S.teams[i]=t; else S.teams.push(t);
+    toast('Saved.');
+  } else {
+    const n=SH.draft; n.topic=String(n.topic).trim();
+    if(!n.topic&&!String(n.detail).trim())return fail('Please type a title or some details.');
+    const i=S.notes.findIndex(x=>x.k===n.k); if(i>=0)S.notes[i]=n; else S.notes.push(n);
+    toast('Saved.');
+  }
+  closeSheet(); refreshAll();
+}
+function removeSheet(){
+  if(SH.type==='match'){const fx=SH.draft.fx; S.fixtures=S.fixtures.filter(f=>f.k!==fx.k); S.results=S.results.filter(r=>String(r.fid)!==String(fx.id));}
+  else if(SH.type==='team'){S.teams=S.teams.filter(t=>t.k!==SH.draft.k);}
+  else {S.notes=S.notes.filter(n=>n.k!==SH.draft.k);}
+  closeSheet(); refreshAll(); toast('Removed.');
+}
+
+$('#sheet').addEventListener('input',e=>{
+  const el=e.target; if(!SH)return;
+  if(el.dataset.fx){
+    const fx=SH.draft.fx, f=el.dataset.fx;
+    fx[f]=el.value;
+    if(f==='u1'||f==='u2')syncUmp(fx);
+    if(f==='status'){
+      SH.err='';
+      if(el.value==='Result recorded'){ if(!SH.draft.games.length){ if(fx.div==='JNR/SNR'){SH.draft.games.push(gameDefaults(fx,'JNR')); SH.draft.games.push(gameDefaults(fx,'SNR'));} else SH.draft.games.push(gameDefaults(fx)); } }
+      else if(SH.draft.games.some(g=>g.s1!==''||g.s2!=='')){ fx.status='Result recorded'; SH.err='This match has scores, so it stays marked as Played. Remove the scores first if it was not played.'; }
+      else SH.draft.games.length=0;
+      renderSheet(false);
+    } else if(f==='t1'||f==='t2'){
+      $$('.js-'+f).forEach(s=>{s.textContent=el.value.trim()||(f==='t1'?'Team 1':'Team 2');});
+      $$('[data-verdict]').forEach(v=>{v.textContent=verdictText(SH.draft.games[Number(v.dataset.verdict)],fx);});
+    } else if(f==='div'){ renderSheet(false); }
+    if(el.dataset.combo){CB.act=-1; comboRender(el);}
+  } else if(el.dataset.g!==undefined){
+    const g=SH.draft.games[Number(el.dataset.g)], f=el.dataset.gf; if(!g)return;
+    if(f==='rd')g.rd=el.checked?'Unclear':'Clear'; else g[f]=el.value;
+    if(f==='div'){renderSheet(false); return;}
+    if(f==='s1'||f==='s2'){const v=$('[data-verdict="'+el.dataset.g+'"]'); if(v)v.textContent=verdictText(g,SH.draft.fx);}
+  } else if(el.dataset.tf){ SH.draft[el.dataset.tf]=el.value; }
+  else if(el.dataset.nf){ SH.draft[el.dataset.nf]=el.value; }
+});
+$('#sheet').addEventListener('click',e=>{
+  const b=e.target.closest('[data-act]'); if(!b||!SH)return;
+  const a=b.dataset.act;
+  if(a==='cancel')closeSheet();
+  else if(a==='save')saveSheet();
+  else if(a==='addgame'){SH.draft.games.push(gameDefaults(SH.draft.fx,b.dataset.div||null)); if(SH.draft.fx.status==='Scheduled')SH.draft.fx.status='Result recorded'; SH.err=''; renderSheet(false); const ins=$$('.sheet-b .game input[data-gf="s1"]'); if(ins.length)ins[ins.length-1].focus();}
+  else if(a==='rmgame'){SH.draft.games.splice(Number(b.dataset.i),1); SH.err=''; renderSheet(false);}
+  else if(a==='remove'){SH.confirm=true; renderSheet(false);}
+  else if(a==='removeno'){SH.confirm=false; renderSheet(false);}
+  else if(a==='removeyes')removeSheet();
+  else if(a==='seeteam'){const code=SH.draft.team; closeSheet(); resetFilters(); V.q=code; V.show='all'; $('#q').value=code; showTab('matches'); renderMatches(); window.scrollTo({top:0});}
+});
+
+/* ---------- type-to-filter dropdowns (teams, venues) ---------- */
+const CB={el:null, items:[], act:-1};
+function venueList(){
+  const m=new Map();
+  S.fixtures.forEach(f=>{const v=String(f.venue||'').trim(); if(!v)return; const k=v.toLowerCase(); if(!m.has(k))m.set(k,{v:v,n:0}); m.get(k).n++;});
+  return Array.from(m.values()).sort((a,b)=>a.v.localeCompare(b.v));
+}
+function comboItems(el){
+  const q=el.value.trim().toLowerCase();
+  if(el.dataset.combo==='team'){
+    const other=el.dataset.fx==='t1'?SH.draft.fx.t2:SH.draft.fx.t1;
+    const exact=S.teams.some(t=>norm(t.team)===norm(el.value));
+    const all=S.teams.filter(t=>t.team&&norm(t.team)!==norm(other))
+      .sort((a,b)=>(a.zone===b.zone?0:a.zone==='EAST'?-1:1)||a.team.localeCompare(b.team));
+    const hit=t=>!q||exact||t.team.toLowerCase().indexOf(q)===0||String(t.name||'').toLowerCase().indexOf(q)>=0||t.team.toLowerCase().indexOf(q)>=0;
+    return withAdd(el,all.filter(hit).map(t=>({val:t.team,html:'<b>'+esc(t.team)+'</b><span class="nm">'+esc(t.name||'')+'</span><span class="zc '+esc(t.zone)+'">'+(t.zone==='EAST'?'Eastern':t.zone==='WEST'?'Western':'')+'</span>',zone:t.zone,cls:''})),exact,'team');
+  }
+  if(el.dataset.combo==='ump'){
+    const other=String(el.dataset.fx==='u1'?SH.draft.fx.u2:SH.draft.fx.u1).trim().toLowerCase();
+    const all=umpires().filter(u=>u.name.toLowerCase()!==other).sort((a,b)=>a.name.localeCompare(b.name));
+    const exactU=all.some(u=>u.name.toLowerCase()===q);
+    return withAdd(el,all.filter(u=>!q||exactU||u.name.toLowerCase().indexOf(q)>=0)
+      .map(u=>({val:u.name,html:'<b>'+esc(u.name)+'</b><span class="ct">'+u.total+' match'+(u.total===1?'':'es')+'</span>',cls:' v'})),exactU,'umpire');
+  }
+  const exact=venueList().some(v=>v.v.toLowerCase()===q);
+  return withAdd(el,venueList().filter(v=>!q||exact||v.v.toLowerCase().indexOf(q)>=0)
+    .map(v=>({val:v.v,html:'<b>'+esc(v.v)+'</b><span class="ct">'+v.n+' match'+(v.n===1?'':'es')+'</span>',cls:' v'})),exact,'venue');
+}
+function withAdd(el,items,exact,noun){
+  const typed=el.value.trim();
+  if(typed&&!exact)items.unshift({val:typed,html:'<b>Add \u201c'+esc(typed)+'\u201d</b><span class="ct">new '+noun+'</span>',cls:' v add'});
+  return items;
+}
+function syncUmp(fx){fx.ump=[fx.u1,fx.u2].map(s=>String(s||'').replace(/\s+/g,' ').trim()).filter(Boolean).join('; ');}
+function comboRender(el){
+  const list=$('#cbl-'+el.dataset.fx); if(!list)return;
+  CB.el=el; CB.items=comboItems(el);
+  const cur=CB.items.findIndex(i=>i.val.toLowerCase()===el.value.trim().toLowerCase());
+  if(CB.act<0||CB.act>=CB.items.length)CB.act=cur;
+  const head=el.dataset.combo==='team'?'All teams':el.dataset.combo==='ump'?'All umpires':'Venues used so far';
+  list.innerHTML=CB.items.length
+    ? '<li class="cb-h" aria-hidden="true">'+head+'</li>'+CB.items.map((it,i)=>'<li role="option" id="cbo-'+el.dataset.fx+'-'+i+'" class="cb-o'+it.cls+(i===CB.act?' act':'')+'" data-i="'+i+'" aria-selected="'+(i===CB.act?'true':'false')+'">'+it.html+'</li>').join('')
+    : '<li class="cb-none">Start typing to add a new one.</li>';
+  list.hidden=false; el.setAttribute('aria-expanded','true');
+  if(CB.act>=0){el.setAttribute('aria-activedescendant','cbo-'+el.dataset.fx+'-'+CB.act); const a=list.querySelector('.act'); if(a)a.scrollIntoView({block:'nearest'});}
+  else el.removeAttribute('aria-activedescendant');
+}
+function comboClose(){
+  if(!CB.el)return;
+  const list=$('#cbl-'+CB.el.dataset.fx); if(list)list.hidden=true;
+  CB.el.setAttribute('aria-expanded','false'); CB.el.removeAttribute('aria-activedescendant');
+  CB.el=null; CB.items=[]; CB.act=-1;
+}
+function comboPick(i){
+  const el=CB.el, it=CB.items[i]; if(!el||!it||!SH)return;
+  const f=el.dataset.fx, fx=SH.draft.fx;
+  el.value=it.val; fx[f]=it.val; if(f==='u1'||f==='u2')syncUmp(fx);
+  if(f==='t1'||f==='t2'){
+    $$('.js-'+f).forEach(s=>{s.textContent=it.val;});
+    $$('[data-verdict]').forEach(v=>{v.textContent=verdictText(SH.draft.games[Number(v.dataset.verdict)],fx);});
+    if(it.zone&&!fx.zone){fx.zone=it.zone; const zs=$('.sheet-b select[data-fx="zone"]'); if(zs)zs.value=it.zone;}
+    const h=$('#sheetTitle'); if(h)h.textContent=(fx.t1||'Team 1')+' vs '+(fx.t2||'Team 2');
+  }
+  comboClose();
+}
+$('#sheet').addEventListener('focusin',e=>{const el=e.target.closest('[data-combo]'); if(el){CB.act=-1; comboRender(el);}});
+$('#sheet').addEventListener('focusout',e=>{if(e.target.closest('[data-combo]'))setTimeout(()=>{if(CB.el&&document.activeElement!==CB.el)comboClose();},120);});
+$('#sheet').addEventListener('mousedown',e=>{const o=e.target.closest('.cb-o'); if(o){e.preventDefault(); comboPick(Number(o.dataset.i));}});
+$('#sheet').addEventListener('click',e=>{const el=e.target.closest('[data-combo]'); if(el&&CB.el!==el){CB.act=-1; comboRender(el);}});
+$('#sheet').addEventListener('keydown',e=>{
+  const el=e.target.closest('[data-combo]'); if(!el)return;
+  if(e.key==='ArrowDown'||e.key==='ArrowUp'){
+    e.preventDefault(); if(CB.el!==el)comboRender(el);
+    const n=CB.items.length; if(!n)return;
+    CB.act=e.key==='ArrowDown'?(CB.act+1)%n:(CB.act<=0?n-1:CB.act-1); comboRender(el);
+  } else if(e.key==='Enter'){
+    if(CB.el===el&&CB.act>=0){e.preventDefault(); comboPick(CB.act);}
+  } else if(e.key==='Escape'){
+    if(CB.el===el){e.preventDefault(); e.stopPropagation(); comboClose();}
+  } else if(e.key==='Tab'){ comboClose(); }
+},true);
+document.addEventListener('keydown',e=>{if(e.key==='Escape'){if(SH)closeSheet(); else closeNav();}});
+
+/* ---------- page events ---------- */
+function resetFilters(){V.q='';V.zone='';V.level='';$('#q').value='';$('#fZone').value='';$('#fLevel').value='';}
+function showTab(tab){
+  V.tab=tab;
+  ['matches','standings','teams','umpires','notes'].forEach(t=>{$('#panel-'+t).hidden=(t!==tab);}); hideTip();
+  renderNav();
+}
+function openNav(){$('#nav').classList.add('open'); $('#navScrim').hidden=false;}
+function closeNav(){$('#nav').classList.remove('open'); $('#navScrim').hidden=true;}
+$('#btnMenu').addEventListener('click',openNav);
+$('#navScrim').addEventListener('click',closeNav);
+$('#app').addEventListener('click',e=>{
+  const m=e.target.closest('[data-match]'); if(m){openMatch(m.dataset.match);return;}
+  const t=e.target.closest('[data-team]'); if(t){openTeam(t.dataset.team);return;}
+  const n=e.target.closest('[data-note]'); if(n){openNote(n.dataset.note);return;}
+  const um=e.target.closest('[data-ump]'); if(um){resetFilters(); V.q=um.dataset.ump; $('#q').value=V.q; V.show='all'; showTab('matches'); renderMatches(); window.scrollTo({top:0}); return;}
+  const gp=e.target.closest('[data-grp]'); if(gp){V.grp=gp.dataset.grp; renderStandings(); return;}
+  const c=e.target.closest('[data-show]'); if(c){V.show=c.dataset.show; showTab('matches'); renderMatches(); closeNav(); return;}
+  const tb=e.target.closest('[data-tab]'); if(tb){const fromBar=!!tb.closest('#bnav'); showTab(tb.dataset.tab); closeNav(); if(fromBar)window.scrollTo({top:0}); return;}
+  if(e.target.closest('[data-clear]')){resetFilters(); renderMatches(); return;}
+  if(e.target.closest('[data-showall]')){V.show='all'; resetFilters(); renderMatches(); return;}
+  const r=e.target.closest('#btnReset');
+  if(r){
+    if(r.dataset.armed){
+      clearTimeout(armTimer); S=clone(DATA); S.counter=1000;
+      try{localStorage.removeItem(STORE);}catch(x){}
+      if(SH){SH=null;$('#detail').classList.remove('open');syncLock();renderEmpty();}
+      refreshAll(); toast('Your changes are undone. The original lists are back.');
+    } else {
+      r.dataset.armed='1'; r.textContent='Tap again to undo everything';
+      armTimer=setTimeout(()=>{if(document.contains(r)){delete r.dataset.armed; r.textContent='Undo all my changes';}},4000);
+    }
+  }
+});
+$('#addMatch').addEventListener('click',()=>{closeNav(); openMatch(null);});
+$('#mAdd').addEventListener('click',()=>openMatch(null));
+$('#addTeam').addEventListener('click',()=>openTeam(null));
+$('#addNote').addEventListener('click',()=>openNote(null));
+$('#q').addEventListener('input',e=>{V.q=e.target.value; if(V.tab!=='matches')showTab('matches'); renderMatches();});
+$('#fZone').addEventListener('input',e=>{V.zone=e.target.value; showTab('matches'); renderMatches();});
+$('#fLevel').addEventListener('input',e=>{V.level=e.target.value; showTab('matches'); renderMatches();});
+try{ if(localStorage.getItem(TIPS)==='1')$('#tips').hidden=true; }catch(e){}
+$('#hideTips').addEventListener('click',()=>{$('#tips').hidden=true; try{localStorage.setItem(TIPS,'1');}catch(e){}});
+
+/* ---------- downloads ---------- */
+const dlP=(async()=>{
+  try{return (window.claude&&window.claude.use)?await window.claude.use('downloads'):null;}catch(e){return null;}
+})();
+const inClaude=!!(window.claude&&window.claude.use);
+function browserSave(name,data){
+  const type=name.endsWith('.pdf')?'application/pdf':'application/vnd.openxmlformats-officedocument.spreadsheetml.sheet';
+  const url=URL.createObjectURL(new Blob([data],{type:type}));
+  const a=document.createElement('a'); a.href=url; a.download=name; document.body.appendChild(a); a.click(); a.remove();
+  setTimeout(()=>URL.revokeObjectURL(url),5000);
+  toast('Saved '+name);
+}
+dlP.then(d=>{if(!d&&inClaude){$('.save-l').textContent='Saving is not available here'; $('#btnXlsx').disabled=true; $('#btnPdf').disabled=true;}});
+
+function serial(iso){const p=parseISO(iso); if(!p)return ''; return Math.round((Date.UTC(p.getFullYear(),p.getMonth(),p.getDate())-Date.UTC(1899,11,30))/86400000);}
+function sheet(head,rows,widths,dateCols){
+  const ws=XLSX.utils.aoa_to_sheet([head].concat(rows));
+  ws['!cols']=widths.map(w=>({wch:w}));
+  (dateCols||[]).forEach(c=>{for(let r=1;r<=rows.length;r++){const a=XLSX.utils.encode_cell({r:r,c:c}); if(ws[a]&&typeof ws[a].v==='number')ws[a].z='yyyy-mm-dd';}});
+  ws['!autofilter']={ref:XLSX.utils.encode_range({s:{r:0,c:0},e:{r:Math.max(rows.length,1),c:head.length-1}})};
+  return ws;
+}
+function buildXlsx(){
+  const fx=fxMap(); const wb=XLSX.utils.book_new(); const FX=sortedFixtures(S.fixtures); const R=resultsSorted();
+  const fRows=FX.map(f=>[f.id,serial(f.date),dayName(f.date)==='-'?'':dayName(f.date),f.time,f.div,f.zone,f.t1,f.t2,schoolName(f.t1),schoolName(f.t2),f.venue,f.ump,STATUS_LBL[f.status]||f.status,f.note]);
+  const w1=sheet(['ID','Date','Day','Time (PM)','Division','Zone','Team 1','Team 2','Team 1 school','Team 2 school','Venue','Umpires','Status','Notes'],fRows,[6,12,12,12,10,8,10,10,34,34,28,28,16,60],[1]);
+  FX.forEach((f,i)=>{const a=XLSX.utils.encode_cell({r:i+1,c:2}); w1[a]={t:'s',f:'IF(B'+(i+2)+'="","",TEXT(B'+(i+2)+',"dddd"))',v:dayName(f.date)==='-'?'':dayName(f.date)};});
+  XLSX.utils.book_append_sheet(wb,w1,'Fixtures');
+  const rRows=R.map(r=>{const i=resultInfo(r,fx); return [r.fid,serial(i.date),i.zone,r.div,i.t1,r.s1===''?'':Number(r.s1),i.t2,r.s2===''?'':Number(r.s2),'','',r.note];});
+  const w2=sheet(['Fixture ID','Date','Zone','Division of score','Team 1','Team 1 score','Team 2','Team 2 score','Winner','Winning margin','Note'],rRows,[10,12,8,22,10,12,10,12,10,14,60],[1]);
+  R.forEach((r,i)=>{
+    const n=i+2, inf=resultInfo(r,fx);
+    w2[XLSX.utils.encode_cell({r:i+1,c:8})]={t:'s',f:'IF(OR(F'+n+'="",H'+n+'=""),"",IF(F'+n+'>H'+n+',E'+n+',IF(H'+n+'>F'+n+',G'+n+',"Draw")))',v:inf.winner==='-'?'':inf.winner};
+    const mv=inf.margin==='-'?'':inf.margin;
+    w2[XLSX.utils.encode_cell({r:i+1,c:9})]={t:mv===''?'s':'n',f:'IF(OR(F'+n+'="",H'+n+'=""),"",ABS(F'+n+'-H'+n+'))',v:mv};
+  });
+  XLSX.utils.book_append_sheet(wb,w2,'Results');
+  const tRows=S.teams.map(t=>{const i=teamInfo(t,fx); return [t.team,t.name||'',t.zone,t.dv,i.level,i.fc,i.pc,i.sc];});
+  XLSX.utils.book_append_sheet(wb,sheet(['Team','School','Zone','Divisions listed','Level','Fixtures scheduled','Postponed','Scores recorded'],tRows,[12,50,10,16,20,18,12,16]),'Teams');
+  const SG=standings().G, sRows=[];
+  GROUPS.forEach(([z,l])=>{const g=SG[z+'|'+l]; g.list.forEach((r,i)=>sRows.push([GNAME(z,l),r.p?i+1:'',r.code,schoolName(r.code),r.p,r.w,r.l,r.d,r.gf,r.ga,r.gd]));});
+  XLSX.utils.book_append_sheet(wb,sheet(['Group','Position','Team','School','Played','Won','Lost','Drawn','Goals for','Goals against','Goal difference'],sRows,[18,9,10,46,8,8,8,8,10,13,15]),'Standings');
+  XLSX.utils.book_append_sheet(wb,sheet(['Topic','Detail'],S.notes.map(n=>[n.topic,n.detail]),[28,120]),'Notes');
+  return XLSX.write(wb,{bookType:'xlsx',type:'array'});
+}
+function buildPdf(){
+  const fx=fxMap(); const jsPDF=window.jspdf.jsPDF; const FX=sortedFixtures(S.fixtures); const R=resultsSorted();
+  const doc=new jsPDF({orientation:'landscape',unit:'pt',format:'a4'});
+  const W=doc.internal.pageSize.getWidth(), H=doc.internal.pageSize.getHeight(), M=28;
+  const c=s=>S.fixtures.filter(f=>f.status===s).length;
+  doc.setFont('helvetica','bold'); doc.setFontSize(17); doc.setTextColor(18,35,30);
+  doc.text('2026 D Sports Shop Inter-Secondary Schools Netball Tournament',M,40);
+  doc.setFont('helvetica','normal'); doc.setFontSize(9); doc.setTextColor(90,103,95);
+  doc.text(S.fixtures.length+' fixtures  |  '+c('Result recorded')+' played  |  '+c('Postponed')+' postponed  |  '+c('Scheduled')+' to be played  |  Semifinals Tue 24 Nov and finals Thu 26 Nov, Tanteen Hard Court',M,56);
+  let y=76;
+  function section(title,head,body,widths,flags){
+    if(y>H-130){doc.addPage();y=40;}
+    doc.setFont('helvetica','bold'); doc.setFontSize(12); doc.setTextColor(18,35,30); doc.text(title,M,y);
+    const colStyles={}; widths.forEach((w,i)=>{if(w)colStyles[i]={cellWidth:w};});
+    doc.autoTable({startY:y+6,head:[head],body:body,margin:{left:M,right:M,bottom:30},
+      styles:{font:'helvetica',fontSize:7.5,cellPadding:2.5,overflow:'linebreak',textColor:[18,35,30],lineColor:[211,220,216],lineWidth:.4},
+      headStyles:{fillColor:[18,35,30],textColor:[234,242,238],fontStyle:'bold'},
+      columnStyles:colStyles,
+      didParseCell:function(d){
+        if(d.section==='body'&&flags){const f=flags[d.row.index]; if(f==='postponed')d.cell.styles.fillColor=[252,228,214]; if(f==='unclear')d.cell.styles.fillColor=[255,241,184];}
+      }});
+    y=doc.lastAutoTable.finalY+24;
+  }
+  section('Fixtures',['ID','Date','Day','Time','Div.','Zone','Team 1','Team 2','Venue','Umpires','Status','Notes'],
+    FX.map(f=>[f.id,shortDate(f.date)==='-'?'':shortDate(f.date),dayName(f.date)==='-'?'':dayName(f.date),f.time,f.div,f.zone,f.t1,f.t2,f.venue,f.ump,STATUS_LBL[f.status]||f.status,f.note]),
+    [22,40,52,50,40,34,42,42,120,100,70,174], FX.map(f=>f.status==='Postponed'?'postponed':''));
+  doc.addPage(); y=40;
+  section('Results',['Fix. ID','Date','Zone','Division of score','Team 1','Score 1','Team 2','Score 2','Winner','Margin','Note'],
+    R.map(r=>{const i=resultInfo(r,fx); return [r.fid,i.date?shortDate(i.date):'',i.zone,r.div,i.t1,r.s1,i.t2,r.s2,i.winner==='-'?'':i.winner,i.margin==='-'?'':i.margin,r.note];}),
+    [38,42,38,100,52,38,52,38,52,40,296], null);
+  const SGp=standings().G; doc.addPage(); y=40;
+  GROUPS.forEach(([z,l])=>{const g=SGp[z+'|'+l];
+    section('Standings: '+GNAME(z,l),['#','Team','School','Played','Won','Lost','Drawn','Goals for','Goals against','Difference'],
+      g.list.map((r,i)=>[r.p?i+1:'',r.code,schoolName(r.code),r.p,r.w,r.l,r.d,r.gf,r.ga,r.p?sgn(r.gd):'']),[24,50,250,56,50,50,50,64,76,66],null);});
+  section('Teams and schools',['Team','School','Zone','Divisions listed','Level','Fixtures','Postponed','Scores recorded'],
+    S.teams.map(t=>{const i=teamInfo(t,fx); return [t.team,t.name||'',t.zone,t.dv,i.level,i.fc,i.pc,i.sc];}),[50,230,50,80,100,60,60,70],null);
+  section('Notes',['Topic','Detail'],S.notes.map(n=>[n.topic,n.detail]),[150,636],null);
+  const pages=doc.getNumberOfPages(), stamp=new Date().toLocaleDateString('en-GB',{day:'numeric',month:'short',year:'numeric'});
+  for(let i=1;i<=pages;i++){
+    doc.setPage(i); doc.setFont('helvetica','normal'); doc.setFontSize(8); doc.setTextColor(120);
+    doc.text('Netball Scorebook 2026  |  saved '+stamp,M,H-14);
+    doc.text('Page '+i+' of '+pages,W-M,H-14,{align:'right'});
+  }
+  return doc.output('arraybuffer');
+}
+async function doDownload(kind){
+  const d=await dlP;
+  if(!d&&inClaude){toast('Saving a copy is not available in this view.');return;}
+  try{
+    let data,name;
+    if(kind==='xlsx'){ if(typeof XLSX==='undefined'){toast('The Excel tool did not load. Check your internet connection and reload the page.');return;} data=buildXlsx(); name='netball-scorebook-2026.xlsx'; }
+    else { if(!(window.jspdf&&window.jspdf.jsPDF)){toast('The PDF tool did not load. Check your internet connection and reload the page.');return;} data=buildPdf(); name='netball-scorebook-2026.pdf'; }
+    if(!d){browserSave(name,data);return;}
+    const r=await d.save({filename:name,data:data});
+    toast(r&&r.status==='saved'?'Saved '+name:'Sent '+name);
+  }catch(err){
+    if(err&&err.code==='declined')toast('Cancelled. Nothing was saved.');
+    else if(err&&err.code==='rate_limited')toast('A save window is already open. Answer it, then try again.');
+    else toast('Sorry, the file could not be made'+(err&&err.message?' ('+err.message+')':'')+'.');
+  }
+}
+$('#btnXlsx').addEventListener('click',()=>doDownload('xlsx'));
+$('#btnPdf').addEventListener('click',()=>doDownload('pdf'));
+
+/* ---------- start ---------- */
+renderEmpty(); renderMatches(); renderStandings(); renderTeams(); renderUmpires(); renderNotes(); updateChanges();
+if(migrated){scheduleSave(); toast('Updated with your confirmed scores. Your other changes were kept.');}
+else if(restored){toast('Your earlier changes were restored.');}
+})();
+</script>
+
+</body>
+</html>
