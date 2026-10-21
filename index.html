@@ -398,7 +398,8 @@ details.more .full{grid-column:1 / -1}
   .bnav .ic{width:24px; height:24px; padding:4px 16px; box-sizing:content-box; border-radius:16px}
   .bnav button[aria-current="page"]{color:var(--ink)}
   .bnav button[aria-current="page"] .ic{background:var(--primary-soft); color:var(--on-soft)}
-  .mfab{display:inline-flex; position:fixed; margin:0; right:calc(16px + env(safe-area-inset-right,0px)); bottom:calc(86px + env(safe-area-inset-bottom,0px)); z-index:24; box-shadow:0 3px 10px rgba(0,0,0,.25)}
+  .mfab{display:grid; place-items:center; position:fixed; margin:0; padding:0; width:48px; height:48px; border-radius:14px; right:calc(14px + env(safe-area-inset-right,0px)); bottom:calc(80px + env(safe-area-inset-bottom,0px)); z-index:24; box-shadow:0 2px 8px rgba(0,0,0,.25)}
+  .mfab .ic{width:24px; height:24px}
   .layout{padding-bottom:calc(150px + env(safe-area-inset-bottom,0px))}
   .toast{bottom:calc(92px + env(safe-area-inset-bottom,0px))}
   .nav .fab{display:none}
@@ -536,7 +537,7 @@ details.more .full{grid-column:1 / -1}
     </main>
 
     <nav class="bnav" id="bnav" aria-label="Screens"></nav>
-    <button class="fab mfab" id="mAdd" type="button"><svg class="ic" viewBox="0 0 24 24" aria-hidden="true"><path d="M19 13h-6v6h-2v-6H5v-2h6V5h2v6h6v2z"/></svg>New match</button>
+    <button class="fab mfab" id="mAdd" type="button" aria-label="New match" title="New match"><svg class="ic" viewBox="0 0 24 24" aria-hidden="true"><path d="M19 13h-6v6h-2v-6H5v-2h6V5h2v6h6v2z"/></svg></button>
     <aside class="detail" id="detail" aria-label="Match details"><div id="sheet" role="dialog" aria-labelledby="sheetTitle"></div></aside>
   </div>
 </div>
