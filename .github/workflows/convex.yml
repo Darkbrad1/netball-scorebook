@@ -1,0 +1,31 @@
+# Deploys the Convex functions (the convex/ folder) when they change on main.
+# Needs a CONVEX_DEPLOY_KEY repository secret; without it the job is skipped.
+name: Deploy Convex functions
+
+on:
+  push:
+    branches: ["main"]
+    paths: ["convex/**", "package.json", "package-lock.json"]
+  workflow_dispatch:
+
+jobs:
+  deploy:
+    runs-on: ubuntu-latest
+    env:
+      CONVEX_DEPLOY_KEY: ${{ secrets.CONVEX_DEPLOY_KEY }}
+    steps:
+      - name: Checkout
+        if: env.CONVEX_DEPLOY_KEY != ''
+        uses: actions/checkout@v4
+      - name: Setup Node
+        if: env.CONVEX_DEPLOY_KEY != ''
+        uses: actions/setup-node@v4
+        with:
+          node-version: 22
+          cache: npm
+      - name: Install
+        if: env.CONVEX_DEPLOY_KEY != ''
+        run: npm ci
+      - name: Deploy
+        if: env.CONVEX_DEPLOY_KEY != ''
+        run: npx convex deploy
