@@ -7,7 +7,8 @@ Fixtures, scores, standings and umpires for the 2026 D Sports Shop Inter-Seconda
 - Lists all 97 zone fixtures by date, with scores, venues and umpires
 - Tap a match to add or change its score, mark it postponed, or edit its details
 - Standings for each zone and division, with charts of games won and goal difference
-- Teams (with full school names), umpires and notes screens
+- Enter the teams, the score and the umpires together in one match form. A team or umpire that isn't on the list yet is added when you save the match
+- Teams (with full school names), umpires (with optional phone and notes) and notes screens. Umpires can also be added on their own, before they have a match
 - Save a copy as an Excel workbook or a PDF, including any changes
 
 ## Using it

@@ -228,6 +228,11 @@ input[type=text]:focus,input[type=date]:focus,input[type=number]:focus,select:fo
 .lbl2{font-size:14px; font-weight:500}
 .hint2{color:var(--post); font-size:13px}
 .addrow{display:flex; flex-wrap:wrap; gap:10px}
+.grid2{display:grid; grid-template-columns:repeat(2,minmax(0,1fr)); gap:16px}
+.newbox{margin-top:8px; padding:10px 12px; border-radius:12px; background:var(--sel); display:flex; flex-direction:column; gap:8px; font-size:14px}
+.newbox[hidden]{display:none}
+.newbox b{font-weight:500}
+.plus{font-weight:700; color:var(--primary); margin-right:4px}
 .err{background:var(--flag); color:var(--flag-ink); border-radius:12px; padding:12px 16px; font-weight:500; font-size:15px}
 .confirm{background:var(--post-bg); color:var(--post); border-radius:12px; padding:12px 16px; width:100%; display:flex; flex-wrap:wrap; gap:10px 14px; align-items:center; font-weight:500}
 .more{border:1px solid var(--line); border-radius:16px}
@@ -295,6 +300,7 @@ input[type=text]:focus,input[type=date]:focus,input[type=number]:focus,select:fo
 .rline b{font-weight:700}
 .rline .rs{font-variant-numeric:tabular-nums; font-weight:500; background:var(--surface-2); border-radius:8px; padding:3px 10px; white-space:nowrap}
 .fine{margin:0; font-size:13px; color:var(--muted); padding:4px 24px 22px; max-width:90ch}
+.sheet-b .fine{padding:0}
 .ctip{position:fixed; z-index:60; pointer-events:none; background:#303134; color:#fff; font-size:13px; line-height:1.4; padding:8px 12px; border-radius:8px; max-width:240px; box-shadow:0 4px 12px rgba(0,0,0,.3)}
 .ctip[hidden]{display:none}
 @media (max-width:899px){
@@ -455,7 +461,7 @@ input[type=text]:focus,input[type=date]:focus,input[type=number]:focus,select:fo
   .team-grid{padding-left:16px; padding-right:16px}
   .note{padding-left:16px; padding-right:16px}
   .empty{margin-left:16px; margin-right:16px}
-  .more .inner{grid-template-columns:minmax(0,1fr)}
+  .more .inner,.grid2{grid-template-columns:minmax(0,1fr)}
   .sb-name b{font-size:17px}
   .dtx b{font-size:19px}
 }
@@ -519,7 +525,7 @@ input[type=text]:focus,input[type=date]:focus,input[type=number]:focus,select:fo
         <p class="fine" id="fine"></p>
       </section>
       <section id="panel-umpires" hidden aria-labelledby="uTitle">
-        <div class="phead"><div><h2 id="uTitle">Umpires</h2><p>Every umpire on the fixture list and how many matches they have. Tap a name to see their matches.</p></div></div>
+        <div class="phead"><div><h2 id="uTitle">Umpires</h2><p>Every umpire and how many matches they have. Tap a name to change their details or see their matches.</p></div><button class="btn" type="button" id="addUmp"><svg class="ic" viewBox="0 0 24 24" aria-hidden="true"><path d="M19 13h-6v6h-2v-6H5v-2h6V5h2v6h6v2z"/></svg>Add an umpire</button></div>
         <div id="umpList"></div>
       </section>
       <section id="panel-teams" hidden aria-labelledby="tTitle">
@@ -588,6 +594,7 @@ function upgrade(S){
   S.version=DATA.version; return true;
 }
 const migrated=upgrade(S);
+if(!Array.isArray(S.umpires))S.umpires=[];
 const origMap={};
 TABS.forEach(t=>{origMap[t]=new Map(DATA[t].map(r=>[r.k,r]));});
 S.teams.forEach(t=>{if(t.name===undefined){const o=origMap.teams.get(t.k); t.name=o?o.name:'';}});
@@ -647,7 +654,7 @@ function editCount(){
     });
     om.forEach((_,k)=>{if(!seen.has(k))n++;});
   });
-  return n;
+  return n+(S.umpires||[]).length;
 }
 let saveTimer=null;
 function scheduleSave(){
@@ -666,6 +673,7 @@ let passcode='';
 try{passcode=localStorage.getItem(EDITOR)||'';}catch(e){}
 function tidy(x){
   if(!x.counter)x.counter=1000;
+  if(!Array.isArray(x.umpires))x.umpires=[];
   x.teams.forEach(t=>{if(t.name===undefined){const o=origMap.teams.get(t.k); t.name=o?o.name:'';}});
   return x;
 }
@@ -978,10 +986,12 @@ sp.addEventListener('focusout',hideTip);
 
 /* ---------- umpires ---------- */
 function umpList(s){return String(s||'').split(/[;,]/).map(x=>x.replace(/\s+/g,' ').trim()).filter(Boolean);}
+const umpKey=n=>String(n||'').replace(/\s+/g,' ').trim().toLowerCase();
 function umpires(){
   const m=new Map(), today=todayISO();
+  S.umpires.forEach(u=>{const k=umpKey(u.name); if(k&&!m.has(k))m.set(k,{name:u.name,total:0,done:0,next:null,rec:u});});
   sortedFixtures(S.fixtures).forEach(f=>umpList(f.ump).forEach(n=>{
-    const k=n.toLowerCase(); if(!m.has(k))m.set(k,{name:n,total:0,done:0,next:null});
+    const k=umpKey(n); if(!m.has(k))m.set(k,{name:n,total:0,done:0,next:null,rec:null});
     const u=m.get(k); u.total++; if(f.status==='Result recorded')u.done++;
     if(!u.next&&f.status!=='Result recorded'&&f.date&&f.date>=today)u.next=f;
   }));
@@ -991,8 +1001,8 @@ function renderUmpires(){
   const list=umpires();
   $('#umpList').innerHTML=list.length?'<div class="ump-grid">'+list.map(u=>
     '<button type="button" class="ucard" data-ump="'+esc(u.name)+'">'+avatar(u.name.replace(/[^A-Za-z]/g,'').slice(0,1)+(u.name.split(' ').pop()||'').slice(0,1))+
-    '<span class="tx"><b>'+esc(u.name)+'</b><small>'+(u.next?'Next: '+esc(shortDate(u.next.date))+', '+esc(u.next.t1+' v '+u.next.t2):'No more matches coming up')+'</small></span><span class="cnt" title="Matches">'+u.total+'</span></button>').join('')+'</div>'
-    :'<div class="empty"><p>No umpires on the fixture list yet.</p></div>';
+    '<span class="tx"><b>'+esc(u.name)+'</b>'+(u.rec&&u.rec.phone?'<small>'+esc(u.rec.phone)+'</small>':'')+'<small>'+(u.total?'':'No matches yet · ')+(u.next?'Next: '+esc(shortDate(u.next.date))+', '+esc(u.next.t1+' v '+u.next.t2):'No more matches coming up')+'</small></span><span class="cnt" title="Matches">'+u.total+'</span></button>').join('')+'</div>'
+    :'<div class="empty"><p>No umpires yet.</p></div>';
   renderNav();
 }
 
@@ -1056,6 +1066,7 @@ function matchBody(){
   const t1=fx.t1||'Team 1', t2=fx.t2||'Team 2';
   let h='';
   if(SH.err)h+='<div class="err" role="alert">'+esc(SH.err)+'</div>';
+  h+='<section class="sec"><h3>Teams</h3><div class="grid2">'+teamField('t1','First team')+teamField('t2','Second team')+'</div></section>';
   h+='<section class="sec"><h3>What happened</h3>'+
      seg('status',fx.status,[['Scheduled','To be played'],['Postponed','Postponed'],['Result recorded','Played']])+'</section>';
   if(fx.status==='Result recorded'||games.length){
@@ -1082,6 +1093,7 @@ function matchBody(){
       h+='<div><button type="button" class="btn" data-act="addgame">'+(games.length?'Add another score':'Add the score')+'</button></div></section>';
     }
   }
+  h+='<section class="sec"><h3>Umpires</h3><div class="grid2">'+umpField('u1','Umpire 1')+umpField('u2','Umpire 2')+'</div></section>';
   h+='<section class="more" aria-labelledby="mdTitle"><h3 id="mdTitle">Match details</h3><div class="inner">'+
     '<label class="field"><span>Date</span><input type="date" data-fx="date" value="'+esc(fx.date)+'"></label>'+
     '<label class="field"><span>Time</span><input type="text" data-fx="time" value="'+esc(fx.time)+'" placeholder="2:00 PM"></label>'+
@@ -1089,13 +1101,43 @@ function matchBody(){
       [['JNR','Junior'],['SNR','Senior'],['JNR/SNR','Junior and senior (2 games)'],['','Not marked']].map(o=>'<option value="'+esc(o[0])+'"'+(fx.div===o[0]?' selected':'')+'>'+o[1]+'</option>').join('')+'</select></label>'+
     '<label class="field"><span>Zone</span><select data-fx="zone">'+
       [['EAST','Eastern'],['WEST','Western'],['','Not marked']].map(o=>'<option value="'+esc(o[0])+'"'+(fx.zone===o[0]?' selected':'')+'>'+o[1]+'</option>').join('')+'</select></label>'+
-    '<div class="field combo"><label for="cb-t1">First team</label><input id="cb-t1" type="text" role="combobox" aria-expanded="false" aria-controls="cbl-t1" aria-autocomplete="list" autocomplete="off" data-fx="t1" data-combo="team" value="'+esc(fx.t1)+'" placeholder="Type or pick a team"><ul class="cb-list" id="cbl-t1" role="listbox" hidden></ul></div>'+
-    '<div class="field combo"><label for="cb-t2">Second team</label><input id="cb-t2" type="text" role="combobox" aria-expanded="false" aria-controls="cbl-t2" aria-autocomplete="list" autocomplete="off" data-fx="t2" data-combo="team" value="'+esc(fx.t2)+'" placeholder="Type or pick a team"><ul class="cb-list" id="cbl-t2" role="listbox" hidden></ul></div>'+
     '<div class="field combo full"><label for="cb-venue">Venue</label><input id="cb-venue" type="text" role="combobox" aria-expanded="false" aria-controls="cbl-venue" aria-autocomplete="list" autocomplete="off" data-fx="venue" data-combo="venue" value="'+esc(fx.venue)+'" placeholder="Type or pick a venue"><ul class="cb-list" id="cbl-venue" role="listbox" hidden></ul></div>'+
-    '<div class="field combo"><label for="cb-u1">Umpire 1</label><input id="cb-u1" type="text" role="combobox" aria-expanded="false" aria-controls="cbl-u1" aria-autocomplete="list" autocomplete="off" data-fx="u1" data-combo="ump" value="'+esc(fx.u1)+'" placeholder="Type or pick an umpire"><ul class="cb-list" id="cbl-u1" role="listbox" hidden></ul></div>'+
-    '<div class="field combo"><label for="cb-u2">Umpire 2</label><input id="cb-u2" type="text" role="combobox" aria-expanded="false" aria-controls="cbl-u2" aria-autocomplete="list" autocomplete="off" data-fx="u2" data-combo="ump" value="'+esc(fx.u2)+'" placeholder="Type or pick an umpire"><ul class="cb-list" id="cbl-u2" role="listbox" hidden></ul></div>'+
     '<label class="field full"><span>Notes</span><textarea data-fx="note">'+esc(fx.note)+'</textarea></label>'+
   '</div></section>';
+  return h;
+}
+function comboInput(f,label,kind,ph,val){
+  return '<label for="cb-'+f+'">'+label+'</label><input id="cb-'+f+'" type="text" role="combobox" aria-expanded="false" aria-controls="cbl-'+f+'" aria-autocomplete="list" autocomplete="off" data-fx="'+f+'" data-combo="'+kind+'" value="'+esc(val)+'" placeholder="'+ph+'"><ul class="cb-list" id="cbl-'+f+'" role="listbox" hidden></ul>';
+}
+function teamField(f,label){
+  const fx=SH.draft.fx, nn=SH.draft.nn||(SH.draft.nn={t1:'',t2:''});
+  return '<div class="field combo">'+comboInput(f,label,'team','Type or pick a team',fx[f])+
+    '<div class="newbox" id="nb-'+f+'"'+(isNewTeam(fx[f])?'':' hidden')+'><span><b class="js-nbc">'+esc(String(fx[f]||'').trim())+'</b> is a new team. It will be added to Teams.</span>'+
+    '<label class="field"><span>School name (optional)</span><input type="text" data-nn="'+f+'" value="'+esc(nn[f])+'" placeholder="For example: Westmorland Secondary School"></label></div></div>';
+}
+function umpField(f,label){
+  const fx=SH.draft.fx;
+  return '<div class="field combo">'+comboInput(f,label,'ump','Type or pick an umpire',fx[f])+
+    '<div class="newbox" id="nb-'+f+'"'+(isNewUmp(fx[f])?'':' hidden')+'><span><b class="js-nbc">'+esc(String(fx[f]||'').trim())+'</b> is a new umpire. They will be added to Umpires.</span></div></div>';
+}
+const isNewTeam=v=>!!String(v||'').trim()&&!S.teams.some(t=>norm(t.team)===norm(v));
+const isNewUmp=v=>!!umpKey(v)&&!umpires().some(u=>umpKey(u.name)===umpKey(v));
+function syncNewBox(f){
+  const box=$('#nb-'+f); if(!box)return; const v=SH.draft.fx[f];
+  box.hidden=!((f==='t1'||f==='t2')?isNewTeam(v):isNewUmp(v));
+  const c=box.querySelector('.js-nbc'); if(c)c.textContent=String(v||'').trim();
+}
+function umpBody(){
+  const u=SH.draft; let h='';
+  if(SH.err)h+='<div class="err" role="alert">'+esc(SH.err)+'</div>';
+  h+='<label class="field"><span>Name</span><input type="text" data-uf="name" value="'+esc(u.name)+'" placeholder="For example: R. John"></label>';
+  h+='<label class="field"><span>Phone (optional)</span><input type="tel" data-uf="phone" value="'+esc(u.phone||'')+'"></label>';
+  h+='<label class="field"><span>Notes (optional)</span><textarea data-uf="note">'+esc(u.note||'')+'</textarea></label>';
+  if(!SH.isNew){
+    const info=umpires().find(x=>umpKey(x.name)===umpKey(SH.origName));
+    const n=info?info.total:0;
+    h+='<p class="fine">'+(n?'On '+n+' match'+(n===1?'':'es')+'. Changing the name changes it on '+(n===1?'that match':'all of them')+'.':'Not on any matches yet.')+'</p>';
+  }
   return h;
 }
 function teamBody(){
@@ -1123,11 +1165,13 @@ function renderSheet(first){
     const names=[schoolName(fx.t1),schoolName(fx.t2)].filter(Boolean).join(' vs ');
     sub=[names,fx.date?dateLabel(fx.date)+' · '+timeLabel(fx.time):''].filter(Boolean).join(' · ')||'Fill in the match details below'; body=matchBody(); noun='match';
   } else if(SH.type==='team'){ title=SH.isNew?'New team':(SH.draft.team||'Team'); sub=SH.draft.name||''; body=teamBody(); noun='team'; }
+  else if(SH.type==='ump'){ title=SH.isNew?'New umpire':(SH.draft.name||'Umpire'); sub=SH.draft.phone||''; body=umpBody(); noun='umpire'; }
   else { title=SH.isNew?'New note':(SH.draft.topic||'Note'); sub=''; body=noteBody(); noun='note'; }
   const foot=SH.confirm
-    ? '<div class="confirm"><span>Remove this '+noun+(SH.type==='match'?' and its scores':'')+'?</span><button type="button" class="btn small" data-act="removeyes">Yes, remove it</button><button type="button" class="btn small" data-act="removeno">No, keep it</button></div>'
+    ? '<div class="confirm"><span>Remove this '+noun+(SH.type==='match'?' and its scores':SH.type==='ump'?' from the list and from all their matches':'')+'?</span><button type="button" class="btn small" data-act="removeyes">Yes, remove it</button><button type="button" class="btn small" data-act="removeno">No, keep it</button></div>'
     : '<button type="button" class="btn primary" data-act="save">Save</button><button type="button" class="btn" data-act="cancel">Cancel</button>'+
       (SH.type==='team'&&!SH.isNew?'<button type="button" class="btn" data-act="seeteam">See its matches</button>':'')+
+      (SH.type==='ump'&&!SH.isNew?'<button type="button" class="btn" data-act="seeump">See their matches</button>':'')+
       '<span class="spacer"></span>'+(SH.isNew?'':'<button type="button" class="link danger" data-act="remove">Remove this '+noun+'</button>');
   $('#sheet').innerHTML='<div class="sheet-h"><div><h2 id="sheetTitle" tabindex="-1">'+esc(title)+'</h2>'+(sub?'<p>'+esc(sub)+'</p>':'')+'</div><button type="button" class="icon-btn" data-act="cancel" aria-label="Close without saving">'+IC_CLOSE+'</button></div>'+
     '<div class="sheet-b">'+body+'</div><div class="sheet-f">'+foot+'</div>';
@@ -1150,6 +1194,15 @@ function openTeam(k){
   if(k){const t=S.teams.find(x=>x.k===k); if(!t)return; openSheet({type:'team',isNew:false,err:'',confirm:false,origCode:t.team,draft:clone(t)});}
   else openSheet({type:'team',isNew:true,err:'',confirm:false,draft:{k:'n'+(S.counter++),team:'',name:'',zone:'EAST',dv:'A and B'}});
 }
+function openUmp(name){
+  if(name==null){openSheet({type:'ump',isNew:true,err:'',confirm:false,draft:{k:'n'+(S.counter++),name:'',phone:'',note:''}});return;}
+  const info=umpires().find(x=>umpKey(x.name)===umpKey(name)); if(!info)return;
+  const draft=info.rec?clone(info.rec):{k:'n'+(S.counter++),name:info.name,phone:'',note:''};
+  openSheet({type:'ump',isNew:false,err:'',confirm:false,origName:info.name,draft:draft});
+}
+function renameUmp(from,to){
+  S.fixtures.forEach(f=>{const l=umpList(f.ump); if(l.some(n=>umpKey(n)===umpKey(from)))f.ump=l.map(n=>umpKey(n)===umpKey(from)?to:n).filter(Boolean).join('; ');});
+}
 function openNote(k){
   if(k){const n=S.notes.find(x=>x.k===k); if(!n)return; openSheet({type:'note',isNew:false,err:'',confirm:false,draft:clone(n)});}
   else openSheet({type:'note',isNew:true,err:'',confirm:false,draft:{k:'n'+(S.counter++),topic:'',detail:''}});
@@ -1158,7 +1211,7 @@ function fail(msg){SH.err=msg; renderSheet(false); const b=$('.sheet-b'); if(b)b
 function saveSheet(){
   if(SH.type==='match'){
     const fx=SH.draft.fx; fx.t1=String(fx.t1).trim(); fx.t2=String(fx.t2).trim();
-    if(!fx.t1||!fx.t2)return fail('Please type both team names in Match details.');
+    if(!fx.t1||!fx.t2)return fail('Please type both team names.');
     if(norm(fx.t1)===norm(fx.t2))return fail('The two teams must be different.');
     if(fx.u1!==undefined){syncUmp(fx); delete fx.u1; delete fx.u2;}
     fx.venue=String(fx.venue||'').replace(/\s+/g,' ').trim();
@@ -1171,12 +1224,15 @@ function saveSheet(){
       kept.push({k:g.k,fid:fx.id,div:(fx.div==='JNR/SNR'||fx.div==='')?g.div:fx.div,s1:Number(g.s1),s2:Number(g.s2),rd:g.rd,note:g.note||''});
     }
     if(kept.length)fx.status='Result recorded';
-    const added=[];
-    [fx.t1,fx.t2].forEach(code=>{if(!S.teams.some(t=>norm(t.team)===norm(code))){S.teams.push({k:'n'+(S.counter++),team:code,name:'',zone:fx.zone||'',dv:fx.div==='JNR'?'B':fx.div==='SNR'?'A':'A and B'}); added.push(code);}});
+    const added=[], nn=SH.draft.nn||{};
+    [['t1',fx.t1],['t2',fx.t2]].forEach(([f,code])=>{if(!S.teams.some(t=>norm(t.team)===norm(code))){const nm=String(nn[f]||'').trim(); S.teams.push({k:'n'+(S.counter++),team:code,name:nm,zone:fx.zone||'',dv:fx.div==='JNR'?'B':fx.div==='SNR'?'A':'A and B'}); added.push(code);}});
+    delete SH.draft.nn;
+    const addedU=umpList(fx.ump).filter(n=>!umpires().some(u=>umpKey(u.name)===umpKey(n)));
+    addedU.forEach(n=>S.umpires.push({k:'n'+(S.counter++),name:n,phone:'',note:''}));
     const i=S.fixtures.findIndex(x=>x.k===fx.k);
     if(i>=0)S.fixtures[i]=fx; else S.fixtures.push(fx);
     S.results=S.results.filter(r=>String(r.fid)!==String(fx.id)).concat(kept);
-    toast(added.length?'Saved. '+added.join(' and ')+(added.length>1?' were':' was')+' added to Teams; add the school name there.':'Saved.');
+    toast('Saved.'+(added.length?' Added to Teams: '+added.join(', ')+'.':'')+(addedU.length?' Added to Umpires: '+addedU.join(', ')+'.':''));
   } else if(SH.type==='team'){
     const t=SH.draft; t.team=String(t.team).trim(); t.name=String(t.name||'').trim();
     if(!t.team)return fail('Please type the short name or code.');
@@ -1185,6 +1241,15 @@ function saveSheet(){
       S.fixtures.forEach(f=>{if(norm(f.t1)===norm(SH.origCode))f.t1=t.team; if(norm(f.t2)===norm(SH.origCode))f.t2=t.team;});
     }
     const i=S.teams.findIndex(x=>x.k===t.k); if(i>=0)S.teams[i]=t; else S.teams.push(t);
+    toast('Saved.');
+  } else if(SH.type==='ump'){
+    const u=SH.draft; u.name=String(u.name||'').replace(/\s+/g,' ').trim(); u.phone=String(u.phone||'').trim(); u.note=String(u.note||'').trim();
+    if(!u.name)return fail('Please type the umpire\'s name.');
+    if(/[;,]/.test(u.name))return fail('Please leave out commas and semicolons. Add one umpire at a time.');
+    const clash=umpires().some(x=>umpKey(x.name)===umpKey(u.name)&&!(SH.origName&&umpKey(x.name)===umpKey(SH.origName)));
+    if(clash)return fail('There is already an umpire with that name.');
+    if(SH.origName&&SH.origName!==u.name)renameUmp(SH.origName,u.name);
+    S.umpires=S.umpires.filter(x=>x.k!==u.k&&!(SH.origName&&umpKey(x.name)===umpKey(SH.origName))).concat(u);
     toast('Saved.');
   } else {
     const n=SH.draft; n.topic=String(n.topic).trim();
@@ -1197,6 +1262,7 @@ function saveSheet(){
 function removeSheet(){
   if(SH.type==='match'){const fx=SH.draft.fx; S.fixtures=S.fixtures.filter(f=>f.k!==fx.k); S.results=S.results.filter(r=>String(r.fid)!==String(fx.id));}
   else if(SH.type==='team'){S.teams=S.teams.filter(t=>t.k!==SH.draft.k);}
+  else if(SH.type==='ump'){const on=SH.origName; S.umpires=S.umpires.filter(x=>umpKey(x.name)!==umpKey(on)); renameUmp(on,'');}
   else {S.notes=S.notes.filter(n=>n.k!==SH.draft.k);}
   closeSheet(); refreshAll(); toast('Removed.');
 }
@@ -1207,6 +1273,7 @@ $('#sheet').addEventListener('input',e=>{
     const fx=SH.draft.fx, f=el.dataset.fx;
     fx[f]=el.value;
     if(f==='u1'||f==='u2')syncUmp(fx);
+    if(f==='t1'||f==='t2'||f==='u1'||f==='u2')syncNewBox(f);
     if(f==='status'){
       SH.err='';
       if(el.value==='Result recorded'){ if(!SH.draft.games.length){ if(fx.div==='JNR/SNR'){SH.draft.games.push(gameDefaults(fx,'JNR')); SH.draft.games.push(gameDefaults(fx,'SNR'));} else SH.draft.games.push(gameDefaults(fx)); } }
@@ -1225,6 +1292,8 @@ $('#sheet').addEventListener('input',e=>{
     if(f==='s1'||f==='s2'){const v=$('[data-verdict="'+el.dataset.g+'"]'); if(v)v.textContent=verdictText(g,SH.draft.fx);}
   } else if(el.dataset.tf){ SH.draft[el.dataset.tf]=el.value; }
   else if(el.dataset.nf){ SH.draft[el.dataset.nf]=el.value; }
+  else if(el.dataset.uf){ SH.draft[el.dataset.uf]=el.value; }
+  else if(el.dataset.nn){ SH.draft.nn[el.dataset.nn]=el.value; }
 });
 $('#sheet').addEventListener('click',e=>{
   const b=e.target.closest('[data-act]'); if(!b||!SH)return;
@@ -1236,6 +1305,7 @@ $('#sheet').addEventListener('click',e=>{
   else if(a==='remove'){SH.confirm=true; renderSheet(false);}
   else if(a==='removeno'){SH.confirm=false; renderSheet(false);}
   else if(a==='removeyes')removeSheet();
+  else if(a==='seeump'){const n=SH.origName; closeSheet(); resetFilters(); V.q=n; V.show='all'; $('#q').value=n; showTab('matches'); renderMatches(); window.scrollTo({top:0});}
   else if(a==='seeteam'){const code=SH.draft.team; closeSheet(); resetFilters(); V.q=code; V.show='all'; $('#q').value=code; showTab('matches'); renderMatches(); window.scrollTo({top:0});}
 });
 
@@ -1269,7 +1339,7 @@ function comboItems(el){
 }
 function withAdd(el,items,exact,noun){
   const typed=el.value.trim();
-  if(typed&&!exact)items.unshift({val:typed,html:'<b>Add \u201c'+esc(typed)+'\u201d</b><span class="ct">new '+noun+'</span>',cls:' v add'});
+  if(typed&&!exact)items.unshift({val:typed,html:'<b><span class="plus" aria-hidden="true">+</span>Add \u201c'+esc(typed)+'\u201d as a new '+noun+'</b><span class="ct">new</span>',cls:' v add'});
   return items;
 }
 function syncUmp(fx){fx.ump=[fx.u1,fx.u2].map(s=>String(s||'').replace(/\s+/g,' ').trim()).filter(Boolean).join('; ');}
@@ -1279,8 +1349,10 @@ function comboRender(el){
   const cur=CB.items.findIndex(i=>i.val.toLowerCase()===el.value.trim().toLowerCase());
   if(CB.act<0||CB.act>=CB.items.length)CB.act=cur;
   const head=el.dataset.combo==='team'?'All teams':el.dataset.combo==='ump'?'All umpires':'Venues used so far';
+  const noun=el.dataset.combo==='team'?'team':el.dataset.combo==='ump'?'umpire':'venue';
+  const tip=el.value.trim()?'':'<li class="cb-none"><span class="plus" aria-hidden="true">+</span>To add a new '+noun+', type its name.</li>';
   list.innerHTML=CB.items.length
-    ? '<li class="cb-h" aria-hidden="true">'+head+'</li>'+CB.items.map((it,i)=>'<li role="option" id="cbo-'+el.dataset.fx+'-'+i+'" class="cb-o'+it.cls+(i===CB.act?' act':'')+'" data-i="'+i+'" aria-selected="'+(i===CB.act?'true':'false')+'">'+it.html+'</li>').join('')
+    ? tip+'<li class="cb-h" aria-hidden="true">'+head+'</li>'+CB.items.map((it,i)=>'<li role="option" id="cbo-'+el.dataset.fx+'-'+i+'" class="cb-o'+it.cls+(i===CB.act?' act':'')+'" data-i="'+i+'" aria-selected="'+(i===CB.act?'true':'false')+'">'+it.html+'</li>').join('')
     : '<li class="cb-none">Start typing to add a new one.</li>';
   list.hidden=false; el.setAttribute('aria-expanded','true');
   if(CB.act>=0){el.setAttribute('aria-activedescendant','cbo-'+el.dataset.fx+'-'+CB.act); const a=list.querySelector('.act'); if(a)a.scrollIntoView({block:'nearest'});}
@@ -1296,6 +1368,7 @@ function comboPick(i){
   const el=CB.el, it=CB.items[i]; if(!el||!it||!SH)return;
   const f=el.dataset.fx, fx=SH.draft.fx;
   el.value=it.val; fx[f]=it.val; if(f==='u1'||f==='u2')syncUmp(fx);
+  if(f!=='venue')syncNewBox(f);
   if(f==='t1'||f==='t2'){
     $$('.js-'+f).forEach(s=>{s.textContent=it.val;});
     $$('[data-verdict]').forEach(v=>{v.textContent=verdictText(SH.draft.games[Number(v.dataset.verdict)],fx);});
@@ -1337,7 +1410,7 @@ $('#app').addEventListener('click',e=>{
   const m=e.target.closest('[data-match]'); if(m){openMatch(m.dataset.match);return;}
   const t=e.target.closest('[data-team]'); if(t){openTeam(t.dataset.team);return;}
   const n=e.target.closest('[data-note]'); if(n){openNote(n.dataset.note);return;}
-  const um=e.target.closest('[data-ump]'); if(um){resetFilters(); V.q=um.dataset.ump; $('#q').value=V.q; V.show='all'; showTab('matches'); renderMatches(); window.scrollTo({top:0}); return;}
+  const um=e.target.closest('[data-ump]'); if(um){openUmp(um.dataset.ump);return;}
   const gp=e.target.closest('[data-grp]'); if(gp){V.grp=gp.dataset.grp; renderStandings(); return;}
   const c=e.target.closest('[data-show]'); if(c){V.show=c.dataset.show; showTab('matches'); renderMatches(); closeNav(); return;}
   const tb=e.target.closest('[data-tab]'); if(tb){const fromBar=!!tb.closest('#bnav'); showTab(tb.dataset.tab); closeNav(); if(fromBar)window.scrollTo({top:0}); return;}
@@ -1348,7 +1421,7 @@ $('#app').addEventListener('click',e=>{
   const r=e.target.closest('#btnReset');
   if(r){
     if(r.dataset.armed){
-      clearTimeout(armTimer); S=tidy(clone(DATA)); S.counter=1000;
+      clearTimeout(armTimer); S=tidy(clone(DATA)); S.counter=1000; S.umpires=[];
       try{localStorage.removeItem(STORE);}catch(x){}
       if(SH){SH=null;$('#detail').classList.remove('open');syncLock();renderEmpty();}
       refreshAll(); toast(CLOUD?'The original lists are back for everyone.':'Your changes are undone. The original lists are back.');
@@ -1363,6 +1436,7 @@ $('#addMatch').addEventListener('click',()=>{closeNav(); openMatch(null);});
 $('#mAdd').addEventListener('click',()=>openMatch(null));
 $('#addTeam').addEventListener('click',()=>openTeam(null));
 $('#addNote').addEventListener('click',()=>openNote(null));
+$('#addUmp').addEventListener('click',()=>openUmp(null));
 $('#q').addEventListener('input',e=>{V.q=e.target.value; if(V.tab!=='matches')showTab('matches'); renderMatches();});
 $('#fZone').addEventListener('input',e=>{V.zone=e.target.value; showTab('matches'); renderMatches();});
 $('#fLevel').addEventListener('input',e=>{V.level=e.target.value; showTab('matches'); renderMatches();});
@@ -1411,6 +1485,7 @@ function buildXlsx(){
   const SG=standings().G, sRows=[];
   GROUPS.forEach(([z,l])=>{const g=SG[z+'|'+l]; g.list.forEach((r,i)=>sRows.push([GNAME(z,l),r.p?i+1:'',r.code,schoolName(r.code),r.p,r.w,r.l,r.d,r.gf,r.ga,r.gd]));});
   XLSX.utils.book_append_sheet(wb,sheet(['Group','Position','Team','School','Played','Won','Lost','Drawn','Goals for','Goals against','Goal difference'],sRows,[18,9,10,46,8,8,8,8,10,13,15]),'Standings');
+  XLSX.utils.book_append_sheet(wb,sheet(['Umpire','Phone','Matches','Played','Notes'],umpires().map(u=>[u.name,u.rec?u.rec.phone||'':'',u.total,u.done,u.rec?u.rec.note||'':'']),[24,16,10,10,60]),'Umpires');
   XLSX.utils.book_append_sheet(wb,sheet(['Topic','Detail'],S.notes.map(n=>[n.topic,n.detail]),[28,120]),'Notes');
   return XLSX.write(wb,{bookType:'xlsx',type:'array'});
 }
