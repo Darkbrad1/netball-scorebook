@@ -664,6 +664,11 @@ body{background:var(--bg)}
   .fpanel{max-width:none; border-radius:24px 24px 0 0; max-height:90vh}
   .phead{flex-wrap:wrap}
 }
+
+/* won by default */
+.wo-row{font-size:15px}
+.sl.wo{display:flex; align-items:center; gap:6px; grid-template-columns:none}
+.wot{font-style:normal; font-size:13px; font-weight:700; color:var(--played); background:var(--played-bg); border-radius:8px; padding:4px 10px; white-space:nowrap}
 </style>
 
 </head>
@@ -843,10 +848,13 @@ const norm=s=>String(s==null?'':s).trim().toUpperCase();
 function schoolName(code){const n=norm(code); const t=S.teams.find(x=>norm(x.team)===n); return t&&t.name?t.name:'';}
 function fxMap(){return new Map(S.fixtures.map(f=>[String(f.id),f]));}
 function gamesOf(f){return S.results.filter(r=>String(r.fid)===String(f.id));}
+const woOf=r=>(r&&(r.wo===1||r.wo===2||r.wo==='1'||r.wo==='2'))?Number(r.wo):0;
 function resultInfo(r,fx){
   const f=fx.get(String(r.fid)); const a=num(r.s1), b=num(r.s2);
   let winner='-', margin='-';
-  if(a!==null&&b!==null){margin=Math.abs(a-b); winner=a>b?(f?f.t1:'Team 1'):(b>a?(f?f.t2:'Team 2'):'Draw');}
+  const wo=woOf(r);
+  if(wo){winner=wo===1?(f?f.t1:'Team 1'):(f?f.t2:'Team 2'); margin='By default';}
+  else if(a!==null&&b!==null){margin=Math.abs(a-b); winner=a>b?(f?f.t1:'Team 1'):(b>a?(f?f.t2:'Team 2'):'Draw');}
   return {date:f?f.date:'', zone:f?f.zone:'', t1:f?f.t1:'', t2:f?f.t2:'', winner:winner, margin:margin};
 }
 function teamInfo(t,fx){
@@ -1038,12 +1046,12 @@ function gameLabel(f,g){
 }
 function matchCols(f){
   const order={'Junior':0,'Senior':1,'Score':2};
-  const scored=gamesOf(f).filter(x=>num(x.s1)!==null&&num(x.s2)!==null)
+  const scored=gamesOf(f).filter(x=>woOf(x)||(num(x.s1)!==null&&num(x.s2)!==null))
     .map(g=>({g:g,label:gameLabel(f,g)})).sort((a,b)=>order[a.label]-order[b.label]);
   let cols;
   if(scored.length){
     const seen={}; scored.forEach(c=>{seen[c.label]=(seen[c.label]||0)+1;});
-    const idx={}; cols=scored.map(c=>{let l=c.label; if(seen[l]>1){idx[l]=(idx[l]||0)+1; l=l+' '+idx[l];} return {label:l,a:num(c.g.s1),b:num(c.g.s2)};});
+    const idx={}; cols=scored.map(c=>{let l=c.label; if(seen[l]>1){idx[l]=(idx[l]||0)+1; l=l+' '+idx[l];} const wo=woOf(c.g); return {label:l,a:wo?null:num(c.g.s1),b:wo?null:num(c.g.s2),wo:wo};});
     if(f.div==='JNR/SNR'&&!cols.some(c=>c.label.indexOf('Score')===0)){
       ['Junior','Senior'].forEach(l=>{if(!cols.some(c=>c.label.indexOf(l)===0))cols.push({label:l,a:null,b:null});});
       cols.sort((x,y)=>(order[x.label.split(' ')[0]]||0)-(order[y.label.split(' ')[0]]||0));
@@ -1077,14 +1085,15 @@ function crest(code){
 }
 function matchRow(f){
   const cols=matchCols(f);
-  const played=cols.filter(c=>c.a!==null);
-  const w1=played.length>0&&played.every(c=>c.a>c.b), w2=played.length>0&&played.every(c=>c.b>c.a);
+  const played=cols.filter(c=>c.a!==null||c.wo);
+  const won=(c,side)=>c.wo?c.wo===side:(side===1?c.a>c.b:c.b>c.a);
+  const w1=played.length>0&&played.every(c=>won(c,1)), w2=played.length>0&&played.every(c=>won(c,2));
   const t1=f.t1||'Team 1', t2=f.t2||'Team 2';
-  const scoreTxt=played.map(c=>c.label+' '+c.a+' to '+c.b).join(', ');
+  const scoreTxt=played.map(c=>c.wo?c.label+' won by default by '+(c.wo===1?t1:t2):c.label+' '+c.a+' to '+c.b).join(', ');
   const side=(code,shown,won)=>'<span class="tm'+(won?' win':'')+'">'+crest(shown)+'<b>'+esc(shown)+'</b><small>'+esc(schoolName(code)||'')+'</small></span>';
   const short=l=>l.indexOf('Junior')===0?'JNR':l.indexOf('Senior')===0?'SNR':'';
   const mid=played.length
-    ? played.map(c=>'<span class="sl">'+(short(c.label)?'<i>'+short(c.label)+'</i>':'')+'<b class="'+(c.a>c.b?'w':'')+'">'+esc(c.a)+'</b><em>–</em><b class="'+(c.b>c.a?'w':'')+'">'+esc(c.b)+'</b></span>').join('')
+    ? played.map(c=>c.wo?'<span class="sl wo">'+(short(c.label)?'<i>'+short(c.label)+'</i>':'')+'<em class="wot">'+esc(c.wo===1?t1:t2)+' by default</em></span>':'<span class="sl">'+(short(c.label)?'<i>'+short(c.label)+'</i>':'')+'<b class="'+(c.a>c.b?'w':'')+'">'+esc(c.a)+'</b><em>–</em><b class="'+(c.b>c.a?'w':'')+'">'+esc(c.b)+'</b></span>').join('')
     : '<span class="vs">'+esc(f.status==='Postponed'?'Postponed':timeLabel(f.time))+'</span>';
   const st=f.status==='Postponed'?'<span class="tst post">Postponed</span>':f.status==='Result recorded'?'<span class="tst done">Final</span>':'<span class="tst todo">'+esc(timeLabel(f.time))+'</span>';
   const lv=f.div==='JNR'?'Junior':f.div==='SNR'?'Senior':f.div==='JNR/SNR'?'Junior + Senior':'';
@@ -1158,15 +1167,17 @@ function standings(){
   let skipped=[];
   S.results.forEach(r=>{
     const f=fx.get(String(r.fid)); if(!f)return;
-    const a=num(r.s1), b=num(r.s2); if(a===null||b===null)return;
+    const wo=woOf(r), a=num(r.s1), b=num(r.s2); if(!wo&&(a===null||b===null))return;
     const lvl=(f.div==='JNR'||f.div==='SNR')?f.div:((r.div==='JNR'||r.div==='SNR')?r.div:null);
     const z=f.zone||teamZone(f.t1);
     const g=lvl?G[z+'|'+lvl]:null;
     if(!g){skipped.push(f);return;}
-    g.games.push({f:f,a:a,b:b});
-    [[f.t1,a,b],[f.t2,b,a]].forEach(([code,gf,ga])=>{
+    g.games.push({f:f,a:a,b:b,wo:wo});
+    [[f.t1,a,b,1],[f.t2,b,a,2]].forEach(([code,gf,ga,side])=>{
       const k=norm(code); if(!g.rows.has(k))g.rows.set(k,blank(code));
-      const row=g.rows.get(k); row.p++; row.gf+=gf; row.ga+=ga;
+      const row=g.rows.get(k); row.p++;
+      if(wo){ if(wo===side)row.w++; else row.l++; return; }
+      row.gf+=gf; row.ga+=ga;
       if(gf>ga)row.w++; else if(gf<ga)row.l++; else row.d++;
     });
   });
@@ -1213,8 +1224,8 @@ function renderStandings(){
 
     const games=g.games.slice().sort((x,y)=>(x.f.date||'')<(y.f.date||'')?-1:1);
     h+='<div class="res"><h3>Results in this group</h3>'+games.map(x=>{
-      const w1=x.a>x.b, w2=x.b>x.a;
-      return '<button type="button" class="rline" data-match="'+esc(x.f.k)+'"><span class="rd">'+esc(x.f.date?shortDate(x.f.date)+', '+dayName(x.f.date).slice(0,3):'')+'</span><span class="rt tr">'+teamLab(x.f.t1,x.f.t1,w1)+'</span><span class="rs">'+x.a+' – '+x.b+'</span><span class="rt tl">'+teamLab(x.f.t2,x.f.t2,w2)+'</span></button>';
+      const w1=x.wo?x.wo===1:x.a>x.b, w2=x.wo?x.wo===2:x.b>x.a;
+      return '<button type="button" class="rline" data-match="'+esc(x.f.k)+'"><span class="rd">'+esc(x.f.date?shortDate(x.f.date)+', '+dayName(x.f.date).slice(0,3):'')+'</span><span class="rt tr">'+teamLab(x.f.t1,x.f.t1,w1)+'</span><span class="rs">'+(x.wo?'W/O':x.a+' – '+x.b)+'</span><span class="rt tl">'+teamLab(x.f.t2,x.f.t2,w2)+'</span></button>';
     }).join('')+'</div></div>';
     $('#grpView').innerHTML=h;
   }
@@ -1347,10 +1358,18 @@ function matchBody(){
           [['JNR','Junior'],['SNR','Senior']].map(o=>'<label><input type="radio" name="gdiv'+i+'" value="'+o[0]+'" data-g="'+i+'" data-gf="div"'+(g.div===o[0]?' checked':'')+'><span>'+o[1]+'</span></label>').join('')+'</div>'+
           ((g.div!=='JNR'&&g.div!=='SNR')?'<small class="hint2">Not chosen yet. Pick one so this score counts in the standings.</small>':'')+'</div>';
       }
+      const wo=woOf(g);
+      h+='<label class="checkrow wo-row"><input type="checkbox" data-g="'+i+'" data-gf="wochk"'+(wo?' checked':'')+'><span>Won by default (the other team did not play)</span></label>';
+      if(wo){
+        h+='<div class="field"><span class="lbl2">Which team won?</span><div class="seg" role="radiogroup" aria-label="Which team won by default">'+
+          [[1,t1],[2,t2]].map(o=>'<label><input type="radio" name="gwo'+i+'" value="'+o[0]+'" data-g="'+i+'" data-gf="wo"'+(wo===o[0]?' checked':'')+'><span>'+esc(o[1])+'</span></label>').join('')+'</div>'+
+          '<small class="hint2 wo-hint">No score needed. It counts as a win and a loss in the standings, with no goals.</small></div>';
+      } else {
       h+='<div class="pair"><label class="field"><span class="js-t1">'+esc(t1)+'</span><input type="number" inputmode="numeric" min="0" step="1" data-g="'+i+'" data-gf="s1" value="'+esc(g.s1)+'"></label>'+
          '<span class="dash" aria-hidden="true">–</span>'+
          '<label class="field"><span class="js-t2">'+esc(t2)+'</span><input type="number" inputmode="numeric" min="0" step="1" data-g="'+i+'" data-gf="s2" value="'+esc(g.s2)+'"></label></div>'+
          '<p class="verdict" data-verdict="'+i+'">'+esc(verdictText(g,fx))+'</p>';
+      }
       if(g.note)h+='<label class="field"><span>Note about this score</span><input type="text" data-g="'+i+'" data-gf="note" value="'+esc(g.note)+'"></label>';
       h+='</div>';
     });
@@ -1506,6 +1525,7 @@ function saveSheet(){
     const kept=[];
     for(const g of SH.draft.games){
       const a=(g.s1===''||g.s1==null), b=(g.s2===''||g.s2==null);
+      if(woOf(g)){kept.push({k:g.k,fid:fx.id,div:(fx.div==='JNR/SNR'||fx.div==='')?g.div:fx.div,s1:'',s2:'',wo:woOf(g),rd:g.rd,note:g.note||''}); continue;}
       if(a&&b)continue;
       if(a||b)return fail('Please fill in both scores for each game, or remove the game.');
       if(isNaN(Number(g.s1))||isNaN(Number(g.s2))||Number(g.s1)<0||Number(g.s2)<0)return fail('Scores must be whole numbers, 0 or more.');
@@ -1574,7 +1594,7 @@ $('#sheet').addEventListener('input',e=>{
     if(f==='status'){
       SH.err='';
       if(el.value==='Result recorded'){ if(!SH.draft.games.length){ if(fx.div==='JNR/SNR'){SH.draft.games.push(gameDefaults(fx,'JNR')); SH.draft.games.push(gameDefaults(fx,'SNR'));} else SH.draft.games.push(gameDefaults(fx)); } }
-      else if(SH.draft.games.some(g=>g.s1!==''||g.s2!=='')){ fx.status='Result recorded'; SH.err='This match has scores, so it stays marked as Played. Remove the scores first if it was not played.'; }
+      else if(SH.draft.games.some(g=>woOf(g)||g.s1!==''||g.s2!=='')){ fx.status='Result recorded'; SH.err='This match has scores, so it stays marked as Played. Remove the scores first if it was not played.'; }
       else SH.draft.games.length=0;
       renderSheet(false);
     } else if(f==='t1'||f==='t2'){
@@ -1584,6 +1604,8 @@ $('#sheet').addEventListener('input',e=>{
     if(el.dataset.combo){CB.act=-1; comboRender(el);}
   } else if(el.dataset.g!==undefined){
     const g=SH.draft.games[Number(el.dataset.g)], f=el.dataset.gf; if(!g)return;
+    if(f==='wochk'){g.wo=el.checked?1:0; if(el.checked){g.s1='';g.s2='';} SH.err=''; renderSheet(false); return;}
+    if(f==='wo'){g.wo=Number(el.value); renderSheet(false); return;}
     if(f==='rd')g.rd=el.checked?'Unclear':'Clear'; else g[f]=el.value;
     if(f==='div'){renderSheet(false); return;}
     if(f==='s1'||f==='s2'){const v=$('[data-verdict="'+el.dataset.g+'"]'); if(v)v.textContent=verdictText(g,SH.draft.fx);}
@@ -1781,10 +1803,11 @@ function buildXlsx(){
   const w1=sheet(['ID','Date','Day','Time (PM)','Division','Zone','Team 1','Team 2','Team 1 school','Team 2 school','Venue','Umpires','Status','Notes'],fRows,[6,12,12,12,10,8,10,10,34,34,28,28,16,60],[1]);
   FX.forEach((f,i)=>{const a=XLSX.utils.encode_cell({r:i+1,c:2}); w1[a]={t:'s',f:'IF(B'+(i+2)+'="","",TEXT(B'+(i+2)+',"dddd"))',v:dayName(f.date)==='-'?'':dayName(f.date)};});
   XLSX.utils.book_append_sheet(wb,w1,'Fixtures');
-  const rRows=R.map(r=>{const i=resultInfo(r,fx); return [r.fid,serial(i.date),i.zone,r.div,i.t1,r.s1===''?'':Number(r.s1),i.t2,r.s2===''?'':Number(r.s2),'','',r.note];});
+  const rRows=R.map(r=>{const i=resultInfo(r,fx); return [r.fid,serial(i.date),i.zone,r.div,i.t1,r.s1===''?'':Number(r.s1),i.t2,r.s2===''?'':Number(r.s2),'','',(woOf(r)?'Won by default. ':'')+(r.note||'')];});
   const w2=sheet(['Fixture ID','Date','Zone','Division of score','Team 1','Team 1 score','Team 2','Team 2 score','Winner','Winning margin','Note'],rRows,[10,12,8,22,10,12,10,12,10,14,60],[1]);
   R.forEach((r,i)=>{
     const n=i+2, inf=resultInfo(r,fx);
+    if(woOf(r)){w2[XLSX.utils.encode_cell({r:i+1,c:8})]={t:'s',v:inf.winner}; w2[XLSX.utils.encode_cell({r:i+1,c:9})]={t:'s',v:'By default'}; return;}
     w2[XLSX.utils.encode_cell({r:i+1,c:8})]={t:'s',f:'IF(OR(F'+n+'="",H'+n+'=""),"",IF(F'+n+'>H'+n+',E'+n+',IF(H'+n+'>F'+n+',G'+n+',"Draw")))',v:inf.winner==='-'?'':inf.winner};
     const mv=inf.margin==='-'?'':inf.margin;
     w2[XLSX.utils.encode_cell({r:i+1,c:9})]={t:mv===''?'s':'n',f:'IF(OR(F'+n+'="",H'+n+'=""),"",ABS(F'+n+'-H'+n+'))',v:mv};
@@ -1828,7 +1851,7 @@ function buildPdf(){
     [22,40,52,50,40,34,42,42,120,100,70,174], FX.map(f=>f.status==='Postponed'?'postponed':''));
   doc.addPage(); y=40;
   section('Results',['Fix. ID','Date','Zone','Division of score','Team 1','Score 1','Team 2','Score 2','Winner','Margin','Note'],
-    R.map(r=>{const i=resultInfo(r,fx); return [r.fid,i.date?shortDate(i.date):'',i.zone,r.div,i.t1,r.s1,i.t2,r.s2,i.winner==='-'?'':i.winner,i.margin==='-'?'':i.margin,r.note];}),
+    R.map(r=>{const i=resultInfo(r,fx); return [r.fid,i.date?shortDate(i.date):'',i.zone,r.div,i.t1,r.s1,i.t2,r.s2,i.winner==='-'?'':i.winner,i.margin==='-'?'':i.margin,(woOf(r)?'Won by default. ':'')+(r.note||'')];}),
     [38,42,38,100,52,38,52,38,52,40,296], null);
   const SGp=standings().G; doc.addPage(); y=40;
   GROUPS.forEach(([z,l])=>{const g=SGp[z+'|'+l];
