@@ -797,6 +797,19 @@ body{background:var(--bg)}
   .ucard.open-now,.team.open-now{border-color:var(--primary)!important; background:var(--sel)!important; box-shadow:0 0 0 1px var(--primary)}
   .tbl tr.open-now td{background:var(--sel)!important}
 }
+
+/* ---------- computer: matches, notes and new items use one side sheet from the left ---------- */
+@media (min-width:900px){
+  body.sides-form{--side-l:clamp(360px,30vw,460px)}
+  body.sides-one .layout{padding-right:max(16px,env(safe-area-inset-right,0px))}
+  .side-l .grid2,.side-l .more .inner{grid-template-columns:minmax(0,1fr)}
+  .note.open-now{background:var(--sel)}
+}
+
+/* ---------- search results note ---------- */
+.sres{margin:0; padding:4px 4px 10px; font-size:14px; color:var(--muted)}
+.notes .sres{padding:8px 24px 10px}
+@media (max-width:899px){ .notes .sres{padding-left:16px; padding-right:16px} #teamList .sres,#umpList .sres,#venueList .sres{padding-left:16px; padding-right:16px} }
 </style>
 
 </head>
@@ -1111,7 +1124,28 @@ function updateChanges(){
 function refreshAll(){renderMatches();renderStandings();renderTeams();renderUmpires();renderVenues();renderNotes();updateChanges();scheduleSave();}
 
 /* ---------- matches list ---------- */
-const V={tab:'matches',show:null,q:'',zone:'',level:'',tA:'',tB:'',sort:'asc'};
+const V={tab:'matches',show:null,q:'',zone:'',level:'',tA:'',tB:'',sort:'asc',sq:{teams:'',umpires:'',venues:'',notes:''}};
+// Search on the Teams, Umpires, Venues and Notes pages: every word typed must appear somewhere in the item.
+const SEARCH_TABS=['teams','umpires','venues','notes'];
+const SEARCH_PH={matches:'Search, for example: AHS WC',standings:'Search matches, for example: AHS WC',teams:'Search teams and schools',umpires:'Search umpires',venues:'Search venues',notes:'Search notes'};
+const flat=t=>String(t==null?'':t).toLowerCase().replace(/[.’'`]/g,'');
+function hits(text,q){const t=flat(text); return flat(q).split(/\s+/).filter(Boolean).every(w=>t.indexOf(w)>=0);}
+function sNote(n,total,noun,q,tab){
+  return q?'<p class="sres" role="status">'+n+' of '+total+' '+noun+' matching “'+esc(q)+'” <button type="button" class="link" data-sclear="'+tab+'">Clear search</button></p>':'';
+}
+function noMatch(noun,q,tab){
+  return '<div class="empty"><p><b>No '+noun+' match “'+esc(q)+'”.</b></p><button type="button" class="btn" data-sclear="'+tab+'">Clear search</button></div>';
+}
+function renderTab(tab){
+  if(tab==='teams')renderTeams(); else if(tab==='umpires')renderUmpires(); else if(tab==='venues')renderVenues(); else if(tab==='notes')renderNotes();
+}
+// The header box shows the search that belongs to the page you are on.
+function syncSearch(){
+  const q=$('#q'), mine=SEARCH_TABS.indexOf(V.tab)>=0?V.sq[V.tab]:V.q;
+  q.placeholder=SEARCH_PH[V.tab]||SEARCH_PH.matches; q.value=mine||'';
+  const lab=document.querySelector('#searchBox .sr'); if(lab)lab.textContent=q.placeholder;
+  if(mine&&mqPhone.matches)document.querySelector('.topbar').classList.add('searching');
+}
 try{if(localStorage.getItem('netball-scorebook-sort')==='desc')V.sort='desc';}catch(e){}
 let COUNTS={};
 function baseOk(f){
@@ -1401,20 +1435,20 @@ function venues(){
   return Array.from(m.values()).sort((a,b)=>b.total-a.total||a.name.localeCompare(b.name));
 }
 function renderVenues(){
-  const list=venues();
-  $('#venueList').innerHTML=list.length?'<div class="ump-grid">'+list.map(v=>
+  const all=venues(), q=V.sq.venues.trim(), list=all.filter(v=>hits([v.name,v.rec&&v.rec.address,v.rec&&v.rec.note].join(' '),q));
+  $('#venueList').innerHTML=sNote(list.length,all.length,'venues',q,'venues')+(list.length?'<div class="ump-grid">'+list.map(v=>
     '<button type="button" class="ucard vcard" data-venue="'+esc(v.name)+'"><span class="tx"><b>'+esc(v.name)+'</b>'+(v.rec&&v.rec.address?'<small>'+esc(v.rec.address)+'</small>':'')+
     '<small>'+(v.total?(v.next?'Next: '+esc(shortDate(v.next.date))+', '+esc(v.next.t1+' v '+v.next.t2):'No more matches coming up'):'No matches yet')+'</small></span><span class="cnt" title="Matches">'+v.total+'</span></button>').join('')+'</div>'
-    :'<div class="empty"><p>No venues yet.</p></div>';
+    :(q?noMatch('venues',q,'venues'):'<div class="empty"><p>No venues yet.</p></div>'));
   markOpen();
   renderNav();
 }
 function renderUmpires(){
-  const list=umpires();
-  $('#umpList').innerHTML=list.length?'<div class="ump-grid">'+list.map(u=>
+  const all=umpires(), q=V.sq.umpires.trim(), list=all.filter(u=>hits([u.name,u.rec&&u.rec.phone,u.rec&&u.rec.note].join(' '),q));
+  $('#umpList').innerHTML=sNote(list.length,all.length,'umpires',q,'umpires')+(list.length?'<div class="ump-grid">'+list.map(u=>
     '<button type="button" class="ucard" data-ump="'+esc(u.name)+'">'+avatar(u.name.replace(/[^A-Za-z]/g,'').slice(0,1)+(u.name.split(' ').pop()||'').slice(0,1))+
     '<span class="tx"><b>'+esc(u.name)+'</b>'+(u.rec&&u.rec.phone?'<small>'+esc(u.rec.phone)+'</small>':'')+'<small>'+(u.total?'':'No matches yet · ')+(u.next?'Next: '+esc(shortDate(u.next.date))+', '+esc(u.next.t1+' v '+u.next.t2):'No more matches coming up')+'</small></span><span class="cnt" title="Matches">'+u.total+'</span></button>').join('')+'</div>'
-    :'<div class="empty"><p>No umpires yet.</p></div>';
+    :(q?noMatch('umpires',q,'umpires'):'<div class="empty"><p>No umpires yet.</p></div>'));
   markOpen();
   renderNav();
 }
@@ -1424,8 +1458,10 @@ function renderTeams(){
   fillTeamFilters();
   const fx=fxMap(); const zones=[['EAST','Eastern zone'],['WEST','Western zone']];
   const known=new Set(zones.map(z=>z[0])); let html='';
-  const groups=zones.map(z=>[z[0],z[1],S.teams.filter(t=>t.zone===z[0])]);
-  const other=S.teams.filter(t=>!known.has(t.zone)); if(other.length)groups.push(['','Zone not marked',other]);
+  const q=V.sq.teams.trim();
+  const TL=S.teams.filter(t=>hits([t.team,t.name,t.zone==='EAST'?'eastern east':t.zone==='WEST'?'western west':'',TEAMLEVEL[t.dv]||'',LEVEL[t.dv]||''].join(' '),q));
+  const groups=zones.map(z=>[z[0],z[1],TL.filter(t=>t.zone===z[0])]);
+  const other=TL.filter(t=>!known.has(t.zone)); if(other.length)groups.push(['','Zone not marked',other]);
   groups.forEach(g=>{
     if(!g[2].length)return;
     html+='<div class="zone-h">'+esc(g[1])+'</div><div class="team-grid">'+g[2].map(t=>{
@@ -1433,12 +1469,13 @@ function renderTeams(){
       return '<button type="button" class="team" data-team="'+esc(t.k)+'">'+avatar(t.team||'?')+'<span class="tx"><b>'+esc(t.team||'(no name)')+'</b>'+(t.name?'<span class="nm">'+esc(t.name)+'</span>':'')+'<small>'+esc(TEAMLEVEL[t.dv]||'')+' · '+i.fc+' match'+(i.fc===1?'':'es')+(i.pc?', '+i.pc+' postponed':'')+'</small></span></button>';
     }).join('')+'</div>';
   });
-  $('#teamList').innerHTML=html||'<div class="empty"><p>No teams yet.</p></div>';
+  $('#teamList').innerHTML=sNote(TL.length,S.teams.length,'teams',q,'teams')+(html||(q?noMatch('teams',q,'teams'):'<div class="empty"><p>No teams yet.</p></div>'));
   markOpen();
   renderNav();
 }
 function renderNotes(){
-  $('#noteList').innerHTML=S.notes.length?S.notes.map(n=>'<button type="button" class="note" data-note="'+esc(n.k)+'"><b>'+esc(n.topic||'(no title)')+'</b><span>'+esc(n.detail)+'</span></button>').join(''):'<div class="empty"><p>No notes yet.</p></div>';
+  const q=V.sq.notes.trim(), NL=S.notes.filter(n=>hits(n.topic+' '+n.detail,q));
+  $('#noteList').innerHTML=sNote(NL.length,S.notes.length,'notes',q,'notes')+(NL.length?NL.map(n=>'<button type="button" class="note" data-note="'+esc(n.k)+'"><b>'+esc(n.topic||'(no title)')+'</b><span>'+esc(n.detail)+'</span></button>').join(''):(q?noMatch('notes',q,'notes'):'<div class="empty"><p>No notes yet.</p></div>'));
   renderNav();
 }
 
@@ -1459,7 +1496,7 @@ function openSheet(obj){
   renderSheet(true); renderMatches();
 }
 function closeSheet(){
-  SH=null; $('#detail').classList.remove('open','sides'); $('#sheet').classList.remove('wide'); document.body.classList.remove('sides-open'); markOpen(); syncLock();
+  SH=null; $('#detail').classList.remove('open','sides'); $('#sheet').classList.remove('wide'); document.body.classList.remove('sides-open','sides-one','sides-form'); markOpen(); syncLock();
   renderEmpty(); renderMatches();
   if(!isWide()&&lastFocus&&lastFocus.focus&&document.contains(lastFocus))lastFocus.focus();
 }
@@ -1624,13 +1661,14 @@ function relatedMatches(){
 // Highlight the umpire, team or venue whose sheets are open.
 function markOpen(){
   const on=SH&&document.body.classList.contains('sides-open');
-  document.querySelectorAll('.ucard.open-now,.team.open-now,.tbl tr.open-now').forEach(e=>e.classList.remove('open-now'));
+  document.querySelectorAll('.ucard.open-now,.team.open-now,.note.open-now,.tbl tr.open-now').forEach(e=>e.classList.remove('open-now'));
   if(!on)return;
   let sel=null;
   if(SH.type==='ump')sel=Array.from(document.querySelectorAll('[data-ump]')).filter(e=>umpKey(e.dataset.ump)===umpKey(SH.origName));
   else if(SH.type==='venue')sel=Array.from(document.querySelectorAll('[data-venue]')).filter(e=>vKey(e.dataset.venue)===vKey(SH.origName));
-  else sel=Array.from(document.querySelectorAll('[data-team],[data-steam]')).filter(e=>(e.dataset.team||e.dataset.steam)===SH.draft.k);
-  sel.forEach(e=>e.classList.add('open-now'));
+  else if(SH.type==='team')sel=Array.from(document.querySelectorAll('[data-team],[data-steam]')).filter(e=>(e.dataset.team||e.dataset.steam)===SH.draft.k);
+  else if(SH.type==='note')sel=Array.from(document.querySelectorAll('[data-note]')).filter(e=>e.dataset.note===SH.draft.k);
+  (sel||[]).forEach(e=>e.classList.add('open-now'));
 }
 function renderSheet(first){
   CB.el=null; CB.items=[]; CB.act=-1;
@@ -1651,13 +1689,15 @@ function renderSheet(first){
       (SH.type==='ump'&&!SH.isNew?'<button type="button" class="btn" data-act="seeump">See their matches</button>':'')+
       (SH.type==='venue'&&!SH.isNew?'<button type="button" class="btn" data-act="seeump">See its matches</button>':'')+
       '<span class="spacer"></span>'+(SH.isNew?'':'<button type="button" class="link danger" data-act="remove">Remove this '+noun+'</button>');
-  const split=!SH.isNew&&(SH.type==='ump'||SH.type==='team'||SH.type==='venue')&&!mqPhone.matches;
-  const wasSides=$('#detail').classList.contains('sides'); $('#sheet').classList.toggle('noanim',wasSides&&split);
-  $('#sheet').classList.toggle('wide',split); $('#detail').classList.toggle('sides',split); document.body.classList.toggle('sides-open',split); syncLock(); markOpen();
+  const side=!mqPhone.matches, two=side&&!SH.isNew&&(SH.type==='ump'||SH.type==='team'||SH.type==='venue');
+  const wasSides=$('#detail').classList.contains('sides'); $('#sheet').classList.toggle('noanim',wasSides&&side);
+  $('#sheet').classList.toggle('wide',side); $('#detail').classList.toggle('sides',side);
+  const bc=document.body.classList; bc.toggle('sides-open',side); bc.toggle('sides-one',side&&!two); bc.toggle('sides-form',side&&(SH.type==='match'||SH.type==='note'));
+  syncLock(); markOpen();
   const head='<div class="sheet-h"><div><h2 id="sheetTitle" tabindex="-1">'+esc(title)+'</h2>'+(sub?'<p>'+esc(sub)+'</p>':'')+'</div><button type="button" class="icon-btn" data-act="cancel" aria-label="Close without saving">'+IC_CLOSE+'</button></div>';
   const inner=head+'<div class="sheet-b">'+body+'</div><div class="sheet-f">'+foot+'</div>';
-  $('#sheet').innerHTML=split
-    ? '<div class="side side-l">'+inner+'</div><div class="side side-r" role="region" aria-label="Matches">'+relatedMatches()+'</div>'
+  $('#sheet').innerHTML=side
+    ? '<div class="side side-l">'+inner+'</div>'+(two?'<div class="side side-r" role="region" aria-label="Matches">'+relatedMatches()+'</div>':'')
     : inner;
   const nb=$('.sheet-b'); if(nb)nb.scrollTop=first?0:st;
   if(first){
@@ -1907,7 +1947,7 @@ $('#fpop').addEventListener('click',e=>{if(e.target.id==='fpop')closeFilters();}
 function resetFilters(){V.q='';V.zone='';V.level='';V.tA='';V.tB='';$('#q').value='';$('#fZone').value='';$('#fLevel').value='';fillTeamFilters();}
 function showTab(tab){
   if(SH&&document.body.classList.contains('sides-open'))closeSheet();
-  V.tab=tab;
+  V.tab=tab; syncSearch();
   ['matches','standings','teams','umpires','venues','notes'].forEach(t=>{$('#panel-'+t).hidden=(t!==tab);}); hideTip();
   renderNav();
 }
@@ -1926,6 +1966,7 @@ $('#app').addEventListener('click',e=>{
   const c=e.target.closest('[data-show]'); if(c){V.show=c.dataset.show; showTab('matches'); renderMatches(); closeNav(); return;}
   const tb=e.target.closest('[data-tab]'); if(tb){const fromBar=!!tb.closest('#bnav'); showTab(tb.dataset.tab); closeNav(); if(fromBar)window.scrollTo({top:0}); return;}
   if(e.target.closest('[data-clear]')){resetFilters(); renderMatches(); return;}
+  const sc=e.target.closest('[data-sclear]'); if(sc){const t=sc.dataset.sclear; V.sq[t]='';  $('#q').value=''; renderTab(t); return;}
   const dp=e.target.closest('[data-day]'); if(dp){pinDay(dp.dataset.day); const t=document.getElementById('day-'+dp.dataset.day); if(t)t.scrollIntoView({behavior:'smooth',block:'start'}); return;}
   if(e.target.closest('#btnSignIn')){signIn();return;}
   if(e.target.closest('#btnSignOut')){signOut();return;}
@@ -1950,7 +1991,11 @@ $('#addTeam').addEventListener('click',()=>openTeam(null));
 $('#addNote').addEventListener('click',()=>openNote(null));
 $('#addUmp').addEventListener('click',()=>openUmp(null));
 $('#addVenue').addEventListener('click',()=>openVenue(null));
-$('#q').addEventListener('input',e=>{V.q=e.target.value; if(V.tab!=='matches')showTab('matches'); renderMatches();});
+$('#q').addEventListener('input',e=>{
+  const v=e.target.value;
+  if(SEARCH_TABS.indexOf(V.tab)>=0){V.sq[V.tab]=v; renderTab(V.tab); return;}
+  V.q=v; if(V.tab!=='matches')showTab('matches'); renderMatches();
+});
 $('#fZone').addEventListener('input',e=>{V.zone=e.target.value; showTab('matches'); renderMatches();});
 $('#fLevel').addEventListener('input',e=>{V.level=e.target.value; showTab('matches'); renderMatches();});
 $('#fTeamA').addEventListener('input',e=>{V.tA=e.target.value; if(V.tB===V.tA||!V.tA)V.tB=''; fillTeamFilters(); showTab('matches'); renderMatches();});
@@ -1971,7 +2016,9 @@ function pinDay(d){
 function openSearch(){document.querySelector('.topbar').classList.add('searching'); $('#btnSearch').setAttribute('aria-expanded','true'); $('#q').focus();}
 function closeSearch(){
   document.querySelector('.topbar').classList.remove('searching'); $('#btnSearch').setAttribute('aria-expanded','false');
-  if(V.q){V.q=''; $('#q').value=''; renderMatches();}
+  if(SEARCH_TABS.indexOf(V.tab)>=0){if(V.sq[V.tab]){V.sq[V.tab]=''; renderTab(V.tab);}}
+  else if(V.q){V.q=''; renderMatches();}
+  $('#q').value='';
   $('#btnSearch').focus();
 }
 $('#btnSearch').addEventListener('click',openSearch);
@@ -2137,7 +2184,7 @@ $('#btnXlsx').addEventListener('click',()=>doDownload('xlsx'));
 $('#btnPdf').addEventListener('click',()=>doDownload('pdf'));
 
 /* ---------- start ---------- */
-placeFilters(); renderEmpty(); renderMatches(); renderStandings(); renderTeams(); renderUmpires(); renderVenues(); renderNotes(); updateChanges();
+placeFilters(); syncSearch(); renderEmpty(); renderMatches(); renderStandings(); renderTeams(); renderUmpires(); renderVenues(); renderNotes(); updateChanges();
 if(CLOUD){
   CLOUD.client.onUpdate(CLOUD.api.scorebook.get,{},applyCloud,()=>{CLOUD.ready=true; updateChanges();});
   CLOUD.client.subscribeToConnectionState(c=>{const on=c.isWebSocketConnected||!c.hasEverConnected; if(on!==CLOUD.online){CLOUD.online=on; updateChanges();}});
