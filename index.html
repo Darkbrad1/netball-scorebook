@@ -1606,7 +1606,9 @@ function relatedMatches(){
     const d=parseISO(f.date);
     const cols=matchCols(f).filter(c=>c.a!==null||c.wo);
     const short=l=>l.indexOf('Junior')===0?'JNR ':l.indexOf('Senior')===0?'SNR ':'';
-    const sc=cols.length?cols.map(c=>'<span class="rm-sc">'+esc(short(c.label))+(c.wo?esc((c.wo===1?f.t1:f.t2)+' by default'):'<b>'+esc(c.a)+'</b>–<b>'+esc(c.b)+'</b>')+'</span>').join(''):'';
+    const flip=!!team&&norm(f.t1)!==team;            // the team is second on the fixture: swap sides
+    const L=flip?f.t2:f.t1, R=flip?f.t1:f.t2;
+    const sc=cols.length?cols.map(c=>'<span class="rm-sc">'+esc(short(c.label))+(c.wo?esc((c.wo===1?f.t1:f.t2)+' by default'):'<b>'+esc(flip?c.b:c.a)+'</b>–<b>'+esc(flip?c.a:c.b)+'</b>')+'</span>').join(''):'';
     let res='';
     if(team&&cols.length){
       const side=norm(f.t1)===team?1:2;
@@ -1616,7 +1618,7 @@ function relatedMatches(){
     const st=f.status==='Postponed'?'<span class="rm-st post">Postponed</span>':f.status==='Result recorded'?res:'<span class="rm-st todo">'+esc(timeLabel(f.time))+'</span>';
     const tm=c=>norm(c)===team?'<b>'+esc(c)+'</b>':esc(c);
     return '<button type="button" class="rm" data-match="'+esc(f.k)+'"><span class="rm-d"><b>'+(d?d.toLocaleDateString('en-GB',{weekday:'short',day:'numeric',month:'short'}):'No date')+'</b><small>'+esc(f.venue||'')+'</small></span>'+
-      '<span class="rm-t">'+tm(f.t1)+' <i>v</i> '+tm(f.t2)+(sc?'<span class="rm-scs">'+sc+'</span>':'')+'</span>'+st+'</button>';
+      '<span class="rm-t">'+tm(L)+' <i>v</i> '+tm(R)+(sc?'<span class="rm-scs">'+sc+'</span>':'')+'</span>'+st+'</button>';
   }).join('')+'</div>';
 }
 // Highlight the umpire, team or venue whose sheets are open.
