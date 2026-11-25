@@ -810,6 +810,10 @@ body{background:var(--bg)}
 .sres{margin:0; padding:4px 4px 10px; font-size:14px; color:var(--muted)}
 .notes .sres{padding:8px 24px 10px}
 @media (max-width:899px){ .notes .sres{padding-left:16px; padding-right:16px} #teamList .sres,#umpList .sres,#venueList .sres{padding-left:16px; padding-right:16px} }
+
+/* ---------- note dates ---------- */
+.note .nd{font-size:12.5px; color:var(--muted); margin-top:2px}
+.nstamp{padding:0!important}
 </style>
 
 </head>
@@ -1475,7 +1479,7 @@ function renderTeams(){
 }
 function renderNotes(){
   const q=V.sq.notes.trim(), NL=S.notes.filter(n=>hits(n.topic+' '+n.detail,q));
-  $('#noteList').innerHTML=sNote(NL.length,S.notes.length,'notes',q,'notes')+(NL.length?NL.map(n=>'<button type="button" class="note" data-note="'+esc(n.k)+'"><b>'+esc(n.topic||'(no title)')+'</b><span>'+esc(n.detail)+'</span></button>').join(''):(q?noMatch('notes',q,'notes'):'<div class="empty"><p>No notes yet.</p></div>'));
+  $('#noteList').innerHTML=sNote(NL.length,S.notes.length,'notes',q,'notes')+(NL.length?NL.map(n=>'<button type="button" class="note" data-note="'+esc(n.k)+'"><b>'+esc(n.topic||'(no title)')+'</b><span>'+esc(n.detail)+'</span>'+(noteMeta(n)?'<small class="nd">'+esc(noteMeta(n))+'</small>':'')+'</button>').join(''):(q?noMatch('notes',q,'notes'):'<div class="empty"><p>No notes yet.</p></div>'));
   renderNav();
 }
 
@@ -1621,11 +1625,25 @@ function teamBody(){
   h+='<section class="sec"><h3>Which teams does the school enter?</h3><div class="seg" role="radiogroup">'+[['B','Junior only'],['A','Senior only'],['A and B','Both']].map(o=>'<label><input type="radio" name="dv" value="'+o[0]+'" data-tf="dv"'+(t.dv===o[0]?' checked':'')+'><span>'+o[1]+'</span></label>').join('')+'</div></section>';
   return h;
 }
+// "Wed 25 Nov, 2:14 PM" (with the year when it is not this year)
+function stamp(ms){
+  if(!ms)return '';
+  const d=new Date(ms); if(isNaN(d.getTime()))return '';
+  const o={weekday:'short',day:'numeric',month:'short',hour:'numeric',minute:'2-digit',hour12:true};
+  if(d.getFullYear()!==new Date().getFullYear())o.year='numeric';
+  return d.toLocaleString('en-GB',o).replace(/\b(am|pm)\b/,m=>m.toUpperCase());
+}
+// When a note was written, and when it was last changed. Notes saved before dates were recorded show nothing.
+function noteMeta(n){
+  const w=stamp(n.created), e=(n.edited&&(!n.created||n.edited-n.created>60000))?stamp(n.edited):'';
+  return [w?'Written '+w:'',e?(w?'edited ':'Edited ')+e:''].filter(Boolean).join(' · ');
+}
 function noteBody(){
   const n=SH.draft; let h='';
   if(SH.err)h+='<div class="err" role="alert">'+esc(SH.err)+'</div>';
   h+='<label class="field"><span>Title</span><input type="text" data-nf="topic" value="'+esc(n.topic)+'"></label>';
   h+='<label class="field"><span>Details</span><textarea data-nf="detail" style="min-height:160px">'+esc(n.detail)+'</textarea></label>';
+  const m=noteMeta(n); if(m)h+='<p class="fine nstamp">'+esc(m)+'</p>';
   return h;
 }
 // Every match for the umpire, team or venue open in the sheet, oldest first.
@@ -1793,7 +1811,9 @@ function saveSheet(){
   } else {
     const n=SH.draft; n.topic=String(n.topic).trim();
     if(!n.topic&&!String(n.detail).trim())return fail('Please type a title or some details.');
-    const i=S.notes.findIndex(x=>x.k===n.k); if(i>=0)S.notes[i]=n; else S.notes.push(n);
+    const i=S.notes.findIndex(x=>x.k===n.k), old=i>=0?S.notes[i]:null, now=Date.now();
+    if(!old)n.created=now; else if(old.topic!==n.topic||String(old.detail)!==String(n.detail))n.edited=now;
+    if(i>=0)S.notes[i]=n; else S.notes.push(n);
     toast('Saved.');
   }
   closeSheet(); refreshAll();
@@ -2116,7 +2136,7 @@ function buildXlsx(){
   XLSX.utils.book_append_sheet(wb,sheet(['Group','Position','Team','School','Played','Won','Lost','Drawn','Goals for','Goals against','Goal difference'],sRows,[18,9,10,46,8,8,8,8,10,13,15]),'Standings');
   XLSX.utils.book_append_sheet(wb,sheet(['Venue','Address or area','Matches','Played','Notes'],venues().map(v=>[v.name,v.rec?v.rec.address||'':'',v.total,v.done,v.rec?v.rec.note||'':'']),[30,30,10,10,60]),'Venues');
   XLSX.utils.book_append_sheet(wb,sheet(['Umpire','Phone','Matches','Played','Notes'],umpires().map(u=>[u.name,u.rec?u.rec.phone||'':'',u.total,u.done,u.rec?u.rec.note||'':'']),[24,16,10,10,60]),'Umpires');
-  XLSX.utils.book_append_sheet(wb,sheet(['Topic','Detail'],S.notes.map(n=>[n.topic,n.detail]),[28,120]),'Notes');
+  XLSX.utils.book_append_sheet(wb,sheet(['Topic','Detail','Written','Last edited'],S.notes.map(n=>[n.topic,n.detail,stamp(n.created),stamp(n.edited)]),[28,120,24,24]),'Notes');
   return XLSX.write(wb,{bookType:'xlsx',type:'array'});
 }
 function buildPdf(){
@@ -2155,7 +2175,7 @@ function buildPdf(){
       g.list.map((r,i)=>[r.p?i+1:'',r.code,schoolName(r.code),r.p,r.w,r.l,r.d,r.gf,r.ga,r.p?sgn(r.gd):'']),[24,50,250,56,50,50,50,64,76,66],null);});
   section('Teams and schools',['Team','School','Zone','Divisions listed','Level','Fixtures','Postponed','Scores recorded'],
     S.teams.map(t=>{const i=teamInfo(t,fx); return [t.team,t.name||'',t.zone,t.dv,i.level,i.fc,i.pc,i.sc];}),[50,230,50,80,100,60,60,70],null);
-  section('Notes',['Topic','Detail'],S.notes.map(n=>[n.topic,n.detail]),[150,636],null);
+  section('Notes',['Topic','Detail','Written'],S.notes.map(n=>[n.topic,n.detail,stamp(n.created)]),[130,496,160],null);
   const pages=doc.getNumberOfPages(), stamp=new Date().toLocaleDateString('en-GB',{day:'numeric',month:'short',year:'numeric'});
   for(let i=1;i<=pages;i++){
     doc.setPage(i); doc.setFont('helvetica','normal'); doc.setFontSize(8); doc.setTextColor(120);
