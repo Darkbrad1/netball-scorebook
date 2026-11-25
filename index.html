@@ -191,9 +191,9 @@ button:focus-visible,input:focus-visible,select:focus-visible,textarea:focus-vis
 .field{display:flex; flex-direction:column; gap:6px; min-width:0}
 .field>span{font-size:14px; font-weight:500}
 .field small{color:var(--muted); font-weight:400}
-input[type=text],input[type=date],input[type=number],select,textarea{font:inherit; font-size:16px; color:var(--ink); background:var(--surface); border:1px solid var(--line-strong); border-radius:8px; padding:0 14px; min-height:52px; width:100%; min-width:0}
+input[type=text],input[type=tel],input[type=date],input[type=number],select,textarea{font:inherit; font-size:16px; color:var(--ink); background:var(--surface); border:1px solid var(--line-strong); border-radius:8px; padding:0 14px; min-height:52px; width:100%; min-width:0}
 textarea{padding:12px 14px; resize:vertical; min-height:96px}
-input[type=text]:focus,input[type=date]:focus,input[type=number]:focus,select:focus,textarea:focus{outline:0; border-color:var(--primary); box-shadow:0 0 0 1px var(--primary)}
+input[type=text]:focus,input[type=tel]:focus,input[type=date]:focus,input[type=number]:focus,select:focus,textarea:focus{outline:0; border-color:var(--primary); box-shadow:0 0 0 1px var(--primary)}
 .seg{display:flex; border:1px solid var(--line-strong); border-radius:24px; overflow:hidden}
 .seg label{position:relative; flex:1 1 0; display:block; min-width:0}
 .seg label+label span{border-left:1px solid var(--line-strong)}
@@ -731,6 +731,40 @@ body{background:var(--bg)}
   .mbar .dstrip{grid-area:dates; width:100%; padding:2px 0 4px}
   .mbar .dpill{flex:1 0 64px}
 }
+
+/* ---------- computer: details on the left, their matches on the right ---------- */
+@media (min-width:900px){
+  #sheet.wide{max-width:1120px; height:86vh!important; max-height:86vh}
+  #sheet.wide .sheet-b{padding:0; overflow:hidden; display:flex}
+  .split{flex:1; display:grid; grid-template-columns:minmax(300px,380px) minmax(0,1fr); min-height:0}
+  .split-l{overflow:auto; padding:8px 24px 24px; display:flex; flex-direction:column; gap:16px; border-right:1px solid var(--line)}
+  .split-r{overflow:auto; padding:8px 24px 24px; background:var(--bg)}
+  .tbl tr[data-steam]{cursor:pointer}
+  .tbl tr[data-steam]:hover td{background:var(--sel)}
+}
+.rm-head{display:flex; align-items:baseline; justify-content:space-between; flex-wrap:wrap; gap:4px 12px; padding:8px 0 12px; position:sticky; top:0; background:var(--bg); z-index:1}
+.rm-head h3{margin:0; font-size:18px; font-weight:700}
+.rm-head h3 span{font-size:13px; font-weight:700; color:var(--primary-ink); background:var(--primary); border-radius:10px; padding:1px 8px; margin-left:6px; vertical-align:middle}
+.rm-head p{margin:0; font-size:13px; color:var(--muted)}
+.rm-none{color:var(--muted)}
+.rm-list{display:flex; flex-direction:column; gap:8px}
+.rm{display:grid; grid-template-columns:150px minmax(0,1fr) auto; gap:14px; align-items:center; width:100%; padding:10px 14px; border:1px solid var(--line); border-radius:12px; background:var(--surface); color:inherit; font:inherit; text-align:left; cursor:pointer}
+.rm:hover{border-color:var(--line-strong)}
+.rm-d{display:flex; flex-direction:column; min-width:0}
+.rm-d b{font-weight:600; font-size:14px}
+.rm-d small{font-size:12px; color:var(--muted); overflow:hidden; text-overflow:ellipsis; white-space:nowrap}
+.rm-t{display:flex; flex-wrap:wrap; align-items:center; gap:4px 10px; font-size:15px; min-width:0}
+.rm-t i{font-style:normal; color:var(--muted); font-size:13px}
+.rm-t b{font-weight:700}
+.rm-scs{display:flex; gap:8px; flex-wrap:wrap}
+.rm-sc{font-size:13px; color:var(--muted); background:var(--surface-2); border-radius:6px; padding:1px 8px; font-variant-numeric:tabular-nums}
+.rm-sc b{color:var(--ink); font-weight:600}
+.rm-res,.rm-st{font-size:12px; font-weight:700; border-radius:6px; padding:3px 9px; white-space:nowrap}
+.rm-res.won{background:var(--played-bg); color:var(--played)}
+.rm-res.lost{background:var(--surface-2); color:var(--muted)}
+.rm-res.mixed{background:var(--sel); color:var(--on-soft)}
+.rm-st.post{background:var(--post-bg); color:var(--post)}
+.rm-st.todo{background:var(--surface-2); color:var(--ink); font-weight:500}
 </style>
 
 </head>
@@ -1282,7 +1316,7 @@ function renderStandings(){
       return '<div class="brow" tabindex="0" data-tip="'+esc(tipFor(r))+'" aria-label="'+esc(tipFor(r))+'"><span class="bl">'+esc(r.code)+'</span><span class="track">'+bar+'<span class="mid"></span></span><span class="bv">'+(r.p?sgn(r.gd):'–')+'</span></div>';
     }).join('');
     h+='<div class="tbl-wrap"><table class="tbl"><thead><tr><th>#</th><th>Team</th><th>Played</th><th>Won</th><th>Lost</th>'+(ranked.some(r=>r.d)?'<th>Drawn</th>':'')+'<th>Goals for</th><th>Goals against</th><th>Difference</th></tr></thead><tbody>'+
-      ranked.map((r,i)=>'<tr'+(i===0&&g.leader?' class="top"':'')+'><td class="pos">'+(r.p?i+1:'–')+'</td><td><span class="tn">'+avatar(r.code)+'<span><b>'+esc(r.code)+'</b>'+(schoolName(r.code)?'<small>'+esc(schoolName(r.code))+'</small>':'')+'</span></span></td><td>'+r.p+'</td><td>'+r.w+'</td><td>'+r.l+'</td>'+(ranked.some(x=>x.d)?'<td>'+r.d+'</td>':'')+'<td>'+r.gf+'</td><td>'+r.ga+'</td><td class="gd">'+(r.p?sgn(r.gd):'–')+'</td></tr>').join('')+
+      ranked.map((r,i)=>{const tk=(S.teams.find(t=>norm(t.team)===norm(r.code))||{}).k; return '<tr'+(i===0&&g.leader?' class="top"':'')+(tk?' data-steam="'+esc(tk)+'" tabindex="0"':'')+'><td class="pos">'+(r.p?i+1:'–')+'</td><td><span class="tn">'+avatar(r.code)+'<span><b>'+esc(r.code)+'</b>'+(schoolName(r.code)?'<small>'+esc(schoolName(r.code))+'</small>':'')+'</span></span></td><td>'+r.p+'</td><td>'+r.w+'</td><td>'+r.l+'</td>'+(ranked.some(x=>x.d)?'<td>'+r.d+'</td>':'')+'<td>'+r.gf+'</td><td>'+r.ga+'</td><td class="gd">'+(r.p?sgn(r.gd):'–')+'</td></tr>'}).join('')+
       '</tbody></table></div>';
     h+='<div class="charts">'+
       '<div class="chart"><h3>Games won</h3><p>Longest bar has won the most games.</p><div class="bars">'+winBars+'</div><div class="scale"><span>0</span><span>'+maxW+'</span></div></div>'+
@@ -1522,6 +1556,34 @@ function noteBody(){
   h+='<label class="field"><span>Details</span><textarea data-nf="detail" style="min-height:160px">'+esc(n.detail)+'</textarea></label>';
   return h;
 }
+// Every match for the umpire, team or venue open in the sheet, oldest first.
+function relatedMatches(){
+  let hit, who;
+  if(SH.type==='ump'){const k=umpKey(SH.origName); hit=f=>umpList(f.ump).some(n=>umpKey(n)===k); who='this umpire';}
+  else if(SH.type==='venue'){const k=vKey(SH.origName); hit=f=>vKey(f.venue)===k; who='this venue';}
+  else {const c=norm(SH.origCode||SH.draft.team); hit=f=>norm(f.t1)===c||norm(f.t2)===c; who='this team';}
+  const list=sortedFixtures(S.fixtures.filter(hit));
+  const team=SH.type==='team'?norm(SH.origCode||SH.draft.team):'';
+  const done=list.filter(f=>f.status==='Result recorded').length, post=list.filter(f=>f.status==='Postponed').length;
+  let h='<div class="rm-head"><h3>Matches <span>'+list.length+'</span></h3><p>'+[done+' played',post?post+' postponed':'',(list.length-done-post)+' to be played'].filter(Boolean).join(' · ')+'</p></div>';
+  if(!list.length)return h+'<p class="rm-none">No matches for '+who+' yet.</p>';
+  return h+'<div class="rm-list">'+list.map(f=>{
+    const d=parseISO(f.date);
+    const cols=matchCols(f).filter(c=>c.a!==null||c.wo);
+    const short=l=>l.indexOf('Junior')===0?'JNR ':l.indexOf('Senior')===0?'SNR ':'';
+    const sc=cols.length?cols.map(c=>'<span class="rm-sc">'+esc(short(c.label))+(c.wo?esc((c.wo===1?f.t1:f.t2)+' by default'):'<b>'+esc(c.a)+'</b>–<b>'+esc(c.b)+'</b>')+'</span>').join(''):'';
+    let res='';
+    if(team&&cols.length){
+      const side=norm(f.t1)===team?1:2;
+      const w=cols.filter(c=>c.wo?c.wo===side:(side===1?c.a>c.b:c.b>c.a)).length, l=cols.filter(c=>c.wo?c.wo!==side:(side===1?c.a<c.b:c.b<c.a)).length;
+      res='<span class="rm-res '+(w&&!l?'won':l&&!w?'lost':'mixed')+'">'+(w&&!l?'Won':l&&!w?'Lost':'Won '+w+', lost '+l)+'</span>';
+    }
+    const st=f.status==='Postponed'?'<span class="rm-st post">Postponed</span>':f.status==='Result recorded'?res:'<span class="rm-st todo">'+esc(timeLabel(f.time))+'</span>';
+    const tm=c=>norm(c)===team?'<b>'+esc(c)+'</b>':esc(c);
+    return '<button type="button" class="rm" data-match="'+esc(f.k)+'"><span class="rm-d"><b>'+(d?d.toLocaleDateString('en-GB',{weekday:'short',day:'numeric',month:'short'}):'No date')+'</b><small>'+esc(f.venue||'')+'</small></span>'+
+      '<span class="rm-t">'+tm(f.t1)+' <i>v</i> '+tm(f.t2)+(sc?'<span class="rm-scs">'+sc+'</span>':'')+'</span>'+st+'</button>';
+  }).join('')+'</div>';
+}
 function renderSheet(first){
   CB.el=null; CB.items=[]; CB.act=-1;
   const bodyEl=$('.sheet-b'); const st=bodyEl?bodyEl.scrollTop:0;
@@ -1541,6 +1603,9 @@ function renderSheet(first){
       (SH.type==='ump'&&!SH.isNew?'<button type="button" class="btn" data-act="seeump">See their matches</button>':'')+
       (SH.type==='venue'&&!SH.isNew?'<button type="button" class="btn" data-act="seeump">See its matches</button>':'')+
       '<span class="spacer"></span>'+(SH.isNew?'':'<button type="button" class="link danger" data-act="remove">Remove this '+noun+'</button>');
+  const split=!SH.isNew&&(SH.type==='ump'||SH.type==='team'||SH.type==='venue')&&!mqPhone.matches;
+  if(split)body='<div class="split"><div class="split-l">'+body+'</div><div class="split-r">'+relatedMatches()+'</div></div>';
+  $('#sheet').classList.toggle('wide',split);
   $('#sheet').innerHTML='<div class="sheet-h"><div><h2 id="sheetTitle" tabindex="-1">'+esc(title)+'</h2>'+(sub?'<p>'+esc(sub)+'</p>':'')+'</div><button type="button" class="icon-btn" data-act="cancel" aria-label="Close without saving">'+IC_CLOSE+'</button></div>'+
     '<div class="sheet-b">'+body+'</div><div class="sheet-f">'+foot+'</div>';
   const nb=$('.sheet-b'); if(nb)nb.scrollTop=first?0:st;
@@ -1776,7 +1841,7 @@ $('#sheet').addEventListener('keydown',e=>{
     if(CB.el===el){e.preventDefault(); e.stopPropagation(); comboClose();}
   } else if(e.key==='Tab'){ comboClose(); }
 },true);
-document.addEventListener('keydown',e=>{if(e.key==='Escape'){if(!$('#fpop').hidden)closeFilters(); else if(SH)closeSheet(); else closeNav();}});
+document.addEventListener('keydown',e=>{const sr=e.target.closest&&e.target.closest('[data-steam]'); if(sr&&e.key==='Enter'&&!mqPhone.matches){openTeam(sr.dataset.steam);return;} if(e.key==='Escape'){if(!$('#fpop').hidden)closeFilters(); else if(SH)closeSheet(); else closeNav();}});
 let fLast=null;
 function openFilters(){fLast=document.activeElement; $('#fpop').hidden=false; document.body.classList.add('lock'); $('#fpTitle').focus();}
 function closeFilters(){$('#fpop').hidden=true; document.body.classList.remove('lock'); if(fLast&&fLast.focus)fLast.focus();}
@@ -1800,6 +1865,7 @@ $('#navScrim').addEventListener('click',closeNav);
 $('#app').addEventListener('click',e=>{
   const m=e.target.closest('[data-match]'); if(m){openMatch(m.dataset.match);return;}
   const t=e.target.closest('[data-team]'); if(t){openTeam(t.dataset.team);return;}
+  const st=e.target.closest('[data-steam]'); if(st&&!mqPhone.matches){openTeam(st.dataset.steam);return;}
   const n=e.target.closest('[data-note]'); if(n){openNote(n.dataset.note);return;}
   const um=e.target.closest('[data-ump]'); if(um){openUmp(um.dataset.ump);return;}
   const vn=e.target.closest('[data-venue]'); if(vn){openVenue(vn.dataset.venue);return;}
@@ -1898,7 +1964,8 @@ function placeFilters(){
   else { if(chips.parentNode.id!=='mfull'){$('#mfull').append(chips,mf); if(!$('#fpop').hidden)closeFilters();} }
   measureBars();
 }
-mqPhone.addEventListener?mqPhone.addEventListener('change',placeFilters):mqPhone.addListener(placeFilters);
+const onSize=()=>{placeFilters(); if(SH)renderSheet(false);};
+mqPhone.addEventListener?mqPhone.addEventListener('change',onSize):mqPhone.addListener(onSize);
 let markQueued=false;
 window.addEventListener('scroll',()=>{if(markQueued)return; markQueued=true; requestAnimationFrame(()=>{markQueued=false; markDay();});},{passive:true});
 window.addEventListener('resize',()=>{measureBars(); markDay();});
