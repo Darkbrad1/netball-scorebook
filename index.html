@@ -781,6 +781,22 @@ body{background:var(--bg)}
   @keyframes sideR{from{transform:translateX(100%)}to{transform:none}}
 }
 @media (prefers-reduced-motion:reduce){ .side-l,.side-r{animation:none!important} }
+#sheet.noanim .side{animation:none!important}
+
+/* ---------- computer: side sheets sit beside the page, which stays usable ---------- */
+@media (min-width:900px){
+  :root{--side-l:clamp(300px,26vw,380px); --side-r:clamp(340px,32vw,520px)}
+  .detail.sides{background:transparent!important; pointer-events:none; top:var(--stick,64px)!important; z-index:17}
+  .detail.sides .side{pointer-events:auto}
+  .side-l{width:var(--side-l)!important; border-radius:0 20px 0 0!important; box-shadow:4px 0 24px rgba(0,0,0,.14)!important}
+  .side-r{width:var(--side-r)!important; border-radius:20px 0 0 0!important; box-shadow:-4px 0 24px rgba(0,0,0,.14)!important}
+  .side-r .rm{grid-template-columns:minmax(0,1fr) auto; grid-template-areas:"d s" "t t"; gap:4px 10px}
+  .side-r .rm-d{grid-area:d} .side-r .rm-t{grid-area:t} .side-r .rm-res,.side-r .rm-st{grid-area:s; justify-self:end}
+  body.sides-open .layout{padding-left:calc(var(--side-l) + 20px); padding-right:calc(var(--side-r) + 20px); max-width:none}
+  body.sides-open .ump-grid,body.sides-open .team-grid{grid-template-columns:repeat(auto-fill,minmax(220px,1fr))}
+  .ucard.open-now,.team.open-now{border-color:var(--primary)!important; background:var(--sel)!important; box-shadow:0 0 0 1px var(--primary)}
+  .tbl tr.open-now td{background:var(--sel)!important}
+}
 </style>
 
 </head>
@@ -1390,6 +1406,7 @@ function renderVenues(){
     '<button type="button" class="ucard vcard" data-venue="'+esc(v.name)+'"><span class="tx"><b>'+esc(v.name)+'</b>'+(v.rec&&v.rec.address?'<small>'+esc(v.rec.address)+'</small>':'')+
     '<small>'+(v.total?(v.next?'Next: '+esc(shortDate(v.next.date))+', '+esc(v.next.t1+' v '+v.next.t2):'No more matches coming up'):'No matches yet')+'</small></span><span class="cnt" title="Matches">'+v.total+'</span></button>').join('')+'</div>'
     :'<div class="empty"><p>No venues yet.</p></div>';
+  markOpen();
   renderNav();
 }
 function renderUmpires(){
@@ -1398,6 +1415,7 @@ function renderUmpires(){
     '<button type="button" class="ucard" data-ump="'+esc(u.name)+'">'+avatar(u.name.replace(/[^A-Za-z]/g,'').slice(0,1)+(u.name.split(' ').pop()||'').slice(0,1))+
     '<span class="tx"><b>'+esc(u.name)+'</b>'+(u.rec&&u.rec.phone?'<small>'+esc(u.rec.phone)+'</small>':'')+'<small>'+(u.total?'':'No matches yet · ')+(u.next?'Next: '+esc(shortDate(u.next.date))+', '+esc(u.next.t1+' v '+u.next.t2):'No more matches coming up')+'</small></span><span class="cnt" title="Matches">'+u.total+'</span></button>').join('')+'</div>'
     :'<div class="empty"><p>No umpires yet.</p></div>';
+  markOpen();
   renderNav();
 }
 
@@ -1416,6 +1434,7 @@ function renderTeams(){
     }).join('')+'</div>';
   });
   $('#teamList').innerHTML=html||'<div class="empty"><p>No teams yet.</p></div>';
+  markOpen();
   renderNav();
 }
 function renderNotes(){
@@ -1432,7 +1451,7 @@ function gameDefaults(fx,want){
   return {k:'n'+(S.counter++),fid:fx.id,div:d,s1:'',s2:'',rd:'Clear',note:''};
 }
 function gameTitle(fx,g){const d=(fx.div==='JNR'||fx.div==='SNR')?fx.div:g.div; return d==='JNR'?'Junior game':d==='SNR'?'Senior game':'Score';}
-function syncLock(){document.body.classList.toggle('lock',!!SH&&!isWide());}
+function syncLock(){document.body.classList.toggle('lock',!!SH&&!isWide()&&!document.body.classList.contains('sides-open'));}
 mqWide.addEventListener?mqWide.addEventListener('change',syncLock):mqWide.addListener(syncLock);
 function openSheet(obj){
   SH=obj; lastFocus=document.activeElement;
@@ -1440,7 +1459,7 @@ function openSheet(obj){
   renderSheet(true); renderMatches();
 }
 function closeSheet(){
-  SH=null; $('#detail').classList.remove('open','sides'); $('#sheet').classList.remove('wide'); syncLock();
+  SH=null; $('#detail').classList.remove('open','sides'); $('#sheet').classList.remove('wide'); document.body.classList.remove('sides-open'); markOpen(); syncLock();
   renderEmpty(); renderMatches();
   if(!isWide()&&lastFocus&&lastFocus.focus&&document.contains(lastFocus))lastFocus.focus();
 }
@@ -1600,6 +1619,17 @@ function relatedMatches(){
       '<span class="rm-t">'+tm(f.t1)+' <i>v</i> '+tm(f.t2)+(sc?'<span class="rm-scs">'+sc+'</span>':'')+'</span>'+st+'</button>';
   }).join('')+'</div>';
 }
+// Highlight the umpire, team or venue whose sheets are open.
+function markOpen(){
+  const on=SH&&document.body.classList.contains('sides-open');
+  document.querySelectorAll('.ucard.open-now,.team.open-now,.tbl tr.open-now').forEach(e=>e.classList.remove('open-now'));
+  if(!on)return;
+  let sel=null;
+  if(SH.type==='ump')sel=Array.from(document.querySelectorAll('[data-ump]')).filter(e=>umpKey(e.dataset.ump)===umpKey(SH.origName));
+  else if(SH.type==='venue')sel=Array.from(document.querySelectorAll('[data-venue]')).filter(e=>vKey(e.dataset.venue)===vKey(SH.origName));
+  else sel=Array.from(document.querySelectorAll('[data-team],[data-steam]')).filter(e=>(e.dataset.team||e.dataset.steam)===SH.draft.k);
+  sel.forEach(e=>e.classList.add('open-now'));
+}
 function renderSheet(first){
   CB.el=null; CB.items=[]; CB.act=-1;
   const bodyEl=$('.sheet-b'); const st=bodyEl?bodyEl.scrollTop:0;
@@ -1620,7 +1650,8 @@ function renderSheet(first){
       (SH.type==='venue'&&!SH.isNew?'<button type="button" class="btn" data-act="seeump">See its matches</button>':'')+
       '<span class="spacer"></span>'+(SH.isNew?'':'<button type="button" class="link danger" data-act="remove">Remove this '+noun+'</button>');
   const split=!SH.isNew&&(SH.type==='ump'||SH.type==='team'||SH.type==='venue')&&!mqPhone.matches;
-  $('#sheet').classList.toggle('wide',split); $('#detail').classList.toggle('sides',split);
+  const wasSides=$('#detail').classList.contains('sides'); $('#sheet').classList.toggle('noanim',wasSides&&split);
+  $('#sheet').classList.toggle('wide',split); $('#detail').classList.toggle('sides',split); document.body.classList.toggle('sides-open',split); syncLock(); markOpen();
   const head='<div class="sheet-h"><div><h2 id="sheetTitle" tabindex="-1">'+esc(title)+'</h2>'+(sub?'<p>'+esc(sub)+'</p>':'')+'</div><button type="button" class="icon-btn" data-act="cancel" aria-label="Close without saving">'+IC_CLOSE+'</button></div>';
   const inner=head+'<div class="sheet-b">'+body+'</div><div class="sheet-f">'+foot+'</div>';
   $('#sheet').innerHTML=split
@@ -1873,6 +1904,7 @@ $('#fpop').addEventListener('click',e=>{if(e.target.id==='fpop')closeFilters();}
 /* ---------- page events ---------- */
 function resetFilters(){V.q='';V.zone='';V.level='';V.tA='';V.tB='';$('#q').value='';$('#fZone').value='';$('#fLevel').value='';fillTeamFilters();}
 function showTab(tab){
+  if(SH&&document.body.classList.contains('sides-open'))closeSheet();
   V.tab=tab;
   ['matches','standings','teams','umpires','venues','notes'].forEach(t=>{$('#panel-'+t).hidden=(t!==tab);}); hideTip();
   renderNav();
