@@ -701,6 +701,17 @@ body{background:var(--bg)}
   .mbar .pacts .btn.small{min-height:36px; padding:0 12px; font-size:14px}
   .mbar .dstrip{padding-bottom:4px}
 }
+
+/* date row: five dates on a phone, the marked one in the middle */
+.dpad{display:none}
+.dstrip{scrollbar-width:none}
+.dstrip::-webkit-scrollbar{display:none}
+.icon-btn.menu:hover,.icon-btn.menu:focus{background:rgba(255,255,255,.14)}
+@media (max-width:899px){
+  .mbar .dstrip{gap:6px}
+  .dpad{display:block; flex:0 0 calc((100% - 24px) / 5)}
+  .mbar .dpill{flex:0 0 calc((100% - 24px) / 5); width:auto}
+}
 </style>
 
 </head>
@@ -1167,6 +1178,8 @@ function renderMatches(){
     }).join('')+'</div>';
     $('#dstrip').innerHTML=groups.map(g=>{const d=parseISO(g.d);
       return '<button type="button" class="dpill'+(g.d===today?' now':'')+(g.d===curDay?' cur':'')+'" data-day="'+esc(g.d||'none')+'"><small>'+(d?d.toLocaleDateString('en-GB',{weekday:'short'}):'—')+'</small><b>'+(d?d.getDate():'?')+'</b><small>'+(d?d.toLocaleDateString('en-GB',{month:'short'}):'')+'</small></button>';}).join('');
+    $('#dstrip').insertAdjacentHTML('afterbegin','<span class="dpad" aria-hidden="true"></span><span class="dpad" aria-hidden="true"></span>');
+    $('#dstrip').insertAdjacentHTML('beforeend','<span class="dpad" aria-hidden="true"></span><span class="dpad" aria-hidden="true"></span>');
   }
   renderNav();
   if(typeof markDay==='function'){curDay=null; requestAnimationFrame(markDay);}
@@ -1775,7 +1788,7 @@ $('#app').addEventListener('click',e=>{
   const c=e.target.closest('[data-show]'); if(c){V.show=c.dataset.show; showTab('matches'); renderMatches(); closeNav(); return;}
   const tb=e.target.closest('[data-tab]'); if(tb){const fromBar=!!tb.closest('#bnav'); showTab(tb.dataset.tab); closeNav(); if(fromBar)window.scrollTo({top:0}); return;}
   if(e.target.closest('[data-clear]')){resetFilters(); renderMatches(); return;}
-  const dp=e.target.closest('[data-day]'); if(dp){const t=document.getElementById('day-'+dp.dataset.day); if(t)t.scrollIntoView({behavior:'smooth',block:'start'}); return;}
+  const dp=e.target.closest('[data-day]'); if(dp){pinDay(dp.dataset.day); const t=document.getElementById('day-'+dp.dataset.day); if(t)t.scrollIntoView({behavior:'smooth',block:'start'}); return;}
   if(e.target.closest('#btnSignIn')){signIn();return;}
   if(e.target.closest('#btnSignOut')){signOut();return;}
   if(e.target.closest('[data-showall]')){V.show='all'; resetFilters(); renderMatches(); return;}
@@ -1812,7 +1825,11 @@ $('#hideTips').addEventListener('click',()=>{$('#tips').hidden=true; try{localSt
 
 
 /* ---------- header search, pinned bar ---------- */
-let curDay=null;
+let curDay=null, dayPinned=0;
+function pinDay(d){
+  curDay=d; dayPinned=Date.now()+1500;
+  const strip=$('#dstrip'); strip.querySelectorAll('.dpill').forEach(b=>{const on=b.dataset.day===d; b.classList.toggle('cur',on); if(on)placePill(strip,b,true);});
+}
 function openSearch(){document.querySelector('.topbar').classList.add('searching'); $('#btnSearch').setAttribute('aria-expanded','true'); $('#q').focus();}
 function closeSearch(){
   document.querySelector('.topbar').classList.remove('searching'); $('#btnSearch').setAttribute('aria-expanded','false');
@@ -1833,14 +1850,27 @@ function measureBars(){
 function markDay(){
   if(V.tab!=='matches')return;
   const line=parseFloat(getComputedStyle(document.documentElement).getPropertyValue('--stick')||0)+$('#mbar').getBoundingClientRect().height+12;
-  let d=null; document.querySelectorAll('.day').forEach(sec=>{if(sec.getBoundingClientRect().top<=line)d=sec.id.slice(4);});
-  if(!d){const f=document.querySelector('.day'); d=f?f.id.slice(4):null;}
+  if(Date.now()<dayPinned)return;
+  const secs=document.querySelectorAll('.day');
+  let d=null; secs.forEach(sec=>{if(sec.getBoundingClientRect().top<=line)d=sec.id.slice(4);});
+  if(!d){const f=secs[0]; d=f?f.id.slice(4):null;}
+  if(secs.length&&window.innerHeight+window.scrollY>=document.documentElement.scrollHeight-2)d=secs[secs.length-1].id.slice(4);
   if(d===curDay)return; curDay=d;
   const strip=$('#dstrip');
   strip.querySelectorAll('.dpill').forEach(b=>{
     const on=b.dataset.day===d; b.classList.toggle('cur',on);
-    if(on){const l=b.offsetLeft-strip.offsetLeft, r=l+b.offsetWidth; if(l<strip.scrollLeft)strip.scrollLeft=l-8; else if(r>strip.scrollLeft+strip.clientWidth)strip.scrollLeft=r-strip.clientWidth+8;}
+    if(on)placePill(strip,b);
   });
+}
+const mqPhone=window.matchMedia('(max-width:899px)');
+// On a phone the marked date sits in the middle of five; on a computer it just stays in view.
+function placePill(strip,b,smooth){
+  const sr=strip.getBoundingClientRect(), br=b.getBoundingClientRect(), l=br.left-sr.left+strip.scrollLeft;
+  let x;
+  if(mqPhone.matches)x=l-(strip.clientWidth-br.width)/2;
+  else if(l<strip.scrollLeft)x=l-8; else if(l+br.width>strip.scrollLeft+strip.clientWidth)x=l+br.width-strip.clientWidth+8; else return;
+  const still=window.matchMedia('(prefers-reduced-motion: reduce)').matches;
+  strip.scrollTo({left:x,behavior:smooth&&!still?'smooth':'auto'});
 }
 let markQueued=false;
 window.addEventListener('scroll',()=>{if(markQueued)return; markQueued=true; requestAnimationFrame(()=>{markQueued=false; markDay();});},{passive:true});
