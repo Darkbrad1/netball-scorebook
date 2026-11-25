@@ -765,6 +765,22 @@ body{background:var(--bg)}
 .rm-res.mixed{background:var(--sel); color:var(--on-soft)}
 .rm-st.post{background:var(--post-bg); color:var(--post)}
 .rm-st.todo{background:var(--surface-2); color:var(--ink); font-weight:500}
+
+/* ---------- computer: details slide in from the left, matches from the right ---------- */
+@media (min-width:900px){
+  .detail.sides{padding:0!important; align-items:stretch!important; justify-content:stretch!important}
+  #sheet.wide{max-width:none!important; width:100%; height:100%!important; max-height:none!important; border-radius:0!important; background:transparent!important; box-shadow:none!important; display:flex; flex-direction:row; justify-content:space-between; overflow:visible}
+  .side{height:100%; display:flex; flex-direction:column; min-height:0; box-shadow:0 0 40px rgba(0,0,0,.3)}
+  .side-l{width:min(440px,42vw); background:var(--surface); border-radius:0 24px 24px 0; overflow:hidden; animation:sideL .24s ease-out}
+  #sheet.wide .side-l .sheet-b{flex:1; overflow:auto; display:flex; flex-direction:column; gap:18px; padding:8px 28px 24px}
+  #sheet.wide .side-l .sheet-f{flex-wrap:wrap; row-gap:10px}
+  .side-r{width:min(640px,48vw); background:var(--bg); border-radius:24px 0 0 24px; overflow:auto; padding:20px 24px 24px; animation:sideR .24s ease-out}
+  .side-r .rm-head{padding-top:4px}
+  .side-r .rm{grid-template-columns:130px minmax(0,1fr) auto}
+  @keyframes sideL{from{transform:translateX(-100%)}to{transform:none}}
+  @keyframes sideR{from{transform:translateX(100%)}to{transform:none}}
+}
+@media (prefers-reduced-motion:reduce){ .side-l,.side-r{animation:none!important} }
 </style>
 
 </head>
@@ -1424,7 +1440,7 @@ function openSheet(obj){
   renderSheet(true); renderMatches();
 }
 function closeSheet(){
-  SH=null; $('#detail').classList.remove('open'); syncLock();
+  SH=null; $('#detail').classList.remove('open','sides'); $('#sheet').classList.remove('wide'); syncLock();
   renderEmpty(); renderMatches();
   if(!isWide()&&lastFocus&&lastFocus.focus&&document.contains(lastFocus))lastFocus.focus();
 }
@@ -1604,10 +1620,12 @@ function renderSheet(first){
       (SH.type==='venue'&&!SH.isNew?'<button type="button" class="btn" data-act="seeump">See its matches</button>':'')+
       '<span class="spacer"></span>'+(SH.isNew?'':'<button type="button" class="link danger" data-act="remove">Remove this '+noun+'</button>');
   const split=!SH.isNew&&(SH.type==='ump'||SH.type==='team'||SH.type==='venue')&&!mqPhone.matches;
-  if(split)body='<div class="split"><div class="split-l">'+body+'</div><div class="split-r">'+relatedMatches()+'</div></div>';
-  $('#sheet').classList.toggle('wide',split);
-  $('#sheet').innerHTML='<div class="sheet-h"><div><h2 id="sheetTitle" tabindex="-1">'+esc(title)+'</h2>'+(sub?'<p>'+esc(sub)+'</p>':'')+'</div><button type="button" class="icon-btn" data-act="cancel" aria-label="Close without saving">'+IC_CLOSE+'</button></div>'+
-    '<div class="sheet-b">'+body+'</div><div class="sheet-f">'+foot+'</div>';
+  $('#sheet').classList.toggle('wide',split); $('#detail').classList.toggle('sides',split);
+  const head='<div class="sheet-h"><div><h2 id="sheetTitle" tabindex="-1">'+esc(title)+'</h2>'+(sub?'<p>'+esc(sub)+'</p>':'')+'</div><button type="button" class="icon-btn" data-act="cancel" aria-label="Close without saving">'+IC_CLOSE+'</button></div>';
+  const inner=head+'<div class="sheet-b">'+body+'</div><div class="sheet-f">'+foot+'</div>';
+  $('#sheet').innerHTML=split
+    ? '<div class="side side-l">'+inner+'</div><div class="side side-r" role="region" aria-label="Matches">'+relatedMatches()+'</div>'
+    : inner;
   const nb=$('.sheet-b'); if(nb)nb.scrollTop=first?0:st;
   if(first){
     const f=$('.sheet-b input:not([type=radio]),.sheet-b select,.sheet-b textarea');
@@ -1747,6 +1765,7 @@ $('#sheet').addEventListener('input',e=>{
   else if(el.dataset.vf){ SH.draft[el.dataset.vf]=el.value; }
   else if(el.dataset.nn){ SH.draft.nn[el.dataset.nn]=el.value; }
 });
+$('#detail').addEventListener('click',e=>{if(SH&&(e.target.id==='detail'||e.target.id==='sheet')&&$('#detail').classList.contains('sides'))closeSheet();});
 $('#sheet').addEventListener('click',e=>{
   const b=e.target.closest('[data-act]'); if(!b||!SH)return;
   const a=b.dataset.act;
