@@ -8,7 +8,8 @@ Fixtures, scores, standings and umpires for the 2026 D Sports Shop Inter-Seconda
 - Tap a match to add or change its score, mark it postponed, or edit its details
 - Standings for each zone and division, with charts of games won and goal difference
 - Enter the teams, the score and the umpires together in one match form. A team or umpire that isn't on the list yet is added when you save the match
-- Teams (with full school names), umpires (with optional phone and notes) and notes screens. Umpires can also be added on their own, before they have a match
+- Teams (with full school names), umpires (with optional phone and notes), venues (with optional address and notes) and notes screens. Umpires and venues can also be added on their own, before they have a match
+- Filters (which matches to show, one team or two teams playing each other, zone, junior or senior) in one pop-up, and a row of date buttons to jump to a day
 - Save a copy as an Excel workbook or a PDF, including any changes
 
 ## Using it
