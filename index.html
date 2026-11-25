@@ -712,6 +712,25 @@ body{background:var(--bg)}
   .dpad{display:block; flex:0 0 calc((100% - 24px) / 5)}
   .mbar .dpill{flex:0 0 calc((100% - 24px) / 5); width:auto}
 }
+
+/* ---------- computer: full search, every filter in view, dates on their own row ---------- */
+.mfull{display:none}
+@media (min-width:900px){
+  .bar-in{grid-template-columns:auto minmax(0,1fr) auto!important; grid-template-areas:"brand search tools"!important}
+  .hsearch,.sclose{display:none!important}
+  .search{display:flex!important; height:46px; max-width:640px}
+  .fbtn{display:none!important}
+  .mbar{display:grid; grid-template-columns:minmax(0,1fr) auto; grid-template-areas:"chips sort" "sel sel" "dates dates"; align-items:center; gap:10px 16px; padding:10px 4px 8px}
+  .mfull{display:contents}
+  .mbar #chips{grid-area:chips; padding:0!important; flex-wrap:wrap; overflow:visible}
+  .mbar .mfilters{grid-area:sel; padding:0!important; gap:12px; grid-template-columns:repeat(4,minmax(0,1fr))!important}
+  .mbar .mfilters .field{gap:2px}
+  .mbar .mfilters .field span{font-size:12px; color:var(--muted)}
+  .mbar .mfilters select{min-height:40px; padding-top:4px; padding-bottom:4px; font-size:15px}
+  .mbar .pacts{grid-area:sort; justify-self:end}
+  .mbar .dstrip{grid-area:dates; width:100%; padding:2px 0 4px}
+  .mbar .dpill{flex:1 0 64px}
+}
 </style>
 
 </head>
@@ -763,9 +782,9 @@ body{background:var(--bg)}
         <div class="fpop" id="fpop" hidden><div class="fpanel" role="dialog" aria-modal="true" aria-labelledby="fpTitle">
           <div class="fp-h"><h2 id="fpTitle" tabindex="-1">Filters</h2><button type="button" class="icon-btn" id="fClose" aria-label="Close filters"><svg class="ic" viewBox="0 0 24 24" aria-hidden="true"><path d="M19 6.41L17.59 5 12 10.59 6.41 5 5 6.41 10.59 12 5 17.59 6.41 19 12 13.41 17.59 19 19 17.59 13.41 12z"/></svg></button></div>
           <div class="fp-b">
-        <h3 class="fp-l">Show</h3>
+        <h3 class="fp-l" id="fpShowL">Show</h3>
         <div class="chips" id="chips" role="group" aria-label="Which matches to show"></div>
-        <h3 class="fp-l">Narrow it down</h3>
+        <h3 class="fp-l" id="fpNarrowL">Narrow it down</h3>
         <div class="mfilters">
           <label class="field"><span>Team</span><select id="fTeamA"></select></label>
           <label class="field"><span>Playing against</span><select id="fTeamB"></select></label>
@@ -776,7 +795,7 @@ body{background:var(--bg)}
           <div class="fp-f"><button type="button" class="link" id="fReset">Clear all</button><button type="button" class="btn primary" id="fDone">Show matches</button></div>
         </div></div>
         <div class="tip" id="tips"><span>Tap a match to add its score or change it. Use Filters to find one team, two teams playing each other, a zone or a level.</span><button class="link" id="hideTips" type="button">Got it</button></div>
-        <div class="mbar" id="mbar"><div class="pacts"><button class="btn small fbtn" type="button" id="fOpen" aria-haspopup="dialog" aria-controls="fpop"><svg class="ic" viewBox="0 0 24 24" aria-hidden="true"><path d="M10 18h4v-2h-4v2zM3 6v2h18V6H3zm3 7h12v-2H6v2z"/></svg>Filters<span class="fcount" id="fCount" hidden></span></button><button class="btn small sortbtn" type="button" id="fSort"></button></div><div class="dstrip" id="dstrip" role="group" aria-label="Jump to a date"></div></div>
+        <div class="mbar" id="mbar"><div class="mfull" id="mfull"></div><div class="pacts"><button class="btn small fbtn" type="button" id="fOpen" aria-haspopup="dialog" aria-controls="fpop"><svg class="ic" viewBox="0 0 24 24" aria-hidden="true"><path d="M10 18h4v-2h-4v2zM3 6v2h18V6H3zm3 7h12v-2H6v2z"/></svg>Filters<span class="fcount" id="fCount" hidden></span></button><button class="btn small sortbtn" type="button" id="fSort"></button></div><div class="dstrip" id="dstrip" role="group" aria-label="Jump to a date"></div></div>
         <div id="list"></div>
       </section>
       <section id="panel-standings" hidden aria-labelledby="sTitle">
@@ -1872,6 +1891,14 @@ function placePill(strip,b,smooth){
   const still=window.matchMedia('(prefers-reduced-motion: reduce)').matches;
   strip.scrollTo({left:x,behavior:smooth&&!still?'smooth':'auto'});
 }
+// On a computer the filters sit in the pinned bar; on a phone they live in the Filters pop-up.
+function placeFilters(){
+  const chips=$('#chips'), mf=document.querySelector('.mfilters');
+  if(mqPhone.matches){ if(chips.parentNode.id==='mfull'){$('#fpShowL').after(chips); $('#fpNarrowL').after(mf);} }
+  else { if(chips.parentNode.id!=='mfull'){$('#mfull').append(chips,mf); if(!$('#fpop').hidden)closeFilters();} }
+  measureBars();
+}
+mqPhone.addEventListener?mqPhone.addEventListener('change',placeFilters):mqPhone.addListener(placeFilters);
 let markQueued=false;
 window.addEventListener('scroll',()=>{if(markQueued)return; markQueued=true; requestAnimationFrame(()=>{markQueued=false; markDay();});},{passive:true});
 window.addEventListener('resize',()=>{measureBars(); markDay();});
@@ -1990,7 +2017,7 @@ $('#btnXlsx').addEventListener('click',()=>doDownload('xlsx'));
 $('#btnPdf').addEventListener('click',()=>doDownload('pdf'));
 
 /* ---------- start ---------- */
-measureBars(); renderEmpty(); renderMatches(); renderStandings(); renderTeams(); renderUmpires(); renderVenues(); renderNotes(); updateChanges();
+placeFilters(); renderEmpty(); renderMatches(); renderStandings(); renderTeams(); renderUmpires(); renderVenues(); renderNotes(); updateChanges();
 if(CLOUD){
   CLOUD.client.onUpdate(CLOUD.api.scorebook.get,{},applyCloud,()=>{CLOUD.ready=true; updateChanges();});
   CLOUD.client.subscribeToConnectionState(c=>{const on=c.isWebSocketConnected||!c.hasEverConnected; if(on!==CLOUD.online){CLOUD.online=on; updateChanges();}});
