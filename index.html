@@ -228,6 +228,8 @@ input[type=text]:focus,input[type=date]:focus,input[type=number]:focus,select:fo
 .lbl2{font-size:14px; font-weight:500}
 .hint2{color:var(--post); font-size:13px}
 .addrow{display:flex; flex-wrap:wrap; gap:10px}
+.mfilters{display:grid; grid-template-columns:repeat(3,minmax(0,1fr)); gap:12px; padding:4px 24px 12px}
+.mfilters select:disabled{opacity:.55}
 .grid2{display:grid; grid-template-columns:repeat(2,minmax(0,1fr)); gap:16px}
 .newbox{margin-top:8px; padding:10px 12px; border-radius:12px; background:var(--sel); display:flex; flex-direction:column; gap:8px; font-size:14px}
 .newbox[hidden]{display:none}
@@ -457,6 +459,8 @@ input[type=text]:focus,input[type=date]:focus,input[type=number]:focus,select:fo
   .m-top,.m-foot{padding-left:12px; padding-right:12px}
   .phead,.zone-h{padding-left:16px; padding-right:16px}
   .chips{padding-left:16px; padding-right:16px}
+  .mfilters{padding-left:16px; padding-right:16px; grid-template-columns:repeat(2,minmax(0,1fr))}
+  .mfilters label:last-child{grid-column:1 / -1}
   .tip{margin-left:16px; margin-right:16px}
   .team-grid{padding-left:16px; padding-right:16px}
   .note{padding-left:16px; padding-right:16px}
@@ -477,7 +481,7 @@ input[type=text]:focus,input[type=date]:focus,input[type=number]:focus,select:fo
       <button class="icon-btn menu" id="btnMenu" type="button" aria-label="Open the menu"><svg class="ic" viewBox="0 0 24 24" aria-hidden="true"><path d="M3 18h18v-2H3v2zm0-5h18v-2H3v2zm0-7v2h18V6H3z"/></svg></button>
       <svg class="ic" viewBox="0 0 32 32" aria-hidden="true"><circle cx="16" cy="16" r="13" fill="none" stroke="currentColor" stroke-width="2.5"/><path d="M16 3v26M3 16h26" stroke="currentColor" stroke-width="2" fill="none"/><path d="M6.5 6.5c5 4.5 5 14.5 0 19M25.5 6.5c-5 4.5-5 14.5 0 19" stroke="currentColor" stroke-width="2" fill="none"/></svg><span>Netball Scorebook 2026</span>
     </div>
-    <label class="search"><span class="sr">Search matches</span><svg class="ic" viewBox="0 0 24 24" aria-hidden="true"><path d="M15.5 14h-.79l-.28-.27A6.471 6.471 0 0 0 16 9.5 6.5 6.5 0 1 0 9.5 16c1.61 0 3.09-.59 4.23-1.57l.27.28v.79l5 4.99L20.49 19l-4.99-5zm-6 0C7.01 14 5 11.99 5 9.5S7.01 5 9.5 5 14 7.01 14 9.5 11.99 14 9.5 14z"/></svg><input id="q" type="search" placeholder="Search a team, school, venue or umpire" autocomplete="off"></label>
+    <label class="search"><span class="sr">Search matches</span><svg class="ic" viewBox="0 0 24 24" aria-hidden="true"><path d="M15.5 14h-.79l-.28-.27A6.471 6.471 0 0 0 16 9.5 6.5 6.5 0 1 0 9.5 16c1.61 0 3.09-.59 4.23-1.57l.27.28v.79l5 4.99L20.49 19l-4.99-5zm-6 0C7.01 14 5 11.99 5 9.5S7.01 5 9.5 5 14 7.01 14 9.5 11.99 14 9.5 14z"/></svg><input id="q" type="search" placeholder="Search, for example: AHS WC" autocomplete="off"></label>
     <div class="save">
       <span class="save-l">Save a copy</span>
       <button class="btn tonal" id="btnXlsx" type="button" aria-label="Save as Excel"><svg class="ic" viewBox="0 0 24 24" aria-hidden="true"><path d="M19 9h-4V3H9v6H5l7 7 7-7zM5 18v2h14v-2H5z"/></svg><span class="lbl">Excel</span></button>
@@ -514,6 +518,11 @@ input[type=text]:focus,input[type=date]:focus,input[type=number]:focus,select:fo
       <section id="panel-matches" aria-labelledby="mTitle">
         <div class="phead"><div><h2 id="mTitle"></h2><p id="mSub" aria-live="polite"></p></div></div>
         <div class="chips" id="chips" role="group" aria-label="Which matches to show"></div>
+        <div class="mfilters">
+          <label class="field"><span>Team</span><select id="fTeamA"></select></label>
+          <label class="field"><span>Playing against</span><select id="fTeamB"></select></label>
+          <label class="field"><span>Sort by date</span><select id="fSort"><option value="asc">Oldest first</option><option value="desc">Newest first</option></select></label>
+        </div>
         <div class="legend" aria-hidden="true"><span class="zc EAST">Eastern zone</span><span class="zc WEST">Western zone</span><span class="lv JNR">Junior</span><span class="lv SNR">Senior</span></div>
         <div class="tip" id="tips"><span>Tap a match to add its score or change it. When you are finished, use Save a copy at the top.</span><button class="link" id="hideTips" type="button">Got it</button></div>
         <div id="list"></div>
@@ -755,14 +764,40 @@ function updateChanges(){
 function refreshAll(){renderMatches();renderStandings();renderTeams();renderUmpires();renderNotes();updateChanges();scheduleSave();}
 
 /* ---------- matches list ---------- */
-const V={tab:'matches',show:null,q:'',zone:'',level:''};
+const V={tab:'matches',show:null,q:'',zone:'',level:'',tA:'',tB:'',sort:'asc'};
+try{if(localStorage.getItem('netball-scorebook-sort')==='desc')V.sort='desc';}catch(e){}
 let COUNTS={};
 function baseOk(f){
   if(V.zone&&f.zone!==V.zone)return false;
   if(V.level&&String(f.div).indexOf(V.level)<0)return false;
-  const q=V.q.trim().toLowerCase();
-  if(q){const hay=[f.t1,f.t2,schoolName(f.t1),schoolName(f.t2),f.venue,f.ump,f.note,dateLabel(f.date)].join(' ').toLowerCase(); if(hay.indexOf(q)<0)return false;}
+  const has=c=>norm(f.t1)===c||norm(f.t2)===c;
+  if(V.tA&&!has(V.tA))return false;
+  if(V.tB&&!has(V.tB))return false;
+  const terms=searchTerms(V.q);
+  if(terms.length){
+    const whole=V.q.trim().toLowerCase();
+    const hay=[f.t1,f.t2,schoolName(f.t1),schoolName(f.t2),f.venue,f.ump,f.note,dateLabel(f.date)].join(' ').toLowerCase();
+    // a team code must be one of the two teams; other words can match anything
+    const codes=terms.map(teamCode);
+    if(codes.every(Boolean)){if(!codes.every(has))return false;}
+    else if(hay.indexOf(whole)<0&&!terms.every((t,i)=>codes[i]?has(codes[i]):hay.indexOf(t)>=0))return false;
+  }
   return true;
+}
+// "AHS v WC", "A.H.S vs W.C", "ahs wc" -> ['ahs','wc']
+function searchTerms(q){
+  return String(q||'').toLowerCase().replace(/\./g,'').split(/[\s,&\/-]+/).filter(t=>t&&!/^(v|vs|versus|and|against)$/.test(t));
+}
+function teamCode(t){const n=norm(t); return S.teams.some(x=>norm(x.team)===n)?n:'';}
+function fillTeamFilters(){
+  const codes=S.teams.map(t=>t.team).filter(Boolean).sort((a,b)=>a.localeCompare(b));
+  const opt=(v,l,sel)=>'<option value="'+esc(v)+'"'+(sel?' selected':'')+'>'+esc(l)+'</option>';
+  const lab=c=>c+(schoolName(c)?' · '+schoolName(c):'');
+  if(V.tA&&!codes.some(c=>norm(c)===V.tA))V.tA='';
+  if(V.tB&&!codes.some(c=>norm(c)===V.tB))V.tB='';
+  $('#fTeamA').innerHTML=opt('','Any team',!V.tA)+codes.map(c=>opt(norm(c),lab(c),norm(c)===V.tA)).join('');
+  $('#fTeamB').innerHTML=opt('','Any team',!V.tB)+codes.filter(c=>norm(c)!==V.tA).map(c=>opt(norm(c),lab(c),norm(c)===V.tB)).join('');
+  $('#fTeamB').disabled=!V.tA;
 }
 const SHOW=[
   {id:'all',label:'Everything'},
@@ -860,9 +895,10 @@ function renderMatches(){
   }
   $('#chips').innerHTML=SHOW.map(s=>'<button type="button" class="chip" data-show="'+s.id+'" aria-pressed="'+(V.show===s.id?'true':'false')+'">'+esc(s.label)+' <b>'+COUNTS[s.id]+'</b></button>').join('');
   const shown=sortedFixtures(base.filter(f=>showOk(V.show,f,today)));
+  if(V.sort==='desc'){shown.reverse(); const nd=shown.filter(f=>!f.date); shown.splice(0,nd.length); shown.push(...nd);}
   const cur=SHOW.find(s=>s.id===V.show);
   $('#mTitle').textContent=cur.label;
-  const bits=[]; if(V.zone)bits.push(V.zone==='EAST'?'Eastern zone':'Western zone'); if(V.level)bits.push(V.level==='JNR'?'Junior':'Senior'); if(V.q.trim())bits.push('matching “'+V.q.trim()+'”');
+  const bits=[]; if(V.zone)bits.push(V.zone==='EAST'?'Eastern zone':'Western zone'); if(V.level)bits.push(V.level==='JNR'?'Junior':'Senior'); if(V.tA)bits.push(V.tB?V.tA+' v '+V.tB:V.tA+' matches'); if(V.q.trim())bits.push('matching “'+V.q.trim()+'”');
   $('#mSub').innerHTML=esc(shown.length+' match'+(shown.length===1?'':'es'))+(bits.length?' · '+esc(bits.join(', '))+' <button type="button" class="link" data-clear>Clear filters</button>':'');
   if(!shown.length){
     $('#list').innerHTML='<div class="empty"><p><b>No matches here.</b></p><p>Try another choice in the menu, or clear the search.</p><button type="button" class="btn" data-showall>Show everything</button></div>';
@@ -1008,6 +1044,7 @@ function renderUmpires(){
 
 /* ---------- teams and notes ---------- */
 function renderTeams(){
+  fillTeamFilters();
   const fx=fxMap(); const zones=[['EAST','Eastern zone'],['WEST','Western zone']];
   const known=new Set(zones.map(z=>z[0])); let html='';
   const groups=zones.map(z=>[z[0],z[1],S.teams.filter(t=>t.zone===z[0])]);
@@ -1396,7 +1433,7 @@ $('#sheet').addEventListener('keydown',e=>{
 document.addEventListener('keydown',e=>{if(e.key==='Escape'){if(SH)closeSheet(); else closeNav();}});
 
 /* ---------- page events ---------- */
-function resetFilters(){V.q='';V.zone='';V.level='';$('#q').value='';$('#fZone').value='';$('#fLevel').value='';}
+function resetFilters(){V.q='';V.zone='';V.level='';V.tA='';V.tB='';$('#q').value='';$('#fZone').value='';$('#fLevel').value='';fillTeamFilters();}
 function showTab(tab){
   V.tab=tab;
   ['matches','standings','teams','umpires','notes'].forEach(t=>{$('#panel-'+t).hidden=(t!==tab);}); hideTip();
@@ -1440,6 +1477,10 @@ $('#addUmp').addEventListener('click',()=>openUmp(null));
 $('#q').addEventListener('input',e=>{V.q=e.target.value; if(V.tab!=='matches')showTab('matches'); renderMatches();});
 $('#fZone').addEventListener('input',e=>{V.zone=e.target.value; showTab('matches'); renderMatches();});
 $('#fLevel').addEventListener('input',e=>{V.level=e.target.value; showTab('matches'); renderMatches();});
+$('#fTeamA').addEventListener('input',e=>{V.tA=e.target.value; if(V.tB===V.tA||!V.tA)V.tB=''; fillTeamFilters(); showTab('matches'); renderMatches();});
+$('#fTeamB').addEventListener('input',e=>{V.tB=e.target.value; showTab('matches'); renderMatches();});
+$('#fSort').value=V.sort;
+$('#fSort').addEventListener('input',e=>{V.sort=e.target.value; try{localStorage.setItem('netball-scorebook-sort',V.sort);}catch(x){} renderMatches();});
 try{ if(localStorage.getItem(TIPS)==='1')$('#tips').hidden=true; }catch(e){}
 $('#hideTips').addEventListener('click',()=>{$('#tips').hidden=true; try{localStorage.setItem(TIPS,'1');}catch(e){}});
 
