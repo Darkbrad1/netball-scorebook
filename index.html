@@ -228,7 +228,9 @@ input[type=text]:focus,input[type=date]:focus,input[type=number]:focus,select:fo
 .lbl2{font-size:14px; font-weight:500}
 .hint2{color:var(--post); font-size:13px}
 .addrow{display:flex; flex-wrap:wrap; gap:10px}
-.mfilters{display:grid; grid-template-columns:repeat(3,minmax(0,1fr)); gap:12px; padding:4px 24px 12px}
+.mfilters{display:grid; grid-template-columns:repeat(2,minmax(0,1fr)); gap:12px; padding:4px 24px 12px; max-width:560px}
+.sortbtn{align-self:center}
+.sortbtn .ic{width:18px; height:18px}
 .mfilters select:disabled{opacity:.55}
 .grid2{display:grid; grid-template-columns:repeat(2,minmax(0,1fr)); gap:16px}
 .newbox{margin-top:8px; padding:10px 12px; border-radius:12px; background:var(--sel); display:flex; flex-direction:column; gap:8px; font-size:14px}
@@ -471,6 +473,64 @@ input[type=text]:focus,input[type=date]:focus,input[type=number]:focus,select:fo
 }
 @media (max-width:899px) and (min-width:560px){ .bar-in{grid-template-columns:auto minmax(0,1fr) auto; grid-template-areas:"brand search save"} .brand span{display:none} }
 @media (prefers-reduced-motion:reduce){ .nav{transition:none} }
+
+/* ---------- match cards (stacked teams, scores on the right) ---------- */
+.mc{display:grid; grid-template-columns:84px minmax(0,1fr); gap:6px 16px; width:100%; padding:14px 20px; border:0; border-top:1px solid var(--line); background:none; text-align:left; color:inherit; font:inherit; cursor:pointer}
+.dbox .mc:first-of-type{border-top:0}
+.mc:hover{background:var(--surface-2)}
+.mc.sel{background:var(--sel)}
+.mc-side{display:flex; flex-direction:column; gap:6px; align-items:flex-start; padding-top:2px}
+.mc-time{font-size:13px; color:var(--muted); line-height:1.25}
+.mc-st{font-size:11px; font-weight:700; letter-spacing:.05em; text-transform:uppercase; border-radius:6px; padding:2px 7px}
+.mc-st.done{background:var(--played-bg); color:var(--played)}
+.mc-st.post{background:var(--post-bg); color:var(--post)}
+.mc-grid{display:grid; grid-template-columns:minmax(0,1fr) repeat(var(--n),48px); gap:6px 4px; align-items:center; min-width:0}
+.mc-h{font-size:10.5px; font-weight:700; letter-spacing:.07em; color:var(--muted); line-height:1}
+.mc-h.sc{text-align:center}
+.mc-nm{display:flex; align-items:center; gap:10px; min-width:0}
+.mc-tx{display:flex; align-items:baseline; gap:8px; min-width:0}
+.mc-tx b{font-weight:500; font-size:16px; white-space:nowrap}
+.mc-tx small{font-size:13px; color:var(--muted); min-width:0; overflow:hidden; text-overflow:ellipsis; white-space:nowrap}
+.mc-nm.win b{font-weight:700}
+.mc-nm.lose b{color:var(--muted)}
+.mc-sc{font-size:18px; font-weight:500; text-align:center; font-variant-numeric:tabular-nums; border-radius:8px; padding:2px 0}
+.mc-sc.win{font-weight:700; background:var(--primary-soft); color:var(--on-soft)}
+.mc-sc.lose{color:var(--muted)}
+.mc-sc.none{color:var(--line-strong)}
+.crest{--c:#5F6368; flex:none; display:inline-grid; place-items:center; width:30px; height:30px; border-radius:50%; background:color-mix(in srgb,var(--c) 16%,var(--surface)); color:var(--c); font-size:9.5px; font-weight:700; letter-spacing:.02em; border:1px solid color-mix(in srgb,var(--c) 35%,transparent)}
+.mc-meta{grid-column:2; display:flex; flex-wrap:wrap; gap:4px 10px; align-items:center; font-size:13px; color:var(--muted); min-width:0; padding-top:2px}
+.mc-where{display:inline-flex; align-items:center; gap:4px; min-width:0}
+.mc-where .ic{width:15px; height:15px; flex:none}
+.dbox{border-radius:14px}
+.dbox-h{padding:10px 20px}
+.dbox-h b{font-size:15px; font-weight:700; letter-spacing:.01em}
+.lead .crest{width:38px; height:38px; font-size:11px}
+.rec-l{display:none}
+.lead .ln .rec-s{display:block; line-height:1.35}
+@media (max-width:899px){
+  .mc{grid-template-columns:minmax(0,1fr); padding:12px 14px; gap:8px}
+  .mc-side{flex-direction:row; align-items:center; gap:8px; padding:0}
+  .mc-meta{grid-column:1}
+  .mc-grid{grid-template-columns:minmax(0,1fr) repeat(var(--n),44px)}
+  .mc-tx{flex-direction:column; align-items:flex-start; gap:0}
+  .mc-tx b{line-height:1.25}
+  .mc-tx small{font-size:12px; max-width:100%}
+  .dbox-h{padding:9px 14px}
+  .mfilters{gap:8px}
+  .mfilters label:last-child{grid-column:auto}
+  .mfilters .field span{font-size:12px}
+  .mfilters select{min-height:40px; padding:6px 26px 6px 10px; font-size:14px}
+  .leaders{grid-template-columns:repeat(2,minmax(0,1fr)); gap:8px}
+  .lead{padding:10px 12px; gap:6px; border-radius:12px}
+  .lead .lg{font-size:12px}
+  .lead .lg .zc,.lead .lg .lv{font-size:11px; padding:1px 6px}
+  .lead .crown{display:none}
+  .lead .crest{width:30px; height:30px; font-size:9.5px}
+  .lead .ln b{font-size:16px}
+  .lead .ln span{font-size:12px}
+  .rec-l{display:none}
+  .lead .ln .rec-s{display:block; line-height:1.35}
+}
 </style>
 
 </head>
@@ -516,14 +576,12 @@ input[type=text]:focus,input[type=date]:focus,input[type=number]:focus,select:fo
 
     <main class="content">
       <section id="panel-matches" aria-labelledby="mTitle">
-        <div class="phead"><div><h2 id="mTitle"></h2><p id="mSub" aria-live="polite"></p></div></div>
+        <div class="phead"><div><h2 id="mTitle"></h2><p id="mSub" aria-live="polite"></p></div><button class="btn small sortbtn" type="button" id="fSort"></button></div>
         <div class="chips" id="chips" role="group" aria-label="Which matches to show"></div>
         <div class="mfilters">
           <label class="field"><span>Team</span><select id="fTeamA"></select></label>
           <label class="field"><span>Playing against</span><select id="fTeamB"></select></label>
-          <label class="field"><span>Sort by date</span><select id="fSort"><option value="asc">Oldest first</option><option value="desc">Newest first</option></select></label>
         </div>
-        <div class="legend" aria-hidden="true"><span class="zc EAST">Eastern zone</span><span class="zc WEST">Western zone</span><span class="lv JNR">Junior</span><span class="lv SNR">Senior</span></div>
         <div class="tip" id="tips"><span>Tap a match to add its score or change it. When you are finished, use Save a copy at the top.</span><button class="link" id="hideTips" type="button">Got it</button></div>
         <div id="list"></div>
       </section>
@@ -860,29 +918,36 @@ function teamLab(code,shown,win){
   const inner='<span class="full">'+esc(nm)+'</span><span class="abbr">'+esc(shown)+'</span>';
   return win?'<b>'+inner+'</b>':inner;
 }
+const CREST=['#1A73E8','#188038','#B06000','#8430CE','#C5221F','#0B7A8A','#5F6368','#B3261E'];
+function crest(code){
+  const c=String(code||'?').replace(/[^A-Za-z0-9]/g,'');
+  let h=0; for(const ch of c)h=(h*31+ch.charCodeAt(0))>>>0;
+  return '<span class="crest" style="--c:'+CREST[h%CREST.length]+'" aria-hidden="true">'+esc(c.slice(0,3)||'?')+'</span>';
+}
 function matchRow(f){
   const cols=matchCols(f);
   const played=cols.filter(c=>c.a!==null);
   const w1=played.length>0&&played.every(c=>c.a>c.b), w2=played.length>0&&played.every(c=>c.b>c.a);
   const tagged=cols.length>1||f.div==='JNR/SNR';
-  const short=l=>l.indexOf('Junior')===0?l.replace('Junior','JNR'):l.indexOf('Senior')===0?l.replace('Senior','SNR'):l.toUpperCase();
-  const pills=played.length
-    ? played.map(c=>'<span class="pill played">'+(tagged?'<i class="l-'+(c.label.indexOf('Junior')===0?'JNR':c.label.indexOf('Senior')===0?'SNR':'X')+'">'+esc(short(c.label))+'</i>':'')+esc(c.a)+' – '+esc(c.b)+'</span>').join('')
-    : '<span class="pill vs">vs</span>';
+  const short=l=>l.indexOf('Junior')===0?l.replace('Junior','JNR'):l.indexOf('Senior')===0?l.replace('Senior','SNR'):'';
   const t1=f.t1||'Team 1', t2=f.t2||'Team 2';
-  const n1=schoolName(f.t1), n2=schoolName(f.t2);
-  const meta=f.venue||'';
+  const scoreTxt=played.map(c=>c.label+' '+c.a+' to '+c.b).join(', ');
+  const nc=cols.length;
+  const head=tagged?'<span class="mc-h"></span>'+cols.map(c=>'<span class="mc-h sc">'+esc(short(c.label))+'</span>').join(''):'';
+  const row=(code,shown,won,which)=>{
+    const nm=schoolName(code);
+    return '<span class="mc-nm'+(won?' win':'')+(played.length&&!won?' lose':'')+'">'+crest(shown)+'<span class="mc-tx"><b>'+esc(shown)+'</b>'+(nm?'<small>'+esc(nm)+'</small>':'')+'</span></span>'+
+      cols.map(c=>{const v=which===1?c.a:c.b, o=which===1?c.b:c.a;
+        return v===null?'<span class="mc-sc none">–</span>':'<span class="mc-sc'+(v>o?' win':v<o?' lose':'')+'">'+esc(v)+'</span>';}).join('');
+  };
+  const stTag=f.status==='Postponed'?'<span class="mc-st post">Postponed</span>':f.status==='Result recorded'?'<span class="mc-st done">'+(played.length?'Final':'Played')+'</span>':'';
   const lvTag=f.div==='JNR'?'<span class="lv JNR">Junior</span>':f.div==='SNR'?'<span class="lv SNR">Senior</span>':f.div==='JNR/SNR'?'<span class="lv BOTH">Junior + Senior</span>':'';
   const zTag=f.zone?'<span class="zc '+esc(f.zone)+'">'+(f.zone==='EAST'?'Eastern':'Western')+'</span>':'';
-  const chip=f.status==='Result recorded'?'':'<span class="status '+(STATUS_CLS[f.status]||'st-todo')+'">'+esc(STATUS_LBL[f.status]||f.status)+'</span>';
-  const scoreTxt=played.map(c=>c.label+' '+c.a+' to '+c.b).join(', ');
-  return '<button type="button" class="mline z-'+esc(f.zone||'none')+(selKey()===f.k?' sel':'')+'" data-match="'+esc(f.k)+'" aria-label="'+esc(t1+' versus '+t2+(scoreTxt?', '+scoreTxt:'')+', '+STATUS_LBL[f.status]+'. Open')+'">'+
-    '<span class="ml-time">'+esc(timeLabel(f.time))+'</span>'+
-    '<span class="ml-t tr"'+(n1?' title="'+esc(n1)+'"':'')+'><span class="nm">'+teamLab(f.t1,t1,w1)+'</span>'+avatar(t1)+'</span>'+
-    '<span class="ml-sc">'+pills+'</span>'+
-    '<span class="ml-t"'+(n2?' title="'+esc(n2)+'"':'')+'>'+avatar(t2)+'<span class="nm">'+teamLab(f.t2,t2,w2)+'</span></span>'+
-    '<span class="ml-meta">'+chip+zTag+lvTag+'<span class="mt">'+esc(meta)+'</span>'+(f.ump?'<span class="mu">'+ICON.ump.replace('class="ic"','class="ic"')+'<span>'+esc(umpList(f.ump).join(', '))+'</span></span>':'')+'</span>'+
-    '<span class="ml-go" aria-hidden="true">›</span>'+
+  const where=[f.venue,umpList(f.ump).join(', ')].filter(Boolean);
+  return '<button type="button" class="mc z-'+esc(f.zone||'none')+(selKey()===f.k?' sel':'')+'" data-match="'+esc(f.k)+'" aria-label="'+esc(t1+' versus '+t2+(scoreTxt?', '+scoreTxt:'')+', '+STATUS_LBL[f.status]+'. Open')+'">'+
+    '<span class="mc-side"><span class="mc-time">'+esc(timeLabel(f.time))+'</span>'+stTag+'</span>'+
+    '<span class="mc-grid" style="--n:'+nc+'">'+head+row(f.t1,t1,w1,1)+row(f.t2,t2,w2,2)+'</span>'+
+    '<span class="mc-meta">'+zTag+lvTag+(f.venue?'<span class="mc-where">'+esc(f.venue)+'</span>':'')+(f.ump?'<span class="mc-where">'+ICON.ump+esc(umpList(f.ump).join(', '))+'</span>':'')+'</span>'+
   '</button>';
 }
 function renderMatches(){
@@ -972,7 +1037,7 @@ function renderStandings(){
   $('#leaders').innerHTML=GROUPS.map(([z,l])=>{
     const g=G[z+'|'+l], k=z+'|'+l, ld=g.leader;
     return '<button type="button" class="lead g-'+z+'" data-grp="'+k+'" aria-pressed="'+(V.grp===k?'true':'false')+'"><span class="lg"><span class="zc '+z+'">'+(z==='EAST'?'Eastern':'Western')+'</span><span class="lv '+l+'">'+(l==='SNR'?'Senior':'Junior')+'</span>'+plural(g.games.length,'game')+' played</span>'+
-      (ld?'<span class="crown">IN THE LEAD</span><span class="lw">'+avatar(ld.code)+'<span class="ln"><b>'+esc(ld.code)+'</b><span>'+esc(record(ld))+' · goal difference '+esc(sgn(ld.gd))+'</span></span></span>'
+      (ld?'<span class="crown">IN THE LEAD</span><span class="lw">'+crest(ld.code)+'<span class="ln"><b>'+esc(ld.code)+'</b><span class="rec-l">'+esc(record(ld))+' · goal difference '+esc(sgn(ld.gd))+'</span><span class="rec-s">'+esc('Won '+ld.w+', lost '+ld.l)+'<br>'+esc('Goal diff. '+sgn(ld.gd))+'</span></span></span>'
          :'<span class="none">No results yet</span>')+'</button>';
   }).join('');
   const g=G[V.grp], list=g.list;
@@ -1479,8 +1544,9 @@ $('#fZone').addEventListener('input',e=>{V.zone=e.target.value; showTab('matches
 $('#fLevel').addEventListener('input',e=>{V.level=e.target.value; showTab('matches'); renderMatches();});
 $('#fTeamA').addEventListener('input',e=>{V.tA=e.target.value; if(V.tB===V.tA||!V.tA)V.tB=''; fillTeamFilters(); showTab('matches'); renderMatches();});
 $('#fTeamB').addEventListener('input',e=>{V.tB=e.target.value; showTab('matches'); renderMatches();});
-$('#fSort').value=V.sort;
-$('#fSort').addEventListener('input',e=>{V.sort=e.target.value; try{localStorage.setItem('netball-scorebook-sort',V.sort);}catch(x){} renderMatches();});
+function sortLabel(){const b=$('#fSort'); b.innerHTML='<svg class="ic" viewBox="0 0 24 24" aria-hidden="true"><path d="M3 18h6v-2H3v2zM3 6v2h18V6H3zm0 7h12v-2H3v2z"/></svg>'+(V.sort==='desc'?'Newest first':'Oldest first'); b.setAttribute('aria-label','Sorted by date, '+(V.sort==='desc'?'newest':'oldest')+' first. Tap to change.');}
+sortLabel();
+$('#fSort').addEventListener('click',()=>{V.sort=V.sort==='desc'?'asc':'desc'; try{localStorage.setItem('netball-scorebook-sort',V.sort);}catch(x){} sortLabel(); renderMatches();});
 try{ if(localStorage.getItem(TIPS)==='1')$('#tips').hidden=true; }catch(e){}
 $('#hideTips').addEventListener('click',()=>{$('#tips').hidden=true; try{localStorage.setItem(TIPS,'1');}catch(e){}});
 
