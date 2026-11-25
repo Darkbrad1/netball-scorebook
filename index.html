@@ -672,6 +672,35 @@ body{background:var(--bg)}
 
 /* school logos */
 .crest.logo{background:none!important; border:0!important; border-radius:0; object-fit:contain}
+
+/* ---------- compact header, pinned bar ---------- */
+.bar-in{grid-template-columns:minmax(0,1fr) auto!important; grid-template-areas:"brand tools"!important}
+.hsearch{grid-area:tools; color:#fff}
+.hsearch:hover,.hsearch:focus,.hsearch:focus-visible{background:rgba(255,255,255,.14); color:#fff}
+#q::-webkit-search-cancel-button{-webkit-appearance:none; display:none}
+.hsearch .ic,.sclose .ic{width:24px; height:24px}
+.search{display:none!important; grid-area:search}
+.topbar.searching .bar-in{grid-template-areas:"search search"!important}
+.topbar.searching .brand,.topbar.searching .hsearch{display:none}
+.topbar.searching .search{display:flex!important; max-width:none; height:48px; padding:0 4px 0 16px}
+.sclose{width:40px; height:40px; flex:none; color:inherit}
+.navsave{display:flex; flex-wrap:wrap; align-items:center; gap:8px; padding:4px 8px}
+.navsave .save-l{display:block!important; width:100%; color:var(--muted)!important; font-size:13px; font-weight:700; letter-spacing:.05em; text-transform:uppercase}
+.navsave .btn.tonal{background:var(--primary-soft)!important; color:var(--on-soft)!important}
+@media (min-width:900px){ .bnav{top:var(--top-h,64px)} }
+.mbar{position:sticky; top:var(--stick,64px); z-index:15; display:flex; align-items:center; gap:12px; margin:0 -4px; padding:8px 4px 6px; background:var(--bg); border-bottom:1px solid transparent}
+.mbar .pacts{flex:none}
+.mbar .dstrip{flex:1; min-width:0; padding:2px 0 6px}
+.dpill.cur{background:var(--primary-soft); border-color:var(--primary); color:var(--on-soft)}
+.dpill.cur small{color:var(--on-soft)}
+.day{scroll-margin-top:calc(var(--stick,64px) + var(--mbar-h,70px) + 8px)!important}
+.tk-h{top:calc(var(--stick,64px) + var(--mbar-h,70px))}
+@media (max-width:899px){
+  .mbar{flex-direction:column; align-items:stretch; gap:6px; margin:0 -16px; padding:8px 16px 4px; box-shadow:0 6px 10px -10px rgba(0,0,0,.4)}
+  .mbar .pacts{gap:8px}
+  .mbar .pacts .btn.small{min-height:36px; padding:0 12px; font-size:14px}
+  .mbar .dstrip{padding-bottom:4px}
+}
 </style>
 
 </head>
@@ -682,17 +711,19 @@ body{background:var(--bg)}
       <button class="icon-btn menu" id="btnMenu" type="button" aria-label="Open the menu"><svg class="ic" viewBox="0 0 24 24" aria-hidden="true"><path d="M3 18h18v-2H3v2zm0-5h18v-2H3v2zm0-7v2h18V6H3z"/></svg></button>
       <svg class="ic" viewBox="0 0 32 32" aria-hidden="true"><circle cx="16" cy="16" r="13" fill="none" stroke="currentColor" stroke-width="2.5"/><path d="M16 3v26M3 16h26" stroke="currentColor" stroke-width="2" fill="none"/><path d="M6.5 6.5c5 4.5 5 14.5 0 19M25.5 6.5c-5 4.5-5 14.5 0 19" stroke="currentColor" stroke-width="2" fill="none"/></svg><span>Netball Scorebook 2026</span>
     </div>
-    <label class="search"><span class="sr">Search matches</span><svg class="ic" viewBox="0 0 24 24" aria-hidden="true"><path d="M15.5 14h-.79l-.28-.27A6.471 6.471 0 0 0 16 9.5 6.5 6.5 0 1 0 9.5 16c1.61 0 3.09-.59 4.23-1.57l.27.28v.79l5 4.99L20.49 19l-4.99-5zm-6 0C7.01 14 5 11.99 5 9.5S7.01 5 9.5 5 14 7.01 14 9.5 11.99 14 9.5 14z"/></svg><input id="q" type="search" placeholder="Search, for example: AHS WC" autocomplete="off"></label>
-    <div class="save">
-      <span class="save-l">Save a copy</span>
-      <button class="btn tonal" id="btnXlsx" type="button" aria-label="Save as Excel"><svg class="ic" viewBox="0 0 24 24" aria-hidden="true"><path d="M19 9h-4V3H9v6H5l7 7 7-7zM5 18v2h14v-2H5z"/></svg><span class="lbl">Excel</span></button>
-      <button class="btn tonal" id="btnPdf" type="button" aria-label="Save as PDF"><svg class="ic" viewBox="0 0 24 24" aria-hidden="true"><path d="M19 9h-4V3H9v6H5l7 7 7-7zM5 18v2h14v-2H5z"/></svg><span class="lbl">PDF</span></button>
-    </div>
+    <label class="search" id="searchBox"><span class="sr">Search matches</span><svg class="ic" viewBox="0 0 24 24" aria-hidden="true"><path d="M15.5 14h-.79l-.28-.27A6.471 6.471 0 0 0 16 9.5 6.5 6.5 0 1 0 9.5 16c1.61 0 3.09-.59 4.23-1.57l.27.28v.79l5 4.99L20.49 19l-4.99-5zm-6 0C7.01 14 5 11.99 5 9.5S7.01 5 9.5 5 14 7.01 14 9.5 11.99 14 9.5 14z"/></svg><input id="q" type="search" placeholder="Search, for example: AHS WC" autocomplete="off"><button type="button" class="icon-btn sclose" id="btnSearchClose" aria-label="Close search"><svg class="ic" viewBox="0 0 24 24" aria-hidden="true"><path d="M19 6.41L17.59 5 12 10.59 6.41 5 5 6.41 10.59 12 5 17.59 6.41 19 12 13.41 17.59 19 19 17.59 13.41 12z"/></svg></button></label>
+    <button class="icon-btn hsearch" id="btnSearch" type="button" aria-label="Search matches" aria-expanded="false"><svg class="ic" viewBox="0 0 24 24" aria-hidden="true"><path d="M15.5 14h-.79l-.28-.27A6.471 6.471 0 0 0 16 9.5 6.5 6.5 0 1 0 9.5 16c1.61 0 3.09-.59 4.23-1.57l.27.28v.79l5 4.99L20.49 19l-4.99-5zm-6 0C7.01 14 5 11.99 5 9.5S7.01 5 9.5 5 14 7.01 14 9.5 11.99 14 9.5 14z"/></svg></button>
   </div></header>
   <nav class="bnav" id="bnav" aria-label="Screens"></nav>
 
   <div class="layout">
     <nav class="nav" id="nav" aria-label="Menu">
+<div class="save navsave">
+      <span class="save-l">Save a copy</span>
+      <button class="btn tonal" id="btnXlsx" type="button" aria-label="Save as Excel"><svg class="ic" viewBox="0 0 24 24" aria-hidden="true"><path d="M19 9h-4V3H9v6H5l7 7 7-7zM5 18v2h14v-2H5z"/></svg><span class="lbl">Excel</span></button>
+      <button class="btn tonal" id="btnPdf" type="button" aria-label="Save as PDF"><svg class="ic" viewBox="0 0 24 24" aria-hidden="true"><path d="M19 9h-4V3H9v6H5l7 7 7-7zM5 18v2h14v-2H5z"/></svg><span class="lbl">PDF</span></button>
+    </div>
+      <hr>
       <button class="fab" id="addMatch" type="button"><svg class="ic" viewBox="0 0 24 24" aria-hidden="true"><path d="M19 13h-6v6h-2v-6H5v-2h6V5h2v6h6v2z"/></svg>New match</button>
       <div id="navShow" role="group" aria-label="Which matches to show"></div>
       <hr>
@@ -717,7 +748,7 @@ body{background:var(--bg)}
 
     <main class="content">
       <section id="panel-matches" aria-labelledby="mTitle">
-        <div class="phead"><div><h2 id="mTitle"></h2><p id="mSub" aria-live="polite"></p></div><div class="pacts"><button class="btn small fbtn" type="button" id="fOpen" aria-haspopup="dialog" aria-controls="fpop"><svg class="ic" viewBox="0 0 24 24" aria-hidden="true"><path d="M10 18h4v-2h-4v2zM3 6v2h18V6H3zm3 7h12v-2H6v2z"/></svg>Filters<span class="fcount" id="fCount" hidden></span></button><button class="btn small sortbtn" type="button" id="fSort"></button></div></div>
+        <div class="phead"><div><h2 id="mTitle"></h2><p id="mSub" aria-live="polite"></p></div></div>
         <div class="fpop" id="fpop" hidden><div class="fpanel" role="dialog" aria-modal="true" aria-labelledby="fpTitle">
           <div class="fp-h"><h2 id="fpTitle" tabindex="-1">Filters</h2><button type="button" class="icon-btn" id="fClose" aria-label="Close filters"><svg class="ic" viewBox="0 0 24 24" aria-hidden="true"><path d="M19 6.41L17.59 5 12 10.59 6.41 5 5 6.41 10.59 12 5 17.59 6.41 19 12 13.41 17.59 19 19 17.59 13.41 12z"/></svg></button></div>
           <div class="fp-b">
@@ -734,7 +765,7 @@ body{background:var(--bg)}
           <div class="fp-f"><button type="button" class="link" id="fReset">Clear all</button><button type="button" class="btn primary" id="fDone">Show matches</button></div>
         </div></div>
         <div class="tip" id="tips"><span>Tap a match to add its score or change it. Use Filters to find one team, two teams playing each other, a zone or a level.</span><button class="link" id="hideTips" type="button">Got it</button></div>
-        <div class="dstrip" id="dstrip" role="group" aria-label="Jump to a date"></div>
+        <div class="mbar" id="mbar"><div class="pacts"><button class="btn small fbtn" type="button" id="fOpen" aria-haspopup="dialog" aria-controls="fpop"><svg class="ic" viewBox="0 0 24 24" aria-hidden="true"><path d="M10 18h4v-2h-4v2zM3 6v2h18V6H3zm3 7h12v-2H6v2z"/></svg>Filters<span class="fcount" id="fCount" hidden></span></button><button class="btn small sortbtn" type="button" id="fSort"></button></div><div class="dstrip" id="dstrip" role="group" aria-label="Jump to a date"></div></div>
         <div id="list"></div>
       </section>
       <section id="panel-standings" hidden aria-labelledby="sTitle">
@@ -1135,9 +1166,10 @@ function renderMatches(){
         g.items.map(matchRow).join('')+'</div></section>';
     }).join('')+'</div>';
     $('#dstrip').innerHTML=groups.map(g=>{const d=parseISO(g.d);
-      return '<button type="button" class="dpill'+(g.d===today?' now':'')+'" data-day="'+esc(g.d||'none')+'"><small>'+(d?d.toLocaleDateString('en-GB',{weekday:'short'}):'—')+'</small><b>'+(d?d.getDate():'?')+'</b><small>'+(d?d.toLocaleDateString('en-GB',{month:'short'}):'')+'</small></button>';}).join('');
+      return '<button type="button" class="dpill'+(g.d===today?' now':'')+(g.d===curDay?' cur':'')+'" data-day="'+esc(g.d||'none')+'"><small>'+(d?d.toLocaleDateString('en-GB',{weekday:'short'}):'—')+'</small><b>'+(d?d.getDate():'?')+'</b><small>'+(d?d.toLocaleDateString('en-GB',{month:'short'}):'')+'</small></button>';}).join('');
   }
   renderNav();
+  if(typeof markDay==='function'){curDay=null; requestAnimationFrame(markDay);}
 }
 function navItem(attr,icon,label,count,active){
   return '<button type="button" class="nav-item'+(active?' active':'')+'" '+attr+(active?' aria-current="page"':'')+'>'+ICON[icon]+'<span class="nl">'+esc(label)+'</span>'+(count!=null?'<span class="nc">'+count+'</span>':'')+'</button>';
@@ -1778,6 +1810,43 @@ $('#fSort').addEventListener('click',()=>{V.sort=V.sort==='desc'?'asc':'desc'; t
 try{ if(localStorage.getItem(TIPS)==='1')$('#tips').hidden=true; }catch(e){}
 $('#hideTips').addEventListener('click',()=>{$('#tips').hidden=true; try{localStorage.setItem(TIPS,'1');}catch(e){}});
 
+
+/* ---------- header search, pinned bar ---------- */
+let curDay=null;
+function openSearch(){document.querySelector('.topbar').classList.add('searching'); $('#btnSearch').setAttribute('aria-expanded','true'); $('#q').focus();}
+function closeSearch(){
+  document.querySelector('.topbar').classList.remove('searching'); $('#btnSearch').setAttribute('aria-expanded','false');
+  if(V.q){V.q=''; $('#q').value=''; renderMatches();}
+  $('#btnSearch').focus();
+}
+$('#btnSearch').addEventListener('click',openSearch);
+$('#btnSearchClose').addEventListener('click',e=>{e.preventDefault(); closeSearch();});
+$('#q').addEventListener('keydown',e=>{if(e.key==='Escape'){e.stopPropagation(); closeSearch();}});
+function measureBars(){
+  const top=document.querySelector('.topbar').getBoundingClientRect().height;
+  const bn=$('#bnav'), sticky=getComputedStyle(bn).position==='sticky';
+  const stick=top+(sticky?bn.getBoundingClientRect().height:0);
+  const root=document.documentElement.style;
+  root.setProperty('--top-h',top+'px'); root.setProperty('--stick',stick+'px');
+  root.setProperty('--mbar-h',$('#mbar').getBoundingClientRect().height+'px');
+}
+function markDay(){
+  if(V.tab!=='matches')return;
+  const line=parseFloat(getComputedStyle(document.documentElement).getPropertyValue('--stick')||0)+$('#mbar').getBoundingClientRect().height+12;
+  let d=null; document.querySelectorAll('.day').forEach(sec=>{if(sec.getBoundingClientRect().top<=line)d=sec.id.slice(4);});
+  if(!d){const f=document.querySelector('.day'); d=f?f.id.slice(4):null;}
+  if(d===curDay)return; curDay=d;
+  const strip=$('#dstrip');
+  strip.querySelectorAll('.dpill').forEach(b=>{
+    const on=b.dataset.day===d; b.classList.toggle('cur',on);
+    if(on){const l=b.offsetLeft-strip.offsetLeft, r=l+b.offsetWidth; if(l<strip.scrollLeft)strip.scrollLeft=l-8; else if(r>strip.scrollLeft+strip.clientWidth)strip.scrollLeft=r-strip.clientWidth+8;}
+  });
+}
+let markQueued=false;
+window.addEventListener('scroll',()=>{if(markQueued)return; markQueued=true; requestAnimationFrame(()=>{markQueued=false; markDay();});},{passive:true});
+window.addEventListener('resize',()=>{measureBars(); markDay();});
+if(window.ResizeObserver){const ro=new ResizeObserver(()=>measureBars()); ro.observe(document.querySelector('.topbar')); ro.observe($('#mbar'));}
+
 /* ---------- downloads ---------- */
 const dlP=(async()=>{
   try{return (window.claude&&window.claude.use)?await window.claude.use('downloads'):null;}catch(e){return null;}
@@ -1891,7 +1960,7 @@ $('#btnXlsx').addEventListener('click',()=>doDownload('xlsx'));
 $('#btnPdf').addEventListener('click',()=>doDownload('pdf'));
 
 /* ---------- start ---------- */
-renderEmpty(); renderMatches(); renderStandings(); renderTeams(); renderUmpires(); renderVenues(); renderNotes(); updateChanges();
+measureBars(); renderEmpty(); renderMatches(); renderStandings(); renderTeams(); renderUmpires(); renderVenues(); renderNotes(); updateChanges();
 if(CLOUD){
   CLOUD.client.onUpdate(CLOUD.api.scorebook.get,{},applyCloud,()=>{CLOUD.ready=true; updateChanges();});
   CLOUD.client.subscribeToConnectionState(c=>{const on=c.isWebSocketConnected||!c.hasEverConnected; if(on!==CLOUD.online){CLOUD.online=on; updateChanges();}});
