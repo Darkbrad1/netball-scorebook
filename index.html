@@ -1457,7 +1457,9 @@ function openSheet(obj){
   SH=obj; lastFocus=document.activeElement;
   $('#detail').classList.add('open'); syncLock();
   renderSheet(true); renderMatches();
+  SH.snap=JSON.stringify(SH.draft);
 }
+function sheetDirty(){return !!SH&&JSON.stringify(SH.draft)!==SH.snap;}
 function closeSheet(){
   SH=null; $('#detail').classList.remove('open','sides'); $('#sheet').classList.remove('wide'); document.body.classList.remove('sides-open'); markOpen(); syncLock();
   renderEmpty(); renderMatches();
@@ -1894,6 +1896,15 @@ $('#sheet').addEventListener('keydown',e=>{
   } else if(e.key==='Tab'){ comboClose(); }
 },true);
 document.addEventListener('keydown',e=>{const sr=e.target.closest&&e.target.closest('[data-steam]'); if(sr&&e.key==='Enter'&&!mqPhone.matches){openTeam(sr.dataset.steam);return;} if(e.key==='Escape'){if(!$('#fpop').hidden)closeFilters(); else if(SH)closeSheet(); else closeNav();}});
+// On computers the side sheets leave the page usable: a click anywhere else on the page
+// (not on another team, umpire, venue or match) puts them away, unless there are unsaved edits.
+// Capture phase, so the check runs before a click re-renders and detaches its target.
+document.addEventListener('click',e=>{
+  if(!SH||!document.body.classList.contains('sides-open')||sheetDirty())return;
+  const t=e.target; if(!(t instanceof Element)||!document.contains(t))return;
+  if(t.closest('#sheet .side,[data-match],[data-team],[data-steam],[data-note],[data-ump],[data-venue],[id^="add"],#mAdd,#toast,#fpop'))return;
+  closeSheet();
+},true);
 let fLast=null;
 function openFilters(){fLast=document.activeElement; $('#fpop').hidden=false; document.body.classList.add('lock'); $('#fpTitle').focus();}
 function closeFilters(){$('#fpop').hidden=true; document.body.classList.remove('lock'); if(fLast&&fLast.focus)fLast.focus();}
